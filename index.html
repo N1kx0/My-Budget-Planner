@@ -17,134 +17,265 @@
       --yellow: #eab308;
       --purple: #a855f7;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg); color: var(--text); padding: 16px; display: flex; justify-content: center; }
-    .container { width: 100%; max-width: 650px; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+      -webkit-tap-highlight-color: transparent; 
+    }
+    html, body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden; /* Verhindert seitliches Ausbrechen/Scrollen komplett */
+    }
+    body { 
+      background: var(--bg); 
+      color: var(--text); 
+      padding: 12px; 
+      display: flex; 
+      justify-content: center; 
+    }
+    .container { 
+      width: 100%; 
+      max-width: 600px; 
+      min-width: 0;
+    }
 
     /* Top Toolbar */
-    .top-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .top-toolbar { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-bottom: 12px; 
+      width: 100%;
+    }
     .status-sub { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
 
     .mode-btn { 
       background: #21262d; 
       border: 1px solid var(--border); 
       color: #fff; 
-      padding: 8px 14px; 
+      padding: 7px 12px; 
       border-radius: 8px; 
-      font-size: 0.85rem; 
+      font-size: 0.82rem; 
       cursor: pointer; 
       display: flex; 
       align-items: center; 
-      gap: 6px; 
-      transition: all 0.15s ease;
+      gap: 5px; 
+      flex-shrink: 0;
     }
     .mode-btn.active { background: #1f6feb; border-color: #388bfd; }
 
-    /* Badges für Datum & Uhrzeit */
+    /* Längliche Badges für Datum & Uhrzeit */
     .datetime-bar {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
       margin-bottom: 10px;
+      width: 100%;
     }
     .dt-badge {
       background: #15181e;
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 10px 14px;
+      padding: 8px 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      font-size: 0.88rem;
+      gap: 6px;
+      font-size: 0.78rem;
       font-weight: 600;
       color: #f0f3f8;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
     }
-    .dt-badge span.dt-icon { font-size: 1rem; }
 
     /* 3 Haupt-KPI-Karten */
-    .kpi-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
-    .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 6px; text-align: center; }
-    .kpi-val { font-size: 1.25rem; font-weight: 700; }
-    .kpi-sub { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+    .kpi-row { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr 1fr; 
+      gap: 8px; 
+      margin-bottom: 14px; 
+      width: 100%;
+    }
+    .kpi-card { 
+      background: var(--card); 
+      border: 1px solid var(--border); 
+      border-radius: 10px; 
+      padding: 10px 4px; 
+      text-align: center; 
+      min-width: 0;
+    }
+    .kpi-val { font-size: 1.1rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .kpi-sub { font-size: 0.68rem; color: var(--muted); margin-top: 3px; }
 
     /* Progress Bar */
-    .progress-bar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: #222; margin-bottom: 16px; }
+    .progress-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: #222; margin-bottom: 14px; width: 100%; }
     .bar-seg { height: 100%; transition: width 0.2s ease; }
 
-    /* Goal Tracker Box */
-    .goal-box { background: linear-gradient(145deg, #18202f 0%, #15181e 100%); border: 1px solid #2b3952; border-radius: 12px; padding: 16px; margin-bottom: 16px; transition: border-color 0.2s; }
-    .goal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.95rem; font-weight: 600; }
-    .goal-status-badge { font-size: 0.75rem; padding: 3px 8px; border-radius: 6px; font-weight: 600; }
+    /* Goal Box */
+    .goal-box { 
+      background: linear-gradient(145deg, #18202f 0%, #15181e 100%); 
+      border: 1px solid #2b3952; 
+      border-radius: 12px; 
+      padding: 14px; 
+      margin-bottom: 14px; 
+      width: 100%;
+      min-width: 0;
+    }
+    .goal-header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      gap: 8px;
+      margin-bottom: 10px; 
+      font-size: 0.9rem; 
+      font-weight: 600; 
+      min-width: 0;
+    }
+    .goal-status-badge { 
+      font-size: 0.7rem; 
+      padding: 3px 6px; 
+      border-radius: 6px; 
+      font-weight: 600; 
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
     .goal-status-ok { background: rgba(34, 197, 94, 0.15); color: var(--green); border: 1px solid rgba(34, 197, 94, 0.3); }
     .goal-status-warn { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
     
     .goal-meta-view {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 14px;
-      font-size: 0.8rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 12px;
+      margin-bottom: 12px;
+      font-size: 0.75rem;
       color: var(--muted);
       background: rgba(0,0,0,0.25);
-      padding: 8px 12px;
+      padding: 8px 10px;
       border-radius: 8px;
       border: 1px solid rgba(255,255,255,0.04);
+      width: 100%;
     }
     .goal-meta-view span strong { color: #fff; }
 
-    .goal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-    @media (max-width: 480px) { .goal-grid { grid-template-columns: 1fr; } }
-    .goal-field { display: flex; flex-direction: column; gap: 4px; }
-    .goal-field label { font-size: 0.72rem; color: var(--muted); }
-    .goal-input { background: #0d0f12; border: 1px solid var(--border); color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 0.85rem; }
+    /* Skalierbares 2-Spalten Grid */
+    .goal-grid { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 8px; 
+      margin-bottom: 12px; 
+      width: 100%;
+      min-width: 0;
+    }
+    .goal-field { display: flex; flex-direction: column; gap: 3px; min-width: 0; width: 100%; }
+    .goal-field label { font-size: 0.7rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .goal-input { 
+      background: #0d0f12; 
+      border: 1px solid var(--border); 
+      color: #fff; 
+      padding: 6px 8px; 
+      border-radius: 6px; 
+      font-size: 0.8rem; 
+      width: 100%;
+      min-width: 0;
+    }
 
-    .goal-progress-wrap { background: #0d0f12; border-radius: 6px; height: 10px; overflow: hidden; margin-bottom: 8px; border: 1px solid var(--border); }
+    .goal-progress-wrap { background: #0d0f12; border-radius: 6px; height: 8px; overflow: hidden; margin-bottom: 8px; border: 1px solid var(--border); width: 100%; }
     .goal-progress-fill { height: 100%; transition: width 0.3s; }
     
-    .goal-summary { font-size: 0.8rem; color: var(--muted); display: flex; justify-content: space-between; align-items: flex-end; }
-    .goal-right-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
-    .goal-needed-rate { font-size: 0.82rem; font-weight: 600; }
+    .goal-summary { 
+      font-size: 0.75rem; 
+      color: var(--muted); 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: flex-end; 
+      gap: 8px;
+    }
+    .goal-right-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex-shrink: 0; }
+    .goal-needed-rate { font-size: 0.78rem; font-weight: 600; }
 
     /* Income Box */
-    .income-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 16px; }
-    .income-row { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
-    .num-input { background: #0d0f12; border: 1px solid var(--border); color: #fff; padding: 8px 12px; border-radius: 8px; font-size: 1.1rem; font-weight: 600; width: 140px; -webkit-appearance: none; }
+    .income-box { 
+      background: var(--card); 
+      border: 1px solid var(--border); 
+      border-radius: 12px; 
+      padding: 12px; 
+      margin-bottom: 14px; 
+      width: 100%;
+    }
+    .income-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .num-input { 
+      background: #0d0f12; 
+      border: 1px solid var(--border); 
+      color: #fff; 
+      padding: 6px 10px; 
+      border-radius: 8px; 
+      font-size: 1rem; 
+      font-weight: 600; 
+      width: 120px; 
+      -webkit-appearance: none; 
+    }
 
     /* Group Boxes */
-    .group-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
-    .group-title { font-size: 1rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .group-box { 
+      background: var(--card); 
+      border: 1px solid var(--border); 
+      border-radius: 12px; 
+      padding: 12px; 
+      margin-bottom: 14px; 
+      width: 100%;
+      min-width: 0;
+    }
+    .group-title { 
+      font-size: 0.95rem; 
+      font-weight: 600; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-bottom: 12px; 
+      gap: 6px;
+      min-width: 0;
+    }
     
-    /* Items with direct numeric input */
-    .item-card { background: #0d0f12; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
-    .item-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .item-name { font-size: 0.88rem; font-weight: 500; }
+    /* Item Cards */
+    .item-card { 
+      background: #0d0f12; 
+      border: 1px solid var(--border); 
+      border-radius: 8px; 
+      padding: 10px; 
+      margin-bottom: 8px; 
+      width: 100%;
+      min-width: 0;
+    }
+    .item-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; gap: 8px; }
+    .item-name { font-size: 0.82rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1; }
     
-    .val-input-wrap { display: flex; align-items: center; background: #1c2128; border: 1px solid var(--border); border-radius: 6px; padding: 2px 6px; }
-    .direct-val-input { background: transparent; border: none; color: #fff; font-size: 0.85rem; font-weight: 600; width: 55px; text-align: right; outline: none; -moz-appearance: textfield; }
-    .direct-val-input::-webkit-outer-spin-button, .direct-val-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    .val-unit { font-size: 0.8rem; color: var(--muted); margin-left: 2px; }
+    .val-input-wrap { display: flex; align-items: center; background: #1c2128; border: 1px solid var(--border); border-radius: 6px; padding: 2px 5px; flex-shrink: 0; }
+    .direct-val-input { background: transparent; border: none; color: #fff; font-size: 0.82rem; font-weight: 600; width: 45px; text-align: right; outline: none; }
+    .val-unit { font-size: 0.75rem; color: var(--muted); margin-left: 2px; }
 
-    /* iOS Slider Styling */
     input[type=range] {
       -webkit-appearance: none;
       width: 100%;
-      height: 8px;
-      border-radius: 4px;
+      height: 6px;
+      border-radius: 3px;
       background: #262c36;
       outline: none;
-      margin: 8px 0;
+      margin: 6px 0;
     }
     input[type=range]::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       background: #ffffff;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
     }
 
     /* Editor Visibility Control */
@@ -153,19 +284,56 @@
     .view-only { display: block; }
     .edit-active .view-only { display: none !important; }
 
-    .edit-header-row { display: flex; align-items: center; gap: 8px; flex: 1; margin-right: 8px; }
-    .title-input { background: #0d0f12; border: 1px solid var(--border); color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 0.95rem; font-weight: 600; flex: 1; }
-    .color-picker { width: 32px; height: 32px; border: none; border-radius: 6px; background: transparent; cursor: pointer; }
-    .edit-item-row { display: flex; align-items: center; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #262c36; }
-    .text-input-sm { background: #15181e; border: 1px solid var(--border); color: #fff; padding: 6px 8px; border-radius: 6px; font-size: 0.8rem; }
-    .del-btn { background: transparent; border: none; color: var(--red); font-size: 1.1rem; cursor: pointer; padding: 4px 8px; }
+    /* Robuste, flexible Editor-Zeilen (verhindert das Ausbrechen) */
+    .edit-header-row { 
+      display: flex; 
+      align-items: center; 
+      gap: 6px; 
+      flex: 1; 
+      min-width: 0;
+    }
+    .title-input { 
+      background: #0d0f12; 
+      border: 1px solid var(--border); 
+      color: #fff; 
+      padding: 5px 8px; 
+      border-radius: 6px; 
+      font-size: 0.85rem; 
+      font-weight: 600; 
+      flex: 1; 
+      min-width: 0; 
+      width: 100%;
+    }
+    .color-picker { width: 28px; height: 28px; border: none; border-radius: 6px; background: transparent; cursor: pointer; flex-shrink: 0; }
+    
+    .edit-item-row { 
+      display: flex; 
+      align-items: center; 
+      gap: 6px; 
+      margin-top: 8px; 
+      padding-top: 8px; 
+      border-top: 1px dashed #262c36; 
+      width: 100%;
+      min-width: 0;
+    }
+    .text-input-sm { 
+      background: #15181e; 
+      border: 1px solid var(--border); 
+      color: #fff; 
+      padding: 5px 6px; 
+      border-radius: 6px; 
+      font-size: 0.75rem; 
+      min-width: 0;
+    }
+    .del-btn { background: transparent; border: none; color: var(--red); font-size: 1rem; cursor: pointer; padding: 2px 6px; flex-shrink: 0; }
 
-    .add-row { gap: 6px; margin-top: 12px; }
-    .add-btn { background: #21262d; border: 1px solid var(--border); color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; }
-    .add-group-wrap { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
-    .add-group-btn { background: #1f6feb; border: none; color: #fff; padding: 10px 18px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; width: 100%; }
-    .add-secondary-btn { background: #21262d; border: 1px solid var(--border); color: #f0f3f8; padding: 9px 18px; border-radius: 8px; font-size: 0.85rem; font-weight: 500; cursor: pointer; width: 100%; }
-    .reset-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 8px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; margin-top: 10px; }
+    .add-row { gap: 6px; margin-top: 10px; width: 100%; min-width: 0; }
+    .add-btn { background: #21262d; border: 1px solid var(--border); color: #fff; padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+    
+    .add-group-wrap { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; width: 100%; }
+    .add-group-btn { background: #1f6feb; border: none; color: #fff; padding: 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; width: 100%; }
+    .add-secondary-btn { background: #21262d; border: 1px solid var(--border); color: #f0f3f8; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 500; cursor: pointer; width: 100%; }
+    .reset-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 7px; border-radius: 6px; font-size: 0.72rem; cursor: pointer; margin-top: 6px; }
     .reset-btn:hover { color: var(--red); border-color: var(--red); }
   </style>
 </head>
@@ -183,18 +351,18 @@
   <!-- Datum & Uhrzeit Badges -->
   <div class="datetime-bar">
     <div class="dt-badge">
-      <span class="dt-icon">📅</span>
+      <span>📅</span>
       <span id="liveDate">--.--.----</span>
     </div>
     <div class="dt-badge">
-      <span class="dt-icon">🕒</span>
+      <span>🕒</span>
       <span id="liveTime">--:--:-- Uhr</span>
     </div>
   </div>
 
   <!-- 3 Haupt-KPI-Karten -->
   <div class="kpi-row">
-    <div class="kpi-card"><div class="kpi-val" id="kpiExp">0 €</div><div class="kpi-sub">Gesamtausgaben</div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpiExp">0 €</div><div class="kpi-sub">Ausgaben</div></div>
     <div class="kpi-card"><div class="kpi-val" id="kpiSurplus" style="color:var(--green)">0 €</div><div class="kpi-sub">Überschuss</div></div>
     <div class="kpi-card"><div class="kpi-val" id="kpiRate">0 %</div><div class="kpi-sub">Sparquote</div></div>
   </div>
@@ -205,15 +373,15 @@
   <!-- Vollständig editierbare Sparziel-Box -->
   <div class="goal-box" id="goalBoxElement">
     <div class="goal-header">
-      <div id="goalTitleView" class="view-only" style="display: flex; align-items: center; gap: 6px;">
-        <span id="goalTitleDisplay">🎯 Sparziel</span>
+      <div id="goalTitleView" class="view-only" style="display: flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden;">
+        <span id="goalTitleDisplay" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">🎯 Sparziel</span>
       </div>
-      <div id="goalTitleEdit" class="editor-only" style="flex: 1; margin-right: 8px;">
+      <div id="goalTitleEdit" class="editor-only" style="flex: 1; min-width: 0;">
         <div class="edit-header-row">
           <input type="color" class="color-picker" id="goalColorPicker" value="#60a5fa" onchange="updateGoalColor(this.value)">
-          <input type="text" class="title-input" id="goalTitleInput" value="🎯 Sparziel" onchange="updateGoalTitle(this.value)" placeholder="Titel des Sparziels...">
+          <input type="text" class="title-input" id="goalTitleInput" value="🎯 Sparziel" onchange="updateGoalTitle(this.value)" placeholder="Titel...">
         </div>
-        <button class="del-btn" title="Sparziel ausblenden/löschen" onclick="deleteGoal()">🗑️</button>
+        <button class="del-btn" title="Sparziel ausblenden" onclick="deleteGoal()">🗑️</button>
       </div>
       <span class="goal-status-badge" id="goalBadge">Berechne...</span>
     </div>
@@ -237,11 +405,11 @@
         <input type="date" id="goalDate" class="goal-input" value="2027-12-31" onchange="updateGoalConfig()">
       </div>
       <div class="goal-field">
-        <label>Tagesgeldzins (% p.a.)</label>
+        <label>Zins (% p.a.)</label>
         <input type="number" id="goalInterest" class="goal-input" value="3.5" step="0.1" onchange="updateGoalConfig()">
       </div>
       <div class="goal-field">
-        <label>Bereits gespart (€)</label>
+        <label>Startbetrag (€)</label>
         <input type="number" id="goalInitial" class="goal-input" value="0" step="50" onchange="updateGoalConfig()">
       </div>
     </div>
@@ -251,7 +419,7 @@
     </div>
     
     <div class="goal-summary">
-      <span id="goalForecast">Prognose: 0 €</span>
+      <span id="goalForecast" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Prognose: 0 €</span>
       <div class="goal-right-meta">
         <span class="goal-needed-rate" id="goalNeededRate">Nötig: 0 € / Monat</span>
         <span id="goalTimeLeft">0 Monate verbleibend</span>
@@ -261,7 +429,7 @@
 
   <!-- Income Box -->
   <div class="income-box">
-    <label style="font-size:0.85rem;color:var(--muted)">Monatliches Nettoeinkommen</label>
+    <label style="font-size:0.75rem;color:var(--muted)">Monatliches Nettoeinkommen</label>
     <div class="income-row">
       <input type="number" id="netIncome" class="num-input" value="0" step="50" placeholder="0">
       <span>€</span>
@@ -274,18 +442,17 @@
   <!-- Editor Toolbar (Unten) -->
   <div class="add-group-wrap editor-only">
     <button class="add-group-btn" onclick="addNewCategory()">+ Neue Ausgaben-Kategorie</button>
-    <button class="add-secondary-btn" id="restoreGoalBtn" onclick="restoreGoal()" style="display: none;">+ Sparziel-Karte wieder hinzufügen</button>
-    <button class="reset-btn" onclick="resetToZeroDemo()">Auf leere Demo-Werte zurücksetzen</button>
+    <button class="add-secondary-btn" id="restoreGoalBtn" onclick="restoreGoal()" style="display: none;">+ Sparziel wieder hinzufügen</button>
+    <button class="reset-btn" onclick="resetToZeroDemo()">Auf leere Standard-Felder zurücksetzen</button>
   </div>
 </div>
 
 <script>
-  // Saubere Demo-Vorlage mit 0 € Werten
   var BLANK_DEMO_DATA = {
     income: 0,
     goal: {
       enabled: true,
-      title: "🎯 Sparziel (z. B. Hochzeit / Reise)",
+      title: "🎯 Sparziel",
       color: "#60a5fa",
       target: 0,
       date: "2027-12-31",
@@ -304,7 +471,7 @@
       {
         id: "c_food", name: "Lebensmittel & Haushalt", color: "#22c55e",
         items: [
-          { id: "i_groceries", name: "Supermarkt / Wocheneinkauf", value: 0, min: 0, max: 600, step: 20 },
+          { id: "i_groceries", name: "Supermarkt / Einkauf", value: 0, min: 0, max: 600, step: 20 },
           { id: "i_drogerie", name: "Drogerie & Haushalt", value: 0, min: 0, max: 150, step: 5 },
           { id: "i_dining", name: "Lieferdienst & Imbiss", value: 0, min: 0, max: 200, step: 10 }
         ]
@@ -314,7 +481,7 @@
         items: [
           { id: "i_fuel", name: "Kraftstoff (Sprit / Laden)", value: 0, min: 0, max: 500, step: 20 },
           { id: "i_repair", name: "Kfz-Reparaturen & Pflege", value: 0, min: 0, max: 300, step: 10 },
-          { id: "i_ins", name: "Versicherung & KFZ-Steuer", value: 0, min: 0, max: 200, step: 5 }
+          { id: "i_ins", name: "Versicherung & Steuer", value: 0, min: 0, max: 200, step: 5 }
         ]
       },
       {
@@ -339,7 +506,7 @@
   var state;
 
   try {
-    var stored = localStorage.getItem('budget_app_blank_v9');
+    var stored = localStorage.getItem('budget_app_blank_v10');
     state = stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(BLANK_DEMO_DATA));
     if (!state.goal) state.goal = JSON.parse(JSON.stringify(BLANK_DEMO_DATA.goal));
   } catch (e) {
@@ -348,7 +515,7 @@
 
   function saveState() {
     try {
-      localStorage.setItem('budget_app_blank_v9', JSON.stringify(state));
+      localStorage.setItem('budget_app_blank_v10', JSON.stringify(state));
     } catch (e) {}
   }
 
@@ -408,7 +575,7 @@
   }
 
   function deleteGoal() {
-    if (confirm("Möchten Sie das Sparziel ausblenden? (Kann im Editor jederzeit wieder hinzugefügt werden)")) {
+    if (confirm("Möchten Sie das Sparziel ausblenden? (Kann im Editor wieder hinzugefügt werden)")) {
       state.goal.enabled = false;
       saveState();
       render();
@@ -475,7 +642,7 @@
 
       if (!isEditMode) {
         title.style.color = cat.color;
-        title.innerHTML = '<span>● ' + cat.name + '</span><span id="sum_' + cat.id + '">0 €</span>';
+        title.innerHTML = '<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">● ' + cat.name + '</span><span id="sum_' + cat.id + '" style="flex-shrink:0;">0 €</span>';
       } else {
         title.innerHTML = 
           '<div class="edit-header-row">' +
@@ -508,9 +675,9 @@
         if (isEditMode) {
           inner += 
             '<div class="edit-item-row">' +
-              '<input type="text" class="text-input-sm" value="' + item.name + '" placeholder="Name" style="flex:1" onchange="renameItem(\'' + cat.id + '\', \'' + item.id + '\', this.value)">' +
-              '<span style="font-size:0.75rem;color:var(--muted)">Max:</span>' +
-              '<input type="number" class="text-input-sm" value="' + item.max + '" style="width:70px" onchange="updateItemMax(\'' + cat.id + '\', \'' + item.id + '\', this.value)">' +
+              '<input type="text" class="text-input-sm" value="' + item.name + '" placeholder="Name" style="flex:1; min-width:0;" onchange="renameItem(\'' + cat.id + '\', \'' + item.id + '\', this.value)">' +
+              '<span style="font-size:0.7rem;color:var(--muted);flex-shrink:0;">Max:</span>' +
+              '<input type="number" class="text-input-sm" value="' + item.max + '" style="width:55px;flex-shrink:0;" onchange="updateItemMax(\'' + cat.id + '\', \'' + item.id + '\', this.value)">' +
               '<button class="del-btn" title="Posten löschen" onclick="removeItem(\'' + cat.id + '\', \'' + item.id + '\')">✕</button>' +
             '</div>';
         }
@@ -522,8 +689,8 @@
       var addRow = document.createElement('div');
       addRow.className = 'add-row editor-only';
       addRow.innerHTML = 
-        '<input type="text" placeholder="Neuer Posten..." id="in_name_' + cat.id + '" class="text-input-sm" style="flex:1">' +
-        '<input type="number" placeholder="Wert (€)" id="in_val_' + cat.id + '" class="text-input-sm" style="max-width:80px">' +
+        '<input type="text" placeholder="Neuer Posten..." id="in_name_' + cat.id + '" class="text-input-sm" style="flex:1; min-width:0;">' +
+        '<input type="number" placeholder="Wert" id="in_val_' + cat.id + '" class="text-input-sm" style="width:65px; flex-shrink:0;">' +
         '<button class="add-btn" onclick="addItem(\'' + cat.id + '\')">+ Posten</button>';
       gBox.appendChild(addRow);
       container.appendChild(gBox);
@@ -606,7 +773,6 @@
       }
     });
 
-    // Goal Math
     if (state.goal && state.goal.enabled) {
       var now = new Date();
       var targetDate = new Date(state.goal.date);
@@ -655,19 +821,19 @@
         badge.className = 'goal-status-badge';
         badge.style.background = '#21262d';
         badge.style.color = 'var(--muted)';
-        badge.textContent = 'Kein Zielbetrag gesetzt';
+        badge.textContent = 'Kein Betrag';
       } else if (forecast >= target) {
         badge.className = 'goal-status-badge goal-status-ok';
-        badge.textContent = 'Ziel erreichbar (+' + (forecast - target).toLocaleString('de-DE') + ' € Puffer)';
+        badge.textContent = 'Ziel erreichbar';
       } else {
         badge.className = 'goal-status-badge goal-status-warn';
         var missingMonthly = Math.round((target - forecast) / diffMonths);
-        badge.textContent = 'Fehlbetrag: ' + missingMonthly + ' € / Monat';
+        badge.textContent = 'Fehlen: ' + missingMonthly + ' €/M.';
       }
 
-      document.getElementById('goalForecast').textContent = 'Prognose: ' + forecast.toLocaleString('de-DE') + ' € von ' + target.toLocaleString('de-DE') + ' € (' + progressPct + '%)';
+      document.getElementById('goalForecast').textContent = 'Prognose: ' + forecast.toLocaleString('de-DE') + ' € / ' + target.toLocaleString('de-DE') + ' € (' + progressPct + '%)';
       document.getElementById('goalNeededRate').textContent = 'Nötig: ' + neededMonthly.toLocaleString('de-DE') + ' € / Monat';
-      document.getElementById('goalTimeLeft').textContent = diffMonths + ' Monate verbleibend';
+      document.getElementById('goalTimeLeft').textContent = diffMonths + ' Monate';
     }
   }
 
@@ -745,7 +911,7 @@
   };
 
   window.resetToZeroDemo = function() {
-    if (confirm("Möchten Sie wirklich alle Werte auf die leeren Standard-Demo-Felder zurücksetzen?")) {
+    if (confirm("Wirklich alle Werte auf die leere Standard-Vorlage zurücksetzen?")) {
       state = JSON.parse(JSON.stringify(BLANK_DEMO_DATA));
       saveState();
       render();
