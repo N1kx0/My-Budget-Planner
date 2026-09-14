@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Mein Budget Planer</title>
+  <title>Mein Budget & Sparplaner</title>
   <style>
     :root {
       --bg: #0d0f12;
@@ -14,35 +14,119 @@
       --green: #22c55e;
       --red: #ef4444;
       --blue: #3b82f6;
+      --yellow: #eab308;
+      --purple: #a855f7;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background: var(--bg); color: var(--text); padding: 16px; display: flex; justify-content: center; }
     .container { width: 100%; max-width: 650px; }
 
-    .top-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .mode-btn { background: #21262d; border: 1px solid var(--border); color: #fff; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    /* Top Toolbar */
+    .top-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .status-sub { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+
+    .mode-btn { 
+      background: #21262d; 
+      border: 1px solid var(--border); 
+      color: #fff; 
+      padding: 8px 14px; 
+      border-radius: 8px; 
+      font-size: 0.85rem; 
+      cursor: pointer; 
+      display: flex; 
+      align-items: center; 
+      gap: 6px; 
+      transition: all 0.15s ease;
+    }
     .mode-btn.active { background: #1f6feb; border-color: #388bfd; }
 
-    .kpi-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+    /* Badges für Datum & Uhrzeit */
+    .datetime-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .dt-badge {
+      background: #15181e;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #f0f3f8;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+    .dt-badge span.dt-icon { font-size: 1rem; }
+
+    /* 3 Haupt-KPI-Karten */
+    .kpi-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
     .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 6px; text-align: center; }
     .kpi-val { font-size: 1.25rem; font-weight: 700; }
     .kpi-sub { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
 
-    .progress-bar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: #222; margin-bottom: 20px; }
-    .bar-seg { height: 100%; transition: width 0.15s ease; }
+    /* Progress Bar */
+    .progress-bar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: #222; margin-bottom: 16px; }
+    .bar-seg { height: 100%; transition: width 0.2s ease; }
 
+    /* Goal Tracker Box */
+    .goal-box { background: linear-gradient(145deg, #18202f 0%, #15181e 100%); border: 1px solid #2b3952; border-radius: 12px; padding: 16px; margin-bottom: 16px; transition: border-color 0.2s; }
+    .goal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.95rem; font-weight: 600; }
+    .goal-status-badge { font-size: 0.75rem; padding: 3px 8px; border-radius: 6px; font-weight: 600; }
+    .goal-status-ok { background: rgba(34, 197, 94, 0.15); color: var(--green); border: 1px solid rgba(34, 197, 94, 0.3); }
+    .goal-status-warn { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
+    
+    .goal-meta-view {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 14px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: rgba(0,0,0,0.25);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .goal-meta-view span strong { color: #fff; }
+
+    .goal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+    @media (max-width: 480px) { .goal-grid { grid-template-columns: 1fr; } }
+    .goal-field { display: flex; flex-direction: column; gap: 4px; }
+    .goal-field label { font-size: 0.72rem; color: var(--muted); }
+    .goal-input { background: #0d0f12; border: 1px solid var(--border); color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 0.85rem; }
+
+    .goal-progress-wrap { background: #0d0f12; border-radius: 6px; height: 10px; overflow: hidden; margin-bottom: 8px; border: 1px solid var(--border); }
+    .goal-progress-fill { height: 100%; transition: width 0.3s; }
+    
+    .goal-summary { font-size: 0.8rem; color: var(--muted); display: flex; justify-content: space-between; align-items: flex-end; }
+    .goal-right-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .goal-needed-rate { font-size: 0.82rem; font-weight: 600; }
+
+    /* Income Box */
     .income-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 16px; }
     .income-row { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
     .num-input { background: #0d0f12; border: 1px solid var(--border); color: #fff; padding: 8px 12px; border-radius: 8px; font-size: 1.1rem; font-weight: 600; width: 140px; -webkit-appearance: none; }
 
+    /* Group Boxes */
     .group-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
     .group-title { font-size: 1rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
     
+    /* Items with direct numeric input */
     .item-card { background: #0d0f12; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
     .item-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .item-name { font-size: 0.88rem; font-weight: 500; }
-    .val-badge { background: #1c2128; border: 1px solid var(--border); padding: 2px 8px; border-radius: 5px; font-size: 0.82rem; }
     
+    .val-input-wrap { display: flex; align-items: center; background: #1c2128; border: 1px solid var(--border); border-radius: 6px; padding: 2px 6px; }
+    .direct-val-input { background: transparent; border: none; color: #fff; font-size: 0.85rem; font-weight: 600; width: 55px; text-align: right; outline: none; -moz-appearance: textfield; }
+    .direct-val-input::-webkit-outer-spin-button, .direct-val-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .val-unit { font-size: 0.8rem; color: var(--muted); margin-left: 2px; }
+
+    /* iOS Slider Styling */
     input[type=range] {
       -webkit-appearance: none;
       width: 100%;
@@ -50,25 +134,24 @@
       border-radius: 4px;
       background: #262c36;
       outline: none;
-      margin: 10px 0 4px 0;
-      touch-action: pan-y;
-      cursor: pointer;
+      margin: 8px 0;
     }
     input[type=range]::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 26px;
-      height: 26px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
       background: #ffffff;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.6);
-      border: 1px solid rgba(0,0,0,0.1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
     }
 
-    /* Editor Elemente */
+    /* Editor Visibility Control */
     .editor-only { display: none !important; }
-    .edit-active .editor-only { display: block !important; }
+    .edit-active .editor-only { display: flex !important; }
+    .view-only { display: block; }
+    .edit-active .view-only { display: none !important; }
 
     .edit-header-row { display: flex; align-items: center; gap: 8px; flex: 1; margin-right: 8px; }
     .title-input { background: #0d0f12; border: 1px solid var(--border); color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 0.95rem; font-weight: 600; flex: 1; }
@@ -76,30 +159,107 @@
     .edit-item-row { display: flex; align-items: center; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #262c36; }
     .text-input-sm { background: #15181e; border: 1px solid var(--border); color: #fff; padding: 6px 8px; border-radius: 6px; font-size: 0.8rem; }
     .del-btn { background: transparent; border: none; color: var(--red); font-size: 1.1rem; cursor: pointer; padding: 4px 8px; }
-    
-    .add-row { display: flex; gap: 6px; margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); }
+
+    .add-row { gap: 6px; margin-top: 12px; }
     .add-btn { background: #21262d; border: 1px solid var(--border); color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; }
-    .add-group-btn { background: #1f6feb; border: none; color: #fff; padding: 10px 18px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 16px; }
+    .add-group-wrap { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .add-group-btn { background: #1f6feb; border: none; color: #fff; padding: 10px 18px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; width: 100%; }
+    .add-secondary-btn { background: #21262d; border: 1px solid var(--border); color: #f0f3f8; padding: 9px 18px; border-radius: 8px; font-size: 0.85rem; font-weight: 500; cursor: pointer; width: 100%; }
+    .reset-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 8px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; margin-top: 10px; }
+    .reset-btn:hover { color: var(--red); border-color: var(--red); }
   </style>
 </head>
 <body>
 
 <div class="container" id="appContainer">
+  <!-- Top Toolbar -->
   <div class="top-toolbar">
-    <span style="font-size: 0.9rem; font-weight: 600; color: var(--muted);" id="statusIndicator">Ansichtsmodus</span>
+    <span class="status-sub" id="statusIndicator">Ansichtsmodus</span>
     <button class="mode-btn" id="toggleEditBtn" onclick="toggleEditMode()">
       <span>⚙️</span> <span id="btnText">Editor-Modus</span>
     </button>
   </div>
 
+  <!-- Datum & Uhrzeit Badges -->
+  <div class="datetime-bar">
+    <div class="dt-badge">
+      <span class="dt-icon">📅</span>
+      <span id="liveDate">--.--.----</span>
+    </div>
+    <div class="dt-badge">
+      <span class="dt-icon">🕒</span>
+      <span id="liveTime">--:--:-- Uhr</span>
+    </div>
+  </div>
+
+  <!-- 3 Haupt-KPI-Karten -->
   <div class="kpi-row">
     <div class="kpi-card"><div class="kpi-val" id="kpiExp">0 €</div><div class="kpi-sub">Gesamtausgaben</div></div>
     <div class="kpi-card"><div class="kpi-val" id="kpiSurplus" style="color:var(--green)">0 €</div><div class="kpi-sub">Überschuss</div></div>
     <div class="kpi-card"><div class="kpi-val" id="kpiRate">0 %</div><div class="kpi-sub">Sparquote</div></div>
   </div>
 
+  <!-- Progress Bar -->
   <div class="progress-bar" id="progressBar"></div>
 
+  <!-- Vollständig editierbare Sparziel-Box -->
+  <div class="goal-box" id="goalBoxElement">
+    <div class="goal-header">
+      <div id="goalTitleView" class="view-only" style="display: flex; align-items: center; gap: 6px;">
+        <span id="goalTitleDisplay">🎯 Sparziel</span>
+      </div>
+      <div id="goalTitleEdit" class="editor-only" style="flex: 1; margin-right: 8px;">
+        <div class="edit-header-row">
+          <input type="color" class="color-picker" id="goalColorPicker" value="#60a5fa" onchange="updateGoalColor(this.value)">
+          <input type="text" class="title-input" id="goalTitleInput" value="🎯 Sparziel" onchange="updateGoalTitle(this.value)" placeholder="Titel des Sparziels...">
+        </div>
+        <button class="del-btn" title="Sparziel ausblenden/löschen" onclick="deleteGoal()">🗑️</button>
+      </div>
+      <span class="goal-status-badge" id="goalBadge">Berechne...</span>
+    </div>
+
+    <!-- Ansichts-Modus: Kompakte Datenübersicht -->
+    <div class="goal-meta-view view-only" id="goalMetaDisplay">
+      <span>Ziel: <strong id="metaTarget">0 €</strong></span>
+      <span>Stichtag: <strong id="metaDate">31.12.2027</strong></span>
+      <span>Zins: <strong id="metaInterest">3,5 %</strong></span>
+      <span>Bereits da: <strong id="metaInitial">0 €</strong></span>
+    </div>
+    
+    <!-- Editor-Modus: Vollständige Eingabefelder -->
+    <div class="goal-grid editor-only" style="display:grid;">
+      <div class="goal-field">
+        <label>Zielbetrag (€)</label>
+        <input type="number" id="goalAmount" class="goal-input" value="0" step="100" onchange="updateGoalConfig()">
+      </div>
+      <div class="goal-field">
+        <label>Zieldatum</label>
+        <input type="date" id="goalDate" class="goal-input" value="2027-12-31" onchange="updateGoalConfig()">
+      </div>
+      <div class="goal-field">
+        <label>Tagesgeldzins (% p.a.)</label>
+        <input type="number" id="goalInterest" class="goal-input" value="3.5" step="0.1" onchange="updateGoalConfig()">
+      </div>
+      <div class="goal-field">
+        <label>Bereits gespart (€)</label>
+        <input type="number" id="goalInitial" class="goal-input" value="0" step="50" onchange="updateGoalConfig()">
+      </div>
+    </div>
+
+    <div class="goal-progress-wrap">
+      <div class="goal-progress-fill" id="goalProgressBar" style="width: 0%;"></div>
+    </div>
+    
+    <div class="goal-summary">
+      <span id="goalForecast">Prognose: 0 €</span>
+      <div class="goal-right-meta">
+        <span class="goal-needed-rate" id="goalNeededRate">Nötig: 0 € / Monat</span>
+        <span id="goalTimeLeft">0 Monate verbleibend</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Income Box -->
   <div class="income-box">
     <label style="font-size:0.85rem;color:var(--muted)">Monatliches Nettoeinkommen</label>
     <div class="income-row">
@@ -108,16 +268,30 @@
     </div>
   </div>
 
+  <!-- Groups Container -->
   <div id="groupsContainer"></div>
 
-  <div class="editor-only">
-    <button class="add-group-btn" onclick="addNewCategory()">+ Neue Kategorie erstellen</button>
+  <!-- Editor Toolbar (Unten) -->
+  <div class="add-group-wrap editor-only">
+    <button class="add-group-btn" onclick="addNewCategory()">+ Neue Ausgaben-Kategorie</button>
+    <button class="add-secondary-btn" id="restoreGoalBtn" onclick="restoreGoal()" style="display: none;">+ Sparziel-Karte wieder hinzufügen</button>
+    <button class="reset-btn" onclick="resetToZeroDemo()">Auf leere Demo-Werte zurücksetzen</button>
   </div>
 </div>
 
 <script>
-  var DEMO_DATA = {
+  // Saubere Demo-Vorlage mit 0 € Werten
+  var BLANK_DEMO_DATA = {
     income: 0,
+    goal: {
+      enabled: true,
+      title: "🎯 Sparziel (z. B. Hochzeit / Reise)",
+      color: "#60a5fa",
+      target: 0,
+      date: "2027-12-31",
+      interest: 3.5,
+      initial: 0
+    },
     categories: [
       {
         id: "c_fix", name: "Fixkosten & Verträge", color: "#3b82f6",
@@ -130,31 +304,32 @@
       {
         id: "c_food", name: "Lebensmittel & Haushalt", color: "#22c55e",
         items: [
-          { id: "i_groceries", name: "Wocheneinkauf Supermarkt", value: 0, min: 0, max: 600, step: 20 },
-          { id: "i_drogerie", name: "Drogerie & Hygiene", value: 0, min: 0, max: 150, step: 5 },
+          { id: "i_groceries", name: "Supermarkt / Wocheneinkauf", value: 0, min: 0, max: 600, step: 20 },
+          { id: "i_drogerie", name: "Drogerie & Haushalt", value: 0, min: 0, max: 150, step: 5 },
           { id: "i_dining", name: "Lieferdienst & Imbiss", value: 0, min: 0, max: 200, step: 10 }
         ]
       },
       {
         id: "c_car", name: "Kfz & Mobilität", color: "#ef4444",
         items: [
-          { id: "i_fuel", name: "Kraftstoff / Laden", value: 0, min: 0, max: 500, step: 10 },
-          { id: "i_repair", name: "Kfz-Reparaturen & Wartung", value: 0, min: 0, max: 300, step: 10 },
-          { id: "i_tax_ins", name: "Versicherung & Steuer", value: 0, min: 0, max: 200, step: 5 }
+          { id: "i_fuel", name: "Kraftstoff (Sprit / Laden)", value: 0, min: 0, max: 500, step: 20 },
+          { id: "i_repair", name: "Kfz-Reparaturen & Pflege", value: 0, min: 0, max: 300, step: 10 },
+          { id: "i_ins", name: "Versicherung & KFZ-Steuer", value: 0, min: 0, max: 200, step: 5 }
         ]
       },
       {
-        id: "c_savings", name: "Sparen & Rücklagen", color: "#eab308",
+        id: "c_leisure", name: "Freizeit & Taschengeld", color: "#eab308",
         items: [
-          { id: "i_emergency", name: "Notgroschen / Tagesgeld", value: 0, min: 0, max: 600, step: 25 },
-          { id: "i_special", name: "Sonderziel (z. B. Hochzeit)", value: 0, min: 0, max: 600, step: 25 }
+          { id: "i_shop", name: "Shopping & Kleidung", value: 0, min: 0, max: 300, step: 10 },
+          { id: "i_trips", name: "Freizeit & Ausflüge", value: 0, min: 0, max: 200, step: 10 },
+          { id: "i_pock", name: "Bargeld / Puffer", value: 0, min: 0, max: 200, step: 10 }
         ]
       },
       {
-        id: "c_leisure", name: "Freizeit & Taschengeld", color: "#a855f7",
+        id: "c_sav", name: "Sparen & Rücklagen", color: "#a855f7",
         items: [
-          { id: "i_hobby", name: "Hobbys & Shopping", value: 0, min: 0, max: 300, step: 10 },
-          { id: "i_pocket", name: "Bargeld / Puffer", value: 0, min: 0, max: 200, step: 10 }
+          { id: "i_emerg", name: "Notgroschen / Reserve", value: 0, min: 0, max: 500, step: 25 },
+          { id: "i_tg", name: "Tagesgeld Dauerauftrag", value: 0, min: 0, max: 500, step: 25 }
         ]
       }
     ]
@@ -164,16 +339,31 @@
   var state;
 
   try {
-    var stored = localStorage.getItem('budget_app_v4');
-    state = stored ? JSON.parse(stored) : DEMO_DATA;
+    var stored = localStorage.getItem('budget_app_blank_v9');
+    state = stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(BLANK_DEMO_DATA));
+    if (!state.goal) state.goal = JSON.parse(JSON.stringify(BLANK_DEMO_DATA.goal));
   } catch (e) {
-    state = DEMO_DATA;
+    state = JSON.parse(JSON.stringify(BLANK_DEMO_DATA));
   }
 
   function saveState() {
     try {
-      localStorage.setItem('budget_app_v4', JSON.stringify(state));
+      localStorage.setItem('budget_app_blank_v9', JSON.stringify(state));
     } catch (e) {}
+  }
+
+  function updateClock() {
+    var now = new Date();
+    var dateOptions = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+    var timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+
+    var formattedDate = now.toLocaleDateString('de-DE', dateOptions);
+    var formattedTime = now.toLocaleTimeString('de-DE', timeOptions) + ' Uhr';
+
+    var dateEl = document.getElementById('liveDate');
+    var timeEl = document.getElementById('liveTime');
+    if (dateEl) dateEl.textContent = formattedDate;
+    if (timeEl) timeEl.textContent = formattedTime;
   }
 
   function toggleEditMode() {
@@ -196,9 +386,72 @@
     render();
   }
 
-  function getSliderBg(val, min, max, color) {
-    var pct = max > min ? ((val - min) / (max - min)) * 100 : 0;
-    return 'linear-gradient(to right, ' + color + ' 0%, ' + color + ' ' + pct + '%, #262c36 ' + pct + '%, #262c36 100%)';
+  function updateGoalTitle(newTitle) {
+    state.goal.title = newTitle || "Sparziel";
+    saveState();
+    renderGoalStyles();
+  }
+
+  function updateGoalColor(newColor) {
+    state.goal.color = newColor;
+    saveState();
+    renderGoalStyles();
+  }
+
+  function updateGoalConfig() {
+    state.goal.target = parseFloat(document.getElementById('goalAmount').value) || 0;
+    state.goal.date = document.getElementById('goalDate').value || "2027-12-31";
+    state.goal.interest = parseFloat(document.getElementById('goalInterest').value) || 0;
+    state.goal.initial = parseFloat(document.getElementById('goalInitial').value) || 0;
+    saveState();
+    recalcAll();
+  }
+
+  function deleteGoal() {
+    if (confirm("Möchten Sie das Sparziel ausblenden? (Kann im Editor jederzeit wieder hinzugefügt werden)")) {
+      state.goal.enabled = false;
+      saveState();
+      render();
+    }
+  }
+
+  function restoreGoal() {
+    state.goal.enabled = true;
+    saveState();
+    render();
+  }
+
+  function renderGoalStyles() {
+    var goalBox = document.getElementById('goalBoxElement');
+    var restoreBtn = document.getElementById('restoreGoalBtn');
+
+    if (!state.goal.enabled) {
+      goalBox.style.display = 'none';
+      if (restoreBtn) restoreBtn.style.display = isEditMode ? 'block' : 'none';
+      return;
+    }
+
+    goalBox.style.display = 'block';
+    if (restoreBtn) restoreBtn.style.display = 'none';
+
+    var titleDisplay = document.getElementById('goalTitleDisplay');
+    var titleInput = document.getElementById('goalTitleInput');
+    var colorPicker = document.getElementById('goalColorPicker');
+    var neededRateEl = document.getElementById('goalNeededRate');
+
+    titleDisplay.textContent = state.goal.title;
+    titleDisplay.style.color = state.goal.color;
+    titleInput.value = state.goal.title;
+    colorPicker.value = state.goal.color;
+    goalBox.style.borderColor = state.goal.color + '66';
+    neededRateEl.style.color = state.goal.color;
+
+    var dateParts = (state.goal.date || "").split("-");
+    var formattedDateView = dateParts.length === 3 ? (dateParts[2] + "." + dateParts[1] + "." + dateParts[0]) : state.goal.date;
+    document.getElementById('metaTarget').textContent = (state.goal.target || 0).toLocaleString('de-DE') + ' €';
+    document.getElementById('metaDate').textContent = formattedDateView;
+    document.getElementById('metaInterest').textContent = (state.goal.interest || 0).toLocaleString('de-DE') + ' %';
+    document.getElementById('metaInitial').textContent = (state.goal.initial || 0).toLocaleString('de-DE') + ' €';
   }
 
   function render() {
@@ -206,6 +459,12 @@
     container.innerHTML = '';
     
     document.getElementById('netIncome').value = state.income || '';
+
+    document.getElementById('goalAmount').value = state.goal.target;
+    document.getElementById('goalDate').value = state.goal.date;
+    document.getElementById('goalInterest').value = state.goal.interest;
+    document.getElementById('goalInitial').value = state.goal.initial;
+    renderGoalStyles();
 
     state.categories.forEach(function(cat) {
       var gBox = document.createElement('div');
@@ -231,14 +490,20 @@
         var card = document.createElement('div');
         card.className = 'item-card';
 
+        var pct = item.max > item.min ? ((item.value - item.min) / (item.max - item.min) * 100) : 0;
+        if (pct < 0) pct = 0; if (pct > 100) pct = 100;
+
         var inner = 
           '<div class="item-top">' +
             '<span class="item-name">' + item.name + '</span>' +
-            '<span class="val-badge" id="v_' + item.id + '">' + item.value + ' €</span>' +
+            '<div class="val-input-wrap">' +
+              '<input type="number" class="direct-val-input" id="num_' + item.id + '" value="' + item.value + '" ' +
+                'onchange="setDirectValue(\'' + cat.id + '\', \'' + item.id + '\', this.value)">' +
+              '<span class="val-unit">€</span>' +
+            '</div>' +
           '</div>' +
-          '<input type="range" id="slider_' + item.id + '" min="' + item.min + '" max="' + item.max + '" step="' + item.step + '" value="' + item.value + '" ' +
-            'oninput="handleSliderMove(\'' + cat.id + '\', \'' + item.id + '\', this.value)" ' +
-            'style="accent-color:' + cat.color + '; background:' + getSliderBg(item.value, item.min, item.max, cat.color) + ';">';
+          '<input type="range" id="rng_' + item.id + '" min="' + item.min + '" max="' + item.max + '" step="' + item.step + '" value="' + item.value + '" ' +
+            'oninput="updateValue(\'' + cat.id + '\', \'' + item.id + '\', this.value)" style="accent-color:' + cat.color + '; background: linear-gradient(to right, ' + cat.color + ' 0%, ' + cat.color + ' ' + pct + '%, #262c36 ' + pct + '%, #262c36 100%);">';
 
         if (isEditMode) {
           inner += 
@@ -254,39 +519,59 @@
         gBox.appendChild(card);
       });
 
-      // Erscheint ausschließlich im Editor-Modus
-      if (isEditMode) {
-        var addRow = document.createElement('div');
-        addRow.className = 'add-row';
-        addRow.innerHTML = 
-          '<input type="text" placeholder="Neuer Posten..." id="in_name_' + cat.id + '" class="text-input-sm" style="flex:1">' +
-          '<input type="number" placeholder="Max (€)" id="in_max_' + cat.id + '" class="text-input-sm" style="max-width:80px" value="200">' +
-          '<button class="add-btn" onclick="addItem(\'' + cat.id + '\')">+ Posten</button>';
-        gBox.appendChild(addRow);
-      }
-
+      var addRow = document.createElement('div');
+      addRow.className = 'add-row editor-only';
+      addRow.innerHTML = 
+        '<input type="text" placeholder="Neuer Posten..." id="in_name_' + cat.id + '" class="text-input-sm" style="flex:1">' +
+        '<input type="number" placeholder="Wert (€)" id="in_val_' + cat.id + '" class="text-input-sm" style="max-width:80px">' +
+        '<button class="add-btn" onclick="addItem(\'' + cat.id + '\')">+ Posten</button>';
+      gBox.appendChild(addRow);
       container.appendChild(gBox);
     });
 
-    updateDashboardKPIs();
+    recalcAll();
   }
 
-  window.handleSliderMove = function(catId, itemId, val) {
+  window.setDirectValue = function(catId, itemId, val) {
+    var num = parseInt(val, 10) || 0;
+    var cat = state.categories.find(function(c) { return c.id === catId; });
+    var item = cat.items.find(function(i) { return i.id === itemId; });
+    
+    if (num > item.max) {
+      item.max = Math.ceil(num * 1.3 / 50) * 50;
+      var rng = document.getElementById('rng_' + itemId);
+      if (rng) rng.max = item.max;
+    }
+    item.value = num;
+    saveState();
+
+    var rngEl = document.getElementById('rng_' + itemId);
+    if (rngEl) {
+      rngEl.value = num;
+      var pct = ((num - item.min) / (item.max - item.min) * 100);
+      rngEl.style.background = 'linear-gradient(to right, ' + cat.color + ' 0%, ' + cat.color + ' ' + pct + '%, #262c36 ' + pct + '%, #262c36 100%)';
+    }
+    recalcAll();
+  };
+
+  window.updateValue = function(catId, itemId, val) {
     var cat = state.categories.find(function(c) { return c.id === catId; });
     var item = cat.items.find(function(i) { return i.id === itemId; });
     item.value = parseInt(val, 10) || 0;
     saveState();
-    
-    var badge = document.getElementById('v_' + itemId);
-    if (badge) badge.textContent = item.value + ' €';
 
-    var slider = document.getElementById('slider_' + itemId);
-    if (slider) slider.style.background = getSliderBg(item.value, item.min, item.max, cat.color);
+    var numInput = document.getElementById('num_' + itemId);
+    if (numInput) numInput.value = item.value;
 
-    updateDashboardKPIs();
+    var rng = document.getElementById('rng_' + itemId);
+    if (rng) {
+      var pct = ((item.value - item.min) / (item.max - item.min) * 100);
+      rng.style.background = 'linear-gradient(to right, ' + cat.color + ' 0%, ' + cat.color + ' ' + pct + '%, #262c36 ' + pct + '%, #262c36 100%)';
+    }
+    recalcAll();
   };
 
-  function updateDashboardKPIs() {
+  function recalcAll() {
     var totalExp = 0;
     var catTotals = [];
 
@@ -295,9 +580,8 @@
       cat.items.forEach(function(i) { gTot += i.value; });
       totalExp += gTot;
       catTotals.push({ id: cat.id, total: gTot, color: cat.color });
-      
-      var catSumEl = document.getElementById('sum_' + cat.id);
-      if (catSumEl) catSumEl.textContent = gTot.toLocaleString('de-DE') + ' €';
+      var el = document.getElementById('sum_' + cat.id);
+      if (el) el.textContent = gTot.toLocaleString('de-DE') + ' €';
     });
 
     var inc = state.income || 0;
@@ -312,14 +596,78 @@
 
     var pBar = document.getElementById('progressBar');
     pBar.innerHTML = '';
-    if (totalExp > 0) {
-      catTotals.forEach(function(c) {
+    catTotals.forEach(function(c) {
+      if (totalExp > 0) {
         var seg = document.createElement('div');
         seg.className = 'bar-seg';
         seg.style.background = c.color;
         seg.style.width = ((c.total / totalExp) * 100) + '%';
         pBar.appendChild(seg);
-      });
+      }
+    });
+
+    // Goal Math
+    if (state.goal && state.goal.enabled) {
+      var now = new Date();
+      var targetDate = new Date(state.goal.date);
+      var diffMonths = (targetDate.getFullYear() - now.getFullYear()) * 12 + (targetDate.getMonth() - now.getMonth());
+      if (diffMonths < 1) diffMonths = 1;
+
+      var monthlyRate = surplus > 0 ? surplus : 0;
+      var r = (state.goal.interest / 100) / 12;
+      var P = state.goal.initial || 0;
+      var target = state.goal.target || 0;
+
+      var forecast = 0;
+      if (r > 0) {
+        forecast = P * Math.pow(1 + r, diffMonths) + (monthlyRate * (Math.pow(1 + r, diffMonths) - 1)) / r;
+      } else {
+        forecast = P + (monthlyRate * diffMonths);
+      }
+      forecast = Math.round(forecast);
+
+      var neededMonthly = 0;
+      if (target > 0) {
+        if (r > 0) {
+          var growthFactor = Math.pow(1 + r, diffMonths);
+          var futureValueOfInitial = P * growthFactor;
+          var remainingTarget = target - futureValueOfInitial;
+          if (remainingTarget > 0) {
+            var annuityFactor = (growthFactor - 1) / r;
+            neededMonthly = Math.round(remainingTarget / annuityFactor);
+          } else {
+            neededMonthly = 0;
+          }
+        } else {
+          var remainingTargetSimple = target - P;
+          neededMonthly = remainingTargetSimple > 0 ? Math.round(remainingTargetSimple / diffMonths) : 0;
+        }
+      }
+
+      var progressPct = target > 0 ? Math.min(100, Math.round((forecast / target) * 100)) : 0;
+
+      var goalFill = document.getElementById('goalProgressBar');
+      goalFill.style.width = progressPct + '%';
+      goalFill.style.background = state.goal.color || 'var(--green)';
+
+      var badge = document.getElementById('goalBadge');
+      if (target <= 0) {
+        badge.className = 'goal-status-badge';
+        badge.style.background = '#21262d';
+        badge.style.color = 'var(--muted)';
+        badge.textContent = 'Kein Zielbetrag gesetzt';
+      } else if (forecast >= target) {
+        badge.className = 'goal-status-badge goal-status-ok';
+        badge.textContent = 'Ziel erreichbar (+' + (forecast - target).toLocaleString('de-DE') + ' € Puffer)';
+      } else {
+        badge.className = 'goal-status-badge goal-status-warn';
+        var missingMonthly = Math.round((target - forecast) / diffMonths);
+        badge.textContent = 'Fehlbetrag: ' + missingMonthly + ' € / Monat';
+      }
+
+      document.getElementById('goalForecast').textContent = 'Prognose: ' + forecast.toLocaleString('de-DE') + ' € von ' + target.toLocaleString('de-DE') + ' € (' + progressPct + '%)';
+      document.getElementById('goalNeededRate').textContent = 'Nötig: ' + neededMonthly.toLocaleString('de-DE') + ' € / Monat';
+      document.getElementById('goalTimeLeft').textContent = diffMonths + ' Monate verbleibend';
     }
   }
 
@@ -371,18 +719,18 @@
 
   window.addItem = function(catId) {
     var nameIn = document.getElementById('in_name_' + catId);
-    var maxIn = document.getElementById('in_max_' + catId);
+    var valIn = document.getElementById('in_val_' + catId);
     var name = nameIn.value.trim();
-    var maxVal = parseInt(maxIn.value, 10) || 200;
+    var val = parseInt(valIn.value, 10) || 0;
     if (!name) return;
 
     var cat = state.categories.find(function(c) { return c.id === catId; });
     cat.items.push({
       id: 'i_' + Date.now(),
       name: name,
-      value: 0,
+      value: val,
       min: 0,
-      max: maxVal,
+      max: val > 100 ? val * 2 : 200,
       step: 5
     });
     saveState();
@@ -396,11 +744,22 @@
     render();
   };
 
+  window.resetToZeroDemo = function() {
+    if (confirm("Möchten Sie wirklich alle Werte auf die leeren Standard-Demo-Felder zurücksetzen?")) {
+      state = JSON.parse(JSON.stringify(BLANK_DEMO_DATA));
+      saveState();
+      render();
+    }
+  };
+
   document.getElementById('netIncome').addEventListener('input', function(e) {
     state.income = parseFloat(e.target.value) || 0;
     saveState();
-    updateDashboardKPIs();
+    recalcAll();
   });
+
+  updateClock();
+  setInterval(updateClock, 1000);
 
   window.addEventListener('DOMContentLoaded', render);
   render();
