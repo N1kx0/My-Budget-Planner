@@ -3,271 +3,272 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Mein Budget & Sparplaner</title>
+  <meta name="theme-color" content="#0f172a">
+  <title>My-Budget-Planner</title>
   <style>
     :root {
-      --bg: #0d0f12;
-      --card: #15181e;
-      --text: #f0f3f8;
-      --muted: #8b949e;
-      --border: #262c36;
-      --green: #22c55e;
-      --red: #ef4444;
-      --blue: #3b82f6;
-      --yellow: #eab308;
-      --purple: #a855f7;
+      --bg-main: #0f172a;
+      --bg-card: #1e293b;
+      --bg-input: #0b1329;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --border: #334155;
+      --success: #10b981;
+      --danger: #ef4444;
+      --radius: 12px;
     }
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-      -webkit-tap-highlight-color: transparent; 
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
-    html, body {
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 16px 12px 60px 12px;
+    }
+
+    .app-container {
       width: 100%;
-      max-width: 100%;
-      overflow-x: hidden; /* Verhindert seitliches Ausbrechen/Scrollen komplett */
-    }
-    body { 
-      background: var(--bg); 
-      color: var(--text); 
-      padding: 12px; 
-      display: flex; 
-      justify-content: center; 
-    }
-    .container { 
-      width: 100%; 
-      max-width: 600px; 
+      max-width: 540px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
       min-width: 0;
     }
 
-    /* Top Toolbar */
-    .top-toolbar { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 12px; 
-      width: 100%;
-    }
-    .status-sub { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
-
-    .mode-btn { 
-      background: #21262d; 
-      border: 1px solid var(--border); 
-      color: #fff; 
-      padding: 7px 12px; 
-      border-radius: 8px; 
-      font-size: 0.82rem; 
-      cursor: pointer; 
-      display: flex; 
-      align-items: center; 
-      gap: 5px; 
-      flex-shrink: 0;
-    }
-    .mode-btn.active { background: #1f6feb; border-color: #388bfd; }
-
-    /* Längliche Badges für Datum & Uhrzeit */
-    .datetime-bar {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 10px;
-      width: 100%;
-    }
-    .dt-badge {
-      background: #15181e;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 8px 10px;
+    /* Systemuhr Badges */
+    .clock-row {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-size: 0.78rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
       font-weight: 600;
-      color: #f0f3f8;
+      padding: 0 4px;
+    }
+
+    .badge {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Modus-Umschalter: Monat / Jahr */
+    .view-toggle {
+      display: flex;
+      background: var(--bg-card);
+      padding: 4px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    .toggle-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 0;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .toggle-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* KPI Dashboard */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 8px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .kpi-title {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .kpi-value {
+      font-size: 1.05rem;
+      font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      min-width: 0;
     }
 
-    /* 3 Haupt-KPI-Karten */
-    .kpi-row { 
-      display: grid; 
-      grid-template-columns: 1fr 1fr 1fr; 
-      gap: 8px; 
-      margin-bottom: 14px; 
-      width: 100%;
-    }
-    .kpi-card { 
-      background: var(--card); 
-      border: 1px solid var(--border); 
-      border-radius: 10px; 
-      padding: 10px 4px; 
-      text-align: center; 
-      min-width: 0;
-    }
-    .kpi-val { font-size: 1.1rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .kpi-sub { font-size: 0.68rem; color: var(--muted); margin-top: 3px; }
-
-    /* Progress Bar */
-    .progress-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: #222; margin-bottom: 14px; width: 100%; }
-    .bar-seg { height: 100%; transition: width 0.2s ease; }
-
-    /* Goal Box */
-    .goal-box { 
-      background: linear-gradient(145deg, #18202f 0%, #15181e 100%); 
-      border: 1px solid #2b3952; 
-      border-radius: 12px; 
-      padding: 14px; 
-      margin-bottom: 14px; 
-      width: 100%;
-      min-width: 0;
-    }
-    .goal-header { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      gap: 8px;
-      margin-bottom: 10px; 
-      font-size: 0.9rem; 
-      font-weight: 600; 
-      min-width: 0;
-    }
-    .goal-status-badge { 
-      font-size: 0.7rem; 
-      padding: 3px 6px; 
-      border-radius: 6px; 
-      font-weight: 600; 
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .goal-status-ok { background: rgba(34, 197, 94, 0.15); color: var(--green); border: 1px solid rgba(34, 197, 94, 0.3); }
-    .goal-status-warn { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
-    
-    .goal-meta-view {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px 12px;
-      margin-bottom: 12px;
-      font-size: 0.75rem;
-      color: var(--muted);
-      background: rgba(0,0,0,0.25);
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.04);
-      width: 100%;
-    }
-    .goal-meta-view span strong { color: #fff; }
-
-    /* Skalierbares 2-Spalten Grid */
-    .goal-grid { 
-      display: grid; 
-      grid-template-columns: 1fr 1fr; 
-      gap: 8px; 
-      margin-bottom: 12px; 
-      width: 100%;
-      min-width: 0;
-    }
-    .goal-field { display: flex; flex-direction: column; gap: 3px; min-width: 0; width: 100%; }
-    .goal-field label { font-size: 0.7rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .goal-input { 
-      background: #0d0f12; 
-      border: 1px solid var(--border); 
-      color: #fff; 
-      padding: 6px 8px; 
-      border-radius: 6px; 
-      font-size: 0.8rem; 
-      width: 100%;
-      min-width: 0;
+    .kpi-sub {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 2px;
     }
 
-    .goal-progress-wrap { background: #0d0f12; border-radius: 6px; height: 8px; overflow: hidden; margin-bottom: 8px; border: 1px solid var(--border); width: 100%; }
-    .goal-progress-fill { height: 100%; transition: width 0.3s; }
-    
-    .goal-summary { 
-      font-size: 0.75rem; 
-      color: var(--muted); 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: flex-end; 
+    /* Segmentierte Progress Bar */
+    .progress-bar-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+    }
+
+    .progress-track {
+      height: 14px;
+      background: var(--bg-input);
+      border-radius: 7px;
+      overflow: hidden;
+      display: flex;
+      width: 100%;
+    }
+
+    .progress-segment {
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+
+    /* Basis Card Layout */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
       gap: 8px;
     }
-    .goal-right-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex-shrink: 0; }
-    .goal-needed-rate { font-size: 0.78rem; font-weight: 600; }
 
-    /* Income Box */
-    .income-box { 
-      background: var(--card); 
-      border: 1px solid var(--border); 
-      border-radius: 12px; 
-      padding: 12px; 
-      margin-bottom: 14px; 
-      width: 100%;
-    }
-    .income-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
-    .num-input { 
-      background: #0d0f12; 
-      border: 1px solid var(--border); 
-      color: #fff; 
-      padding: 6px 10px; 
-      border-radius: 8px; 
-      font-size: 1rem; 
-      font-weight: 600; 
-      width: 120px; 
-      -webkit-appearance: none; 
+    /* Listen-Elemente: Einkommen & Ausgaben */
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    /* Group Boxes */
-    .group-box { 
-      background: var(--card); 
-      border: 1px solid var(--border); 
-      border-radius: 12px; 
-      padding: 12px; 
-      margin-bottom: 14px; 
-      width: 100%;
-      min-width: 0;
-    }
-    .group-title { 
-      font-size: 0.95rem; 
-      font-weight: 600; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 12px; 
+    .item-row {
+      display: flex;
+      flex-direction: column;
       gap: 6px;
-      min-width: 0;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
-    
-    /* Item Cards */
-    .item-card { 
-      background: #0d0f12; 
-      border: 1px solid var(--border); 
-      border-radius: 8px; 
-      padding: 10px; 
-      margin-bottom: 8px; 
-      width: 100%;
-      min-width: 0;
-    }
-    .item-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; gap: 8px; }
-    .item-name { font-size: 0.82rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1; }
-    
-    .val-input-wrap { display: flex; align-items: center; background: #1c2128; border: 1px solid var(--border); border-radius: 6px; padding: 2px 5px; flex-shrink: 0; }
-    .direct-val-input { background: transparent; border: none; color: #fff; font-size: 0.82rem; font-weight: 600; width: 45px; text-align: right; outline: none; }
-    .val-unit { font-size: 0.75rem; color: var(--muted); margin-left: 2px; }
 
-    input[type=range] {
+    .item-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .item-name-input {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      font-weight: 600;
+      flex: 1;
+      outline: none;
+    }
+
+    .item-name-input:focus {
+      border-bottom: 1px solid var(--accent);
+    }
+
+    .item-inputs {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .number-input-wrapper {
+      position: relative;
+      width: 105px;
+    }
+
+    .number-input-wrapper input {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-main);
+      padding: 6px 22px 6px 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: right;
+      outline: none;
+    }
+
+    .number-input-wrapper input:focus {
+      border-color: var(--accent);
+    }
+
+    .currency-symbol {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      pointer-events: none;
+    }
+
+    /* Schieberegler Styling (Cross-Browser + iOS Fixes) */
+    .range-slider {
       -webkit-appearance: none;
       width: 100%;
       height: 6px;
       border-radius: 3px;
-      background: #262c36;
+      background: var(--bg-input);
       outline: none;
       margin: 6px 0;
     }
-    input[type=range]::-webkit-slider-thumb {
+
+    .range-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
       width: 20px;
@@ -275,660 +276,734 @@
       border-radius: 50%;
       background: #ffffff;
       cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      border: 2px solid var(--accent);
     }
 
-    /* Editor Visibility Control */
-    .editor-only { display: none !important; }
-    .edit-active .editor-only { display: flex !important; }
-    .view-only { display: block; }
-    .edit-active .view-only { display: none !important; }
+    .range-slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      border: 2px solid var(--accent);
+    }
 
-    /* Robuste, flexible Editor-Zeilen (verhindert das Ausbrechen) */
-    .edit-header-row { 
-      display: flex; 
-      align-items: center; 
-      gap: 6px; 
-      flex: 1; 
-      min-width: 0;
+    /* Sparziel-Box */
+    .goal-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: var(--bg-input);
+      padding: 10px;
+      border-radius: 8px;
     }
-    .title-input { 
-      background: #0d0f12; 
-      border: 1px solid var(--border); 
-      color: #fff; 
-      padding: 5px 8px; 
-      border-radius: 6px; 
-      font-size: 0.85rem; 
-      font-weight: 600; 
-      flex: 1; 
-      min-width: 0; 
-      width: 100%;
-    }
-    .color-picker { width: 28px; height: 28px; border: none; border-radius: 6px; background: transparent; cursor: pointer; flex-shrink: 0; }
-    
-    .edit-item-row { 
-      display: flex; 
-      align-items: center; 
-      gap: 6px; 
-      margin-top: 8px; 
-      padding-top: 8px; 
-      border-top: 1px dashed #262c36; 
-      width: 100%;
-      min-width: 0;
-    }
-    .text-input-sm { 
-      background: #15181e; 
-      border: 1px solid var(--border); 
-      color: #fff; 
-      padding: 5px 6px; 
-      border-radius: 6px; 
-      font-size: 0.75rem; 
-      min-width: 0;
-    }
-    .del-btn { background: transparent; border: none; color: var(--red); font-size: 1rem; cursor: pointer; padding: 2px 6px; flex-shrink: 0; }
 
-    .add-row { gap: 6px; margin-top: 10px; width: 100%; min-width: 0; }
-    .add-btn { background: #21262d; border: 1px solid var(--border); color: #fff; padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
-    
-    .add-group-wrap { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; width: 100%; }
-    .add-group-btn { background: #1f6feb; border: none; color: #fff; padding: 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; width: 100%; }
-    .add-secondary-btn { background: #21262d; border: 1px solid var(--border); color: #f0f3f8; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 500; cursor: pointer; width: 100%; }
-    .reset-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 7px; border-radius: 6px; font-size: 0.72rem; cursor: pointer; margin-top: 6px; }
-    .reset-btn:hover { color: var(--red); border-color: var(--red); }
+    .goal-stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .goal-stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .goal-stat-val {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    /* Editor-Modus & Buttons */
+    .btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--danger);
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      font-size: 1rem;
+    }
+
+    .editor-only {
+      display: none !important;
+    }
+
+    body.editor-active .editor-only {
+      display: flex !important;
+    }
+
+    .color-picker-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      background: none;
+      -webkit-appearance: none;
+    }
+
+    .footer-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 8px;
+    }
   </style>
 </head>
 <body>
 
-<div class="container" id="appContainer">
-  <!-- Top Toolbar -->
-  <div class="top-toolbar">
-    <span class="status-sub" id="statusIndicator">Ansichtsmodus</span>
-    <button class="mode-btn" id="toggleEditBtn" onclick="toggleEditMode()">
-      <span>⚙️</span> <span id="btnText">Editor-Modus</span>
-    </button>
-  </div>
+  <main class="app-container">
+    
+    <!-- 1. Offline Hardware-Systemuhr -->
+    <header class="clock-row">
+      <span class="badge" id="dateBadge">--.--.----</span>
+      <span class="badge" id="timeBadge">--:--:--</span>
+    </header>
 
-  <!-- Datum & Uhrzeit Badges -->
-  <div class="datetime-bar">
-    <div class="dt-badge">
-      <span>📅</span>
-      <span id="liveDate">--.--.----</span>
+    <!-- 2. Umschalter: Monat / Jahr -->
+    <div class="view-toggle">
+      <button type="button" class="toggle-btn active" id="btnMonth">Monat</button>
+      <button type="button" class="toggle-btn" id="btnYear">Jahr (x12)</button>
     </div>
-    <div class="dt-badge">
-      <span>🕒</span>
-      <span id="liveTime">--:--:-- Uhr</span>
-    </div>
-  </div>
 
-  <!-- 3 Haupt-KPI-Karten -->
-  <div class="kpi-row">
-    <div class="kpi-card"><div class="kpi-val" id="kpiExp">0 €</div><div class="kpi-sub">Ausgaben</div></div>
-    <div class="kpi-card"><div class="kpi-val" id="kpiSurplus" style="color:var(--green)">0 €</div><div class="kpi-sub">Überschuss</div></div>
-    <div class="kpi-card"><div class="kpi-val" id="kpiRate">0 %</div><div class="kpi-sub">Sparquote</div></div>
-  </div>
-
-  <!-- Progress Bar -->
-  <div class="progress-bar" id="progressBar"></div>
-
-  <!-- Vollständig editierbare Sparziel-Box -->
-  <div class="goal-box" id="goalBoxElement">
-    <div class="goal-header">
-      <div id="goalTitleView" class="view-only" style="display: flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden;">
-        <span id="goalTitleDisplay" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">🎯 Sparziel</span>
+    <!-- 3. KPI Dashboard -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-title">Ausgaben</span>
+        <span class="kpi-value" id="kpiExpenses">0,00 €</span>
+        <span class="kpi-sub" id="subExpenses">pro Monat</span>
       </div>
-      <div id="goalTitleEdit" class="editor-only" style="flex: 1; min-width: 0;">
-        <div class="edit-header-row">
-          <input type="color" class="color-picker" id="goalColorPicker" value="#60a5fa" onchange="updateGoalColor(this.value)">
-          <input type="text" class="title-input" id="goalTitleInput" value="🎯 Sparziel" onchange="updateGoalTitle(this.value)" placeholder="Titel...">
+      <div class="kpi-card">
+        <span class="kpi-title">Überschuss</span>
+        <span class="kpi-value" id="kpiSurplus">0,00 €</span>
+        <span class="kpi-sub" id="subSurplus">pro Monat</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-title">Sparquote</span>
+        <span class="kpi-value" id="kpiSavingsRate">0,0 %</span>
+        <span class="kpi-sub">Gesamt</span>
+      </div>
+    </section>
+
+    <!-- 4. Dynamischer Fortschrittsbalken -->
+    <section class="progress-bar-wrapper">
+      <div class="progress-track" id="progressBar"></div>
+    </section>
+
+    <!-- 5. Einnahmen & Konten (Multi-Account) -->
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title">💵 Einnahmen & Konten</h2>
+        <span id="totalIncomeHeader" style="font-size: 0.95rem; font-weight: 700; color: var(--success);">0,00 €</span>
+      </div>
+      <div class="item-list" id="incomesList"></div>
+      <button type="button" class="btn btn-secondary editor-only" id="btnAddIncome">+ Einkommen / Konto hinzufügen</button>
+    </section>
+
+    <!-- 6. Dynamische Ausgabenkategorien -->
+    <div id="categoriesContainer" style="display: flex; flex-direction: column; gap: 16px;"></div>
+
+    <button type="button" class="btn btn-secondary editor-only" id="btnAddCategory">+ Neue Ausgabenkategorie</button>
+
+    <!-- 7. Sparziel mit Zinseszins & Prognose -->
+    <section class="card" id="savingsGoalCard">
+      <div class="card-header">
+        <h2 class="card-title" id="goalTitleDisplay">🎯 Sparziel</h2>
+        <span id="goalTargetDisplay" style="font-size: 0.95rem; font-weight: 700; color: var(--accent);">0,00 €</span>
+      </div>
+
+      <div class="goal-stats">
+        <div class="goal-stat-item">
+          <span class="goal-stat-label">Endsummen-Prognose:</span>
+          <span class="goal-stat-val" id="goalForecastVal">0,00 €</span>
         </div>
-        <button class="del-btn" title="Sparziel ausblenden" onclick="deleteGoal()">🗑️</button>
+        <div class="goal-stat-item">
+          <span class="goal-stat-label">Benötigt mtl.:</span>
+          <span class="goal-stat-val" id="goalRequiredRate">0,00 €</span>
+        </div>
+        <div class="goal-stat-item" style="grid-column: span 2; margin-top: 4px;">
+          <span class="goal-stat-label">Verbleibende Monate:</span>
+          <span class="goal-stat-val" id="goalRemainingMonths">0 Monate</span>
+        </div>
       </div>
-      <span class="goal-status-badge" id="goalBadge">Berechne...</span>
-    </div>
 
-    <!-- Ansichts-Modus: Kompakte Datenübersicht -->
-    <div class="goal-meta-view view-only" id="goalMetaDisplay">
-      <span>Ziel: <strong id="metaTarget">0 €</strong></span>
-      <span>Stichtag: <strong id="metaDate">31.12.2027</strong></span>
-      <span>Zins: <strong id="metaInterest">3,5 %</strong></span>
-      <span>Bereits da: <strong id="metaInitial">0 €</strong></span>
-    </div>
-    
-    <!-- Editor-Modus: Vollständige Eingabefelder -->
-    <div class="goal-grid editor-only" style="display:grid;">
-      <div class="goal-field">
-        <label>Zielbetrag (€)</label>
-        <input type="number" id="goalAmount" class="goal-input" value="0" step="100" onchange="updateGoalConfig()">
+      <!-- Editor-Felder für Sparziel -->
+      <div class="editor-only" style="flex-direction: column; gap: 8px;">
+        <label style="font-size: 0.75rem; color: var(--text-muted);">Titel: <input type="text" id="goalTitleInput" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:4px; border-radius:4px; width:100%;"></label>
+        <label style="font-size: 0.75rem; color: var(--text-muted);">Zielbetrag (€): <input type="number" id="goalTargetInput" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:4px; border-radius:4px; width:100%;"></label>
+        <label style="font-size: 0.75rem; color: var(--text-muted);">Startkapital (€): <input type="number" id="goalStartInput" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:4px; border-radius:4px; width:100%;"></label>
+        <label style="font-size: 0.75rem; color: var(--text-muted);">Zieldatum: <input type="date" id="goalDateInput" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:4px; border-radius:4px; width:100%;"></label>
+        <label style="font-size: 0.75rem; color: var(--text-muted);">Tagesgeldzins (% p.a.): <input type="number" step="0.1" id="goalRateInput" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:4px; border-radius:4px; width:100%;"></label>
       </div>
-      <div class="goal-field">
-        <label>Zieldatum</label>
-        <input type="date" id="goalDate" class="goal-input" value="2027-12-31" onchange="updateGoalConfig()">
-      </div>
-      <div class="goal-field">
-        <label>Zins (% p.a.)</label>
-        <input type="number" id="goalInterest" class="goal-input" value="3.5" step="0.1" onchange="updateGoalConfig()">
-      </div>
-      <div class="goal-field">
-        <label>Startbetrag (€)</label>
-        <input type="number" id="goalInitial" class="goal-input" value="0" step="50" onchange="updateGoalConfig()">
-      </div>
-    </div>
+    </section>
 
-    <div class="goal-progress-wrap">
-      <div class="goal-progress-fill" id="goalProgressBar" style="width: 0%;"></div>
-    </div>
-    
-    <div class="goal-summary">
-      <span id="goalForecast" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Prognose: 0 €</span>
-      <div class="goal-right-meta">
-        <span class="goal-needed-rate" id="goalNeededRate">Nötig: 0 € / Monat</span>
-        <span id="goalTimeLeft">0 Monate verbleibend</span>
-      </div>
-    </div>
-  </div>
+    <!-- 8. Modus-Umschaltung & Reset -->
+    <footer class="footer-actions">
+      <button type="button" class="btn" id="btnToggleMode">⚙️ Editor-Modus</button>
+      <button type="button" class="btn btn-secondary editor-only" id="btnResetDemo" style="color: var(--danger); border-color: var(--danger);">Reset auf 0 €</button>
+    </footer>
 
-  <!-- Income Box -->
-  <div class="income-box">
-    <label style="font-size:0.75rem;color:var(--muted)">Monatliches Nettoeinkommen</label>
-    <div class="income-row">
-      <input type="number" id="netIncome" class="num-input" value="0" step="50" placeholder="0">
-      <span>€</span>
-    </div>
-  </div>
+  </main>
 
-  <!-- Groups Container -->
-  <div id="groupsContainer"></div>
+  <script>
+    /* ==========================================================================
+       1. Globale Zustände & Datenstruktur (Schema)
+       ========================================================================== */
+    const STORAGE_KEY = 'budget_app_blank_v10';
+    let currentViewMode = 'month'; // 'month' oder 'year'
+    let isEditorActive = false;
 
-  <!-- Editor Toolbar (Unten) -->
-  <div class="add-group-wrap editor-only">
-    <button class="add-group-btn" onclick="addNewCategory()">+ Neue Ausgaben-Kategorie</button>
-    <button class="add-secondary-btn" id="restoreGoalBtn" onclick="restoreGoal()" style="display: none;">+ Sparziel wieder hinzufügen</button>
-    <button class="reset-btn" onclick="resetToZeroDemo()">Auf leere Standard-Felder zurücksetzen</button>
-  </div>
-</div>
-
-<script>
-  var BLANK_DEMO_DATA = {
-    income: 0,
-    goal: {
-      enabled: true,
-      title: "🎯 Sparziel",
-      color: "#60a5fa",
-      target: 0,
-      date: "2027-12-31",
-      interest: 3.5,
-      initial: 0
-    },
-    categories: [
-      {
-        id: "c_fix", name: "Fixkosten & Verträge", color: "#3b82f6",
-        items: [
-          { id: "i_rent", name: "Miete / Wohnen", value: 0, min: 0, max: 1200, step: 25 },
-          { id: "i_mobile", name: "Mobilfunk & Internet", value: 0, min: 0, max: 150, step: 5 },
-          { id: "i_subs", name: "Abos & Raten", value: 0, min: 0, max: 200, step: 5 }
-        ]
-      },
-      {
-        id: "c_food", name: "Lebensmittel & Haushalt", color: "#22c55e",
-        items: [
-          { id: "i_groceries", name: "Supermarkt / Einkauf", value: 0, min: 0, max: 600, step: 20 },
-          { id: "i_drogerie", name: "Drogerie & Haushalt", value: 0, min: 0, max: 150, step: 5 },
-          { id: "i_dining", name: "Lieferdienst & Imbiss", value: 0, min: 0, max: 200, step: 10 }
-        ]
-      },
-      {
-        id: "c_car", name: "Kfz & Mobilität", color: "#ef4444",
-        items: [
-          { id: "i_fuel", name: "Kraftstoff (Sprit / Laden)", value: 0, min: 0, max: 500, step: 20 },
-          { id: "i_repair", name: "Kfz-Reparaturen & Pflege", value: 0, min: 0, max: 300, step: 10 },
-          { id: "i_ins", name: "Versicherung & Steuer", value: 0, min: 0, max: 200, step: 5 }
-        ]
-      },
-      {
-        id: "c_leisure", name: "Freizeit & Taschengeld", color: "#eab308",
-        items: [
-          { id: "i_shop", name: "Shopping & Kleidung", value: 0, min: 0, max: 300, step: 10 },
-          { id: "i_trips", name: "Freizeit & Ausflüge", value: 0, min: 0, max: 200, step: 10 },
-          { id: "i_pock", name: "Bargeld / Puffer", value: 0, min: 0, max: 200, step: 10 }
-        ]
-      },
-      {
-        id: "c_sav", name: "Sparen & Rücklagen", color: "#a855f7",
-        items: [
-          { id: "i_emerg", name: "Notgroschen / Reserve", value: 0, min: 0, max: 500, step: 25 },
-          { id: "i_tg", name: "Tagesgeld Dauerauftrag", value: 0, min: 0, max: 500, step: 25 }
-        ]
-      }
-    ]
-  };
-
-  var isEditMode = false;
-  var state;
-
-  try {
-    var stored = localStorage.getItem('budget_app_blank_v10');
-    state = stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(BLANK_DEMO_DATA));
-    if (!state.goal) state.goal = JSON.parse(JSON.stringify(BLANK_DEMO_DATA.goal));
-  } catch (e) {
-    state = JSON.parse(JSON.stringify(BLANK_DEMO_DATA));
-  }
-
-  function saveState() {
-    try {
-      localStorage.setItem('budget_app_blank_v10', JSON.stringify(state));
-    } catch (e) {}
-  }
-
-  function updateClock() {
-    var now = new Date();
-    var dateOptions = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
-    var timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
-
-    var formattedDate = now.toLocaleDateString('de-DE', dateOptions);
-    var formattedTime = now.toLocaleTimeString('de-DE', timeOptions) + ' Uhr';
-
-    var dateEl = document.getElementById('liveDate');
-    var timeEl = document.getElementById('liveTime');
-    if (dateEl) dateEl.textContent = formattedDate;
-    if (timeEl) timeEl.textContent = formattedTime;
-  }
-
-  function toggleEditMode() {
-    isEditMode = !isEditMode;
-    var btn = document.getElementById('toggleEditBtn');
-    var status = document.getElementById('statusIndicator');
-    var container = document.getElementById('appContainer');
-
-    if (isEditMode) {
-      btn.classList.add('active');
-      btn.innerHTML = '<span>✓</span> Fertig';
-      status.textContent = "Editor-Modus aktiv";
-      container.classList.add('edit-active');
-    } else {
-      btn.classList.remove('active');
-      btn.innerHTML = '<span>⚙️</span> Editor-Modus';
-      status.textContent = "Ansichtsmodus";
-      container.classList.remove('edit-active');
-    }
-    render();
-  }
-
-  function updateGoalTitle(newTitle) {
-    state.goal.title = newTitle || "Sparziel";
-    saveState();
-    renderGoalStyles();
-  }
-
-  function updateGoalColor(newColor) {
-    state.goal.color = newColor;
-    saveState();
-    renderGoalStyles();
-  }
-
-  function updateGoalConfig() {
-    state.goal.target = parseFloat(document.getElementById('goalAmount').value) || 0;
-    state.goal.date = document.getElementById('goalDate').value || "2027-12-31";
-    state.goal.interest = parseFloat(document.getElementById('goalInterest').value) || 0;
-    state.goal.initial = parseFloat(document.getElementById('goalInitial').value) || 0;
-    saveState();
-    recalcAll();
-  }
-
-  function deleteGoal() {
-    if (confirm("Möchten Sie das Sparziel ausblenden? (Kann im Editor wieder hinzugefügt werden)")) {
-      state.goal.enabled = false;
-      saveState();
-      render();
-    }
-  }
-
-  function restoreGoal() {
-    state.goal.enabled = true;
-    saveState();
-    render();
-  }
-
-  function renderGoalStyles() {
-    var goalBox = document.getElementById('goalBoxElement');
-    var restoreBtn = document.getElementById('restoreGoalBtn');
-
-    if (!state.goal.enabled) {
-      goalBox.style.display = 'none';
-      if (restoreBtn) restoreBtn.style.display = isEditMode ? 'block' : 'none';
-      return;
-    }
-
-    goalBox.style.display = 'block';
-    if (restoreBtn) restoreBtn.style.display = 'none';
-
-    var titleDisplay = document.getElementById('goalTitleDisplay');
-    var titleInput = document.getElementById('goalTitleInput');
-    var colorPicker = document.getElementById('goalColorPicker');
-    var neededRateEl = document.getElementById('goalNeededRate');
-
-    titleDisplay.textContent = state.goal.title;
-    titleDisplay.style.color = state.goal.color;
-    titleInput.value = state.goal.title;
-    colorPicker.value = state.goal.color;
-    goalBox.style.borderColor = state.goal.color + '66';
-    neededRateEl.style.color = state.goal.color;
-
-    var dateParts = (state.goal.date || "").split("-");
-    var formattedDateView = dateParts.length === 3 ? (dateParts[2] + "." + dateParts[1] + "." + dateParts[0]) : state.goal.date;
-    document.getElementById('metaTarget').textContent = (state.goal.target || 0).toLocaleString('de-DE') + ' €';
-    document.getElementById('metaDate').textContent = formattedDateView;
-    document.getElementById('metaInterest').textContent = (state.goal.interest || 0).toLocaleString('de-DE') + ' %';
-    document.getElementById('metaInitial').textContent = (state.goal.initial || 0).toLocaleString('de-DE') + ' €';
-  }
-
-  function render() {
-    var container = document.getElementById('groupsContainer');
-    container.innerHTML = '';
-    
-    document.getElementById('netIncome').value = state.income || '';
-
-    document.getElementById('goalAmount').value = state.goal.target;
-    document.getElementById('goalDate').value = state.goal.date;
-    document.getElementById('goalInterest').value = state.goal.interest;
-    document.getElementById('goalInitial').value = state.goal.initial;
-    renderGoalStyles();
-
-    state.categories.forEach(function(cat) {
-      var gBox = document.createElement('div');
-      gBox.className = 'group-box';
-      
-      var title = document.createElement('div');
-      title.className = 'group-title';
-
-      if (!isEditMode) {
-        title.style.color = cat.color;
-        title.innerHTML = '<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">● ' + cat.name + '</span><span id="sum_' + cat.id + '" style="flex-shrink:0;">0 €</span>';
-      } else {
-        title.innerHTML = 
-          '<div class="edit-header-row">' +
-            '<input type="color" class="color-picker" value="' + cat.color + '" onchange="updateCatColor(\'' + cat.id + '\', this.value)">' +
-            '<input type="text" class="title-input" value="' + cat.name + '" onchange="updateCatName(\'' + cat.id + '\', this.value)">' +
-          '</div>' +
-          '<button class="del-btn" title="Kategorie löschen" onclick="deleteCategory(\'' + cat.id + '\')">🗑️</button>';
-      }
-      gBox.appendChild(title);
-
-      cat.items.forEach(function(item) {
-        var card = document.createElement('div');
-        card.className = 'item-card';
-
-        var pct = item.max > item.min ? ((item.value - item.min) / (item.max - item.min) * 100) : 0;
-        if (pct < 0) pct = 0; if (pct > 100) pct = 100;
-
-        var inner = 
-          '<div class="item-top">' +
-            '<span class="item-name">' + item.name + '</span>' +
-            '<div class="val-input-wrap">' +
-              '<input type="number" class="direct-val-input" id="num_' + item.id + '" value="' + item.value + '" ' +
-                'onchange="setDirectValue(\'' + cat.id + '\', \'' + item.id + '\', this.value)">' +
-              '<span class="val-unit">€</span>' +
-            '</div>' +
-          '</div>' +
-          '<input type="range" id="rng_' + item.id + '" min="' + item.min + '" max="' + item.max + '" step="' + item.step + '" value="' + item.value + '" ' +
-            'oninput="updateValue(\'' + cat.id + '\', \'' + item.id + '\', this.value)" style="accent-color:' + cat.color + '; background: linear-gradient(to right, ' + cat.color + ' 0%, ' + cat.color + ' ' + pct + '%, #262c36 ' + pct + '%, #262c36 100%);">';
-
-        if (isEditMode) {
-          inner += 
-            '<div class="edit-item-row">' +
-              '<input type="text" class="text-input-sm" value="' + item.name + '" placeholder="Name" style="flex:1; min-width:0;" onchange="renameItem(\'' + cat.id + '\', \'' + item.id + '\', this.value)">' +
-              '<span style="font-size:0.7rem;color:var(--muted);flex-shrink:0;">Max:</span>' +
-              '<input type="number" class="text-input-sm" value="' + item.max + '" style="width:55px;flex-shrink:0;" onchange="updateItemMax(\'' + cat.id + '\', \'' + item.id + '\', this.value)">' +
-              '<button class="del-btn" title="Posten löschen" onclick="removeItem(\'' + cat.id + '\', \'' + item.id + '\')">✕</button>' +
-            '</div>';
-        }
-
-        card.innerHTML = inner;
-        gBox.appendChild(card);
-      });
-
-      var addRow = document.createElement('div');
-      addRow.className = 'add-row editor-only';
-      addRow.innerHTML = 
-        '<input type="text" placeholder="Neuer Posten..." id="in_name_' + cat.id + '" class="text-input-sm" style="flex:1; min-width:0;">' +
-        '<input type="number" placeholder="Wert" id="in_val_' + cat.id + '" class="text-input-sm" style="width:65px; flex-shrink:0;">' +
-        '<button class="add-btn" onclick="addItem(\'' + cat.id + '\')">+ Posten</button>';
-      gBox.appendChild(addRow);
-      container.appendChild(gBox);
-    });
-
-    recalcAll();
-  }
-
-  window.setDirectValue = function(catId, itemId, val) {
-    var num = parseInt(val, 10) || 0;
-    var cat = state.categories.find(function(c) { return c.id === catId; });
-    var item = cat.items.find(function(i) { return i.id === itemId; });
-    
-    if (num > item.max) {
-      item.max = Math.ceil(num * 1.3 / 50) * 50;
-      var rng = document.getElementById('rng_' + itemId);
-      if (rng) rng.max = item.max;
-    }
-    item.value = num;
-    saveState();
-
-    var rngEl = document.getElementById('rng_' + itemId);
-    if (rngEl) {
-      rngEl.value = num;
-      var pct = ((num - item.min) / (item.max - item.min) * 100);
-      rngEl.style.background = 'linear-gradient(to right, ' + cat.color + ' 0%, ' + cat.color + ' ' + pct + '%, #262c36 ' + pct + '%, #262c36 100%)';
-    }
-    recalcAll();
-  };
-
-  window.updateValue = function(catId, itemId, val) {
-    var cat = state.categories.find(function(c) { return c.id === catId; });
-    var item = cat.items.find(function(i) { return i.id === itemId; });
-    item.value = parseInt(val, 10) || 0;
-    saveState();
-
-    var numInput = document.getElementById('num_' + itemId);
-    if (numInput) numInput.value = item.value;
-
-    var rng = document.getElementById('rng_' + itemId);
-    if (rng) {
-      var pct = ((item.value - item.min) / (item.max - item.min) * 100);
-      rng.style.background = 'linear-gradient(to right, ' + cat.color + ' 0%, ' + cat.color + ' ' + pct + '%, #262c36 ' + pct + '%, #262c36 100%)';
-    }
-    recalcAll();
-  };
-
-  function recalcAll() {
-    var totalExp = 0;
-    var catTotals = [];
-
-    state.categories.forEach(function(cat) {
-      var gTot = 0;
-      cat.items.forEach(function(i) { gTot += i.value; });
-      totalExp += gTot;
-      catTotals.push({ id: cat.id, total: gTot, color: cat.color });
-      var el = document.getElementById('sum_' + cat.id);
-      if (el) el.textContent = gTot.toLocaleString('de-DE') + ' €';
-    });
-
-    var inc = state.income || 0;
-    var surplus = inc - totalExp;
-    var rate = inc > 0 ? Math.round((surplus / inc) * 100) : 0;
-
-    document.getElementById('kpiExp').textContent = totalExp.toLocaleString('de-DE') + ' €';
-    var sEl = document.getElementById('kpiSurplus');
-    sEl.textContent = surplus.toLocaleString('de-DE') + ' €';
-    sEl.style.color = surplus >= 0 ? 'var(--green)' : 'var(--red)';
-    document.getElementById('kpiRate').textContent = rate + ' %';
-
-    var pBar = document.getElementById('progressBar');
-    pBar.innerHTML = '';
-    catTotals.forEach(function(c) {
-      if (totalExp > 0) {
-        var seg = document.createElement('div');
-        seg.className = 'bar-seg';
-        seg.style.background = c.color;
-        seg.style.width = ((c.total / totalExp) * 100) + '%';
-        pBar.appendChild(seg);
-      }
-    });
-
-    if (state.goal && state.goal.enabled) {
-      var now = new Date();
-      var targetDate = new Date(state.goal.date);
-      var diffMonths = (targetDate.getFullYear() - now.getFullYear()) * 12 + (targetDate.getMonth() - now.getMonth());
-      if (diffMonths < 1) diffMonths = 1;
-
-      var monthlyRate = surplus > 0 ? surplus : 0;
-      var r = (state.goal.interest / 100) / 12;
-      var P = state.goal.initial || 0;
-      var target = state.goal.target || 0;
-
-      var forecast = 0;
-      if (r > 0) {
-        forecast = P * Math.pow(1 + r, diffMonths) + (monthlyRate * (Math.pow(1 + r, diffMonths) - 1)) / r;
-      } else {
-        forecast = P + (monthlyRate * diffMonths);
-      }
-      forecast = Math.round(forecast);
-
-      var neededMonthly = 0;
-      if (target > 0) {
-        if (r > 0) {
-          var growthFactor = Math.pow(1 + r, diffMonths);
-          var futureValueOfInitial = P * growthFactor;
-          var remainingTarget = target - futureValueOfInitial;
-          if (remainingTarget > 0) {
-            var annuityFactor = (growthFactor - 1) / r;
-            neededMonthly = Math.round(remainingTarget / annuityFactor);
-          } else {
-            neededMonthly = 0;
+    // Standard-Template für Initialisierung oder Reset
+    function getDefaultData() {
+      return {
+        incomes: [
+          { id: 'inc_1', name: 'Gehalt 1', value: 2500 },
+          { id: 'inc_2', name: 'Gehalt 2', value: 1500 }
+        ],
+        categories: [
+          {
+            id: 'cat_wohnen',
+            name: 'Wohnen & Fixkosten',
+            color: '#3b82f6',
+            items: [
+              { id: 'item_miete', name: 'Warmmiete', value: 950, max: 2000 },
+              { id: 'item_strom', name: 'Strom & Gas', value: 120, max: 500 },
+              { id: 'item_internet', name: 'Internet & GEZ', value: 65, max: 200 }
+            ]
+          },
+          {
+            id: 'cat_leben',
+            name: 'Lebenshaltung & Alltag',
+            color: '#10b981',
+            items: [
+              { id: 'item_lebensmittel', name: 'Lebensmittel', value: 450, max: 1000 },
+              { id: 'item_drogerie', name: 'Drogerie & Haushaltsbedarf', value: 80, max: 300 }
+            ]
+          },
+          {
+            id: 'cat_mobil',
+            name: 'Mobilität & Transport',
+            color: '#f59e0b',
+            items: [
+              { id: 'item_kfz', name: 'KFZ Versicherung & Steuer', value: 85, max: 300 },
+              { id: 'item_sprit', name: 'Tanken / ÖPNV-Ticket', value: 140, max: 400 }
+            ]
           }
-        } else {
-          var remainingTargetSimple = target - P;
-          neededMonthly = remainingTargetSimple > 0 ? Math.round(remainingTargetSimple / diffMonths) : 0;
+        ],
+        savingsGoal: {
+          visible: true,
+          title: 'Notgroschen & Eigenkapital',
+          target: 15000,
+          startCapital: 3000,
+          targetDate: '2028-12-31',
+          interestRate: 3.5,
+          color: '#8b5cf6'
         }
+      };
+    }
+
+    /* ==========================================================================
+       2. Update-sicheres Laden & Schema-Migration
+       ========================================================================== */
+    function loadAndMigrateData() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return getDefaultData();
+
+      try {
+        const stored = JSON.parse(raw);
+        const defaults = getDefaultData();
+
+        // Migration: Fehlendes Einnahmen-Array aus Altdaten nachrüsten
+        if (!Array.isArray(stored.incomes)) {
+          stored.incomes = stored.totalIncome 
+            ? [{ id: 'inc_legacy', name: 'Haupteinkommen', value: stored.totalIncome }]
+            : defaults.incomes;
+        }
+
+        // Migration: Kategorien sicherstellen
+        if (!Array.isArray(stored.categories)) {
+          stored.categories = defaults.categories;
+        } else {
+          // Fehlende Standard-Felder in Items nachziehen
+          stored.categories.forEach(cat => {
+            if (!cat.color) cat.color = '#3b82f6';
+            if (Array.isArray(cat.items)) {
+              cat.items.forEach(it => {
+                if (typeof it.value !== 'number') it.value = 0;
+                if (!it.max || it.max < it.value) it.max = Math.max(1000, it.value * 1.5);
+              });
+            }
+          });
+        }
+
+        // Migration: Sparziel sicherstellen
+        if (!stored.savingsGoal) {
+          stored.savingsGoal = defaults.savingsGoal;
+        }
+
+        return stored;
+      } catch (e) {
+        console.error("Migration fehlgeschlagen, lade Standardwerte:", e);
+        return getDefaultData();
+      }
+    }
+
+    let state = loadAndMigrateData();
+
+    function persistState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    /* ==========================================================================
+       3. Rechnerische Hilfsfunktionen
+       ========================================================================== */
+    function getMultiplier() {
+      return currentViewMode === 'year' ? 12 : 1;
+    }
+
+    function formatEUR(val) {
+      return (val || 0).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
+    }
+
+    function calcMonthlyIncome() {
+      return (state.incomes || []).reduce((sum, inc) => sum + (Number(inc.value) || 0), 0);
+    }
+
+    function calcMonthlyExpenses() {
+      let sum = 0;
+      (state.categories || []).forEach(cat => {
+        (cat.items || []).forEach(item => {
+          sum += (Number(item.value) || 0);
+        });
+      });
+      return sum;
+    }
+
+    /* ==========================================================================
+       4. Render-Pipeline (Dashboard, KPIs, Balken)
+       ========================================================================== */
+    function renderKPIs() {
+      const mult = getMultiplier();
+      const mIncome = calcMonthlyIncome();
+      const mExpenses = calcMonthlyExpenses();
+      const mSurplus = mIncome - mExpenses;
+      const savingsRate = mIncome > 0 ? (mSurplus / mIncome) * 100 : 0;
+
+      // Dashboard Cards
+      document.getElementById('kpiExpenses').textContent = formatEUR(mExpenses * mult);
+      document.getElementById('kpiSurplus').textContent = formatEUR(mSurplus * mult);
+      document.getElementById('kpiSavingsRate').textContent = `${savingsRate.toFixed(1)} %`;
+
+      const surplusEl = document.getElementById('kpiSurplus');
+      surplusEl.style.color = mSurplus >= 0 ? 'var(--success)' : 'var(--danger)';
+
+      const labelSuffix = currentViewMode === 'year' ? 'pro Jahr' : 'pro Monat';
+      document.getElementById('subExpenses').textContent = labelSuffix;
+      document.getElementById('subSurplus').textContent = labelSuffix;
+
+      // Gesamteinnahmen in Header
+      document.getElementById('totalIncomeHeader').textContent = formatEUR(mIncome * mult);
+
+      // Fortschrittsbalken rendern
+      renderProgressBar(mIncome, mExpenses);
+
+      // Sparziel neu berechnen
+      renderSavingsGoal(mSurplus);
+    }
+
+    function renderProgressBar(mIncome, mExpenses) {
+      const track = document.getElementById('progressBar');
+      track.innerHTML = '';
+      if (mIncome <= 0 || mExpenses <= 0) return;
+
+      const base = Math.max(mIncome, mExpenses);
+
+      state.categories.forEach(cat => {
+        const catSum = (cat.items || []).reduce((s, it) => s + (Number(it.value) || 0), 0);
+        if (catSum > 0) {
+          const pct = (catSum / base) * 100;
+          const seg = document.createElement('div');
+          seg.className = 'progress-segment';
+          seg.style.width = `${pct}%`;
+          seg.style.backgroundColor = cat.color || '#3b82f6';
+          track.appendChild(seg);
+        }
+      });
+    }
+
+    /* ==========================================================================
+       5. Render: Einkommen & Konten
+       ========================================================================== */
+    function renderIncomes() {
+      const container = document.getElementById('incomesList');
+      container.innerHTML = '';
+      const mult = getMultiplier();
+
+      state.incomes.forEach((inc, idx) => {
+        const row = document.createElement('div');
+        row.className = 'item-row';
+
+        const displayedValue = (inc.value * mult).toFixed(2);
+
+        row.innerHTML = `
+          <div class="item-info">
+            <input type="text" class="item-name-input" value="${inc.name}" ${!isEditorActive ? 'readonly' : ''}>
+            <div class="item-inputs">
+              <div class="number-input-wrapper">
+                <input type="number" step="any" value="${displayedValue}">
+                <span class="currency-symbol">€</span>
+              </div>
+              <button type="button" class="btn-danger editor-only">🗑️</button>
+            </div>
+          </div>
+        `;
+
+        const nameInput = row.querySelector('.item-name-input');
+        const numInput = row.querySelector('input[type="number"]');
+        const delBtn = row.querySelector('.btn-danger');
+
+        nameInput.addEventListener('change', (e) => {
+          inc.name = e.target.value;
+          persistState();
+        });
+
+        numInput.addEventListener('input', (e) => {
+          const raw = parseFloat(e.target.value) || 0;
+          inc.value = currentViewMode === 'year' ? (raw / 12) : raw;
+          persistState();
+          renderKPIs();
+        });
+
+        delBtn.addEventListener('click', () => {
+          state.incomes.splice(idx, 1);
+          persistState();
+          renderApp();
+        });
+
+        container.appendChild(row);
+      });
+    }
+
+    /* ==========================================================================
+       6. Render: Ausgaben-Kategorien & Schieberegler
+       ========================================================================== */
+    function renderCategories() {
+      const container = document.getElementById('categoriesContainer');
+      container.innerHTML = '';
+      const mult = getMultiplier();
+
+      state.categories.forEach((cat, cIdx) => {
+        const card = document.createElement('section');
+        card.className = 'card';
+
+        const catSum = (cat.items || []).reduce((s, it) => s + (Number(it.value) || 0), 0) * mult;
+
+        card.innerHTML = `
+          <div class="card-header">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <input type="color" class="color-picker-dot editor-only" value="${cat.color}">
+              <h2 class="card-title">
+                <input type="text" class="item-name-input" value="${cat.name}" ${!isEditorActive ? 'readonly' : ''} style="font-size: 1.05rem; font-weight: 700;">
+              </h2>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="cat-sum-badge" style="font-size: 0.95rem; font-weight: 700;">${formatEUR(catSum)}</span>
+              <button type="button" class="btn-danger editor-only del-cat-btn">🗑️</button>
+            </div>
+          </div>
+          <div class="item-list"></div>
+          <button type="button" class="btn btn-secondary editor-only add-item-btn">+ Posten hinzufügen</button>
+        `;
+
+        const list = card.querySelector('.item-list');
+        const colorPicker = card.querySelector('input[type="color"]');
+        const titleInput = card.querySelector('.item-name-input');
+        const delCatBtn = card.querySelector('.del-cat-btn');
+        const addItemBtn = card.querySelector('.add-item-btn');
+
+        colorPicker.addEventListener('input', (e) => {
+          cat.color = e.target.value;
+          persistState();
+          renderApp();
+        });
+
+        titleInput.addEventListener('change', (e) => {
+          cat.name = e.target.value;
+          persistState();
+        });
+
+        delCatBtn.addEventListener('click', () => {
+          state.categories.splice(cIdx, 1);
+          persistState();
+          renderApp();
+        });
+
+        addItemBtn.addEventListener('click', () => {
+          cat.items.push({ id: `item_${Date.now()}`, name: 'Neuer Posten', value: 0, max: 500 });
+          persistState();
+          renderApp();
+        });
+
+        // Items der Kategorie rendern
+        cat.items.forEach((item, iIdx) => {
+          const itemRow = document.createElement('div');
+          itemRow.className = 'item-row';
+
+          const displayedVal = (item.value * mult).toFixed(2);
+          const currentMax = (item.max * mult);
+
+          itemRow.innerHTML = `
+            <div class="item-info">
+              <input type="text" class="item-name-input" value="${item.name}" ${!isEditorActive ? 'readonly' : ''}>
+              <div class="item-inputs">
+                <div class="number-input-wrapper">
+                  <input type="number" step="any" value="${displayedVal}">
+                  <span class="currency-symbol">€</span>
+                </div>
+                <button type="button" class="btn-danger editor-only del-item-btn">🗑️</button>
+              </div>
+            </div>
+            <input type="range" class="range-slider" min="0" max="${currentMax}" step="1" value="${displayedVal}">
+          `;
+
+          const nameInp = itemRow.querySelector('.item-name-input');
+          const numInp = itemRow.querySelector('input[type="number"]');
+          const slider = itemRow.querySelector('input[type="range"]');
+          const delItemBtn = itemRow.querySelector('.del-item-btn');
+
+          // Dynamische Farbe für den Regler
+          slider.style.accentColor = cat.color || 'var(--accent)';
+
+          // Bidirektionale Synchronisation (Zahleneingabe & Slider)
+          const syncValues = (newDisplayedVal) => {
+            let numeric = parseFloat(newDisplayedVal) || 0;
+            
+            // Automatische Skalenerweiterung des Schiebereglers
+            if (numeric > (item.max * mult)) {
+              item.max = Math.ceil(currentViewMode === 'year' ? (numeric / 12) * 1.25 : numeric * 1.25);
+              slider.max = (item.max * mult);
+            }
+
+            // Sicher als Monatswert im State persistieren
+            item.value = currentViewMode === 'year' ? (numeric / 12) : numeric;
+            persistState();
+
+            // Ansichten synchron halten
+            numInp.value = numeric;
+            slider.value = numeric;
+
+            // Live-Berechnung ohne DOM-Neuaufbau
+            renderKPIs();
+            card.querySelector('.cat-sum-badge').textContent = formatEUR(
+              cat.items.reduce((s, it) => s + (Number(it.value) || 0), 0) * mult
+            );
+          };
+
+          slider.addEventListener('input', (e) => syncValues(e.target.value));
+          numInp.addEventListener('input', (e) => syncValues(e.target.value));
+
+          nameInp.addEventListener('change', (e) => {
+            item.name = e.target.value;
+            persistState();
+          });
+
+          delItemBtn.addEventListener('click', () => {
+            cat.items.splice(iIdx, 1);
+            persistState();
+            renderApp();
+          });
+
+          list.appendChild(itemRow);
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    /* ==========================================================================
+       7. Sparziel-Berechnung (Zinseszins & Monatsrate)
+       ========================================================================== */
+    function renderSavingsGoal(monthlySurplus) {
+      const g = state.savingsGoal;
+      const card = document.getElementById('savingsGoalCard');
+      if (!g || !g.visible) {
+        card.style.display = 'none';
+        return;
+      }
+      card.style.display = 'flex';
+
+      document.getElementById('goalTitleDisplay').textContent = `🎯 ${g.title}`;
+      document.getElementById('goalTargetDisplay').textContent = formatEUR(g.target);
+
+      // Verbleibende Restmonate berechnen
+      const today = new Date();
+      const targetDate = new Date(g.targetDate || '2028-12-31');
+      let diffMonths = (targetDate.getFullYear() - today.getFullYear()) * 12 + (targetDate.getMonth() - today.getMonth());
+      diffMonths = Math.max(1, diffMonths);
+
+      document.getElementById('goalRemainingMonths').textContent = `${diffMonths} Monate`;
+
+      // Zinseszins-Prognose (Monatliche Verzinsung)
+      const monthlyRate = (g.interestRate || 0) / 100 / 12;
+      let balanceForecast = Number(g.startCapital) || 0;
+      const safeSurplus = Math.max(0, monthlySurplus);
+
+      for (let m = 0; m < diffMonths; m++) {
+        balanceForecast = (balanceForecast + safeSurplus) * (1 + monthlyRate);
       }
 
-      var progressPct = target > 0 ? Math.min(100, Math.round((forecast / target) * 100)) : 0;
+      document.getElementById('goalForecastVal').textContent = formatEUR(balanceForecast);
 
-      var goalFill = document.getElementById('goalProgressBar');
-      goalFill.style.width = progressPct + '%';
-      goalFill.style.background = state.goal.color || 'var(--green)';
-
-      var badge = document.getElementById('goalBadge');
-      if (target <= 0) {
-        badge.className = 'goal-status-badge';
-        badge.style.background = '#21262d';
-        badge.style.color = 'var(--muted)';
-        badge.textContent = 'Kein Betrag';
-      } else if (forecast >= target) {
-        badge.className = 'goal-status-badge goal-status-ok';
-        badge.textContent = 'Ziel erreichbar';
+      // Erforderliche monatliche Sparrate ermitteln
+      let requiredMonthlyRate = 0;
+      if (monthlyRate === 0) {
+        requiredMonthlyRate = Math.max(0, (g.target - g.startCapital) / diffMonths);
       } else {
-        badge.className = 'goal-status-badge goal-status-warn';
-        var missingMonthly = Math.round((target - forecast) / diffMonths);
-        badge.textContent = 'Fehlen: ' + missingMonthly + ' €/M.';
+        const factor = Math.pow(1 + monthlyRate, diffMonths);
+        const numerator = g.target - (g.startCapital * factor);
+        const denominator = ((factor - 1) / monthlyRate) * (1 + monthlyRate);
+        requiredMonthlyRate = Math.max(0, numerator / denominator);
       }
 
-      document.getElementById('goalForecast').textContent = 'Prognose: ' + forecast.toLocaleString('de-DE') + ' € / ' + target.toLocaleString('de-DE') + ' € (' + progressPct + '%)';
-      document.getElementById('goalNeededRate').textContent = 'Nötig: ' + neededMonthly.toLocaleString('de-DE') + ' € / Monat';
-      document.getElementById('goalTimeLeft').textContent = diffMonths + ' Monate';
+      document.getElementById('goalRequiredRate').textContent = formatEUR(requiredMonthlyRate);
     }
-  }
 
-  window.updateCatName = function(catId, newName) {
-    var cat = state.categories.find(function(c) { return c.id === catId; });
-    if (cat) { cat.name = newName; saveState(); }
-  };
+    function initGoalEditorInputs() {
+      const g = state.savingsGoal;
+      document.getElementById('goalTitleInput').value = g.title;
+      document.getElementById('goalTargetInput').value = g.target;
+      document.getElementById('goalStartInput').value = g.startCapital;
+      document.getElementById('goalDateInput').value = g.targetDate;
+      document.getElementById('goalRateInput').value = g.interestRate;
 
-  window.updateCatColor = function(catId, newColor) {
-    var cat = state.categories.find(function(c) { return c.id === catId; });
-    if (cat) { cat.color = newColor; saveState(); render(); }
-  };
+      const bind = (id, key, isNum) => {
+        document.getElementById(id).addEventListener('input', (e) => {
+          g[key] = isNum ? (parseFloat(e.target.value) || 0) : e.target.value;
+          persistState();
+          renderKPIs();
+        });
+      };
 
-  window.deleteCategory = function(catId) {
-    if (confirm("Kategorie samt aller Posten löschen?")) {
-      state.categories = state.categories.filter(function(c) { return c.id !== catId; });
-      saveState();
-      render();
+      bind('goalTitleInput', 'title', false);
+      bind('goalTargetInput', 'target', true);
+      bind('goalStartInput', 'startCapital', true);
+      bind('goalDateInput', 'targetDate', false);
+      bind('goalRateInput', 'interestRate', true);
     }
-  };
 
-  window.addNewCategory = function() {
-    state.categories.push({
-      id: 'cat_' + Date.now(),
-      name: 'Neue Kategorie',
-      color: '#3b82f6',
-      items: []
+    /* ==========================================================================
+       8. Offline Systemuhr (Sekundengenau)
+       ========================================================================== */
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('dateBadge').textContent = now.toLocaleDateString('de-DE', {
+        day: '2-digit', month: '2-digit', year: 'numeric'
+      });
+      document.getElementById('timeBadge').textContent = now.toLocaleTimeString('de-DE', {
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+      });
+    }
+
+    /* ==========================================================================
+       9. Event-Listener & Initialisierung
+       ========================================================================== */
+    function renderApp() {
+      renderKPIs();
+      renderIncomes();
+      renderCategories();
+    }
+
+    // Umschalter: Monat / Jahr
+    const btnMonth = document.getElementById('btnMonth');
+    const btnYear = document.getElementById('btnYear');
+
+    btnMonth.addEventListener('click', () => {
+      currentViewMode = 'month';
+      btnMonth.classList.add('active');
+      btnYear.classList.remove('active');
+      renderApp();
     });
-    saveState();
-    render();
-  };
 
-  window.renameItem = function(catId, itemId, newName) {
-    var cat = state.categories.find(function(c) { return c.id === catId; });
-    var item = cat.items.find(function(i) { return i.id === itemId; });
-    if (item) { item.name = newName; saveState(); }
-  };
-
-  window.updateItemMax = function(catId, itemId, newMax) {
-    var cat = state.categories.find(function(c) { return c.id === catId; });
-    var item = cat.items.find(function(i) { return i.id === itemId; });
-    if (item) {
-      item.max = parseInt(newMax, 10) || 100;
-      if (item.value > item.max) item.value = item.max;
-      saveState();
-      render();
-    }
-  };
-
-  window.addItem = function(catId) {
-    var nameIn = document.getElementById('in_name_' + catId);
-    var valIn = document.getElementById('in_val_' + catId);
-    var name = nameIn.value.trim();
-    var val = parseInt(valIn.value, 10) || 0;
-    if (!name) return;
-
-    var cat = state.categories.find(function(c) { return c.id === catId; });
-    cat.items.push({
-      id: 'i_' + Date.now(),
-      name: name,
-      value: val,
-      min: 0,
-      max: val > 100 ? val * 2 : 200,
-      step: 5
+    btnYear.addEventListener('click', () => {
+      currentViewMode = 'year';
+      btnYear.classList.add('active');
+      btnMonth.classList.remove('active');
+      renderApp();
     });
-    saveState();
-    render();
-  };
 
-  window.removeItem = function(catId, itemId) {
-    var cat = state.categories.find(function(c) { return c.id === catId; });
-    cat.items = cat.items.filter(function(i) { return i.id !== itemId; });
-    saveState();
-    render();
-  };
+    // Editor-Modus umschalten
+    const btnToggleMode = document.getElementById('btnToggleMode');
+    btnToggleMode.addEventListener('click', () => {
+      isEditorActive = !isEditorActive;
+      document.body.classList.toggle('editor-active', isEditorActive);
+      btnToggleMode.textContent = isEditorActive ? '✔️ Ansichtsmodus' : '⚙️ Editor-Modus';
+      renderApp();
+    });
 
-  window.resetToZeroDemo = function() {
-    if (confirm("Wirklich alle Werte auf die leere Standard-Vorlage zurücksetzen?")) {
-      state = JSON.parse(JSON.stringify(BLANK_DEMO_DATA));
-      saveState();
-      render();
-    }
-  };
+    // Einnahmen hinzufügen
+    document.getElementById('btnAddIncome').addEventListener('click', () => {
+      state.incomes.push({
+        id: `inc_${Date.now()}`,
+        name: 'Neues Einkommen',
+        value: 0
+      });
+      persistState();
+      renderApp();
+    });
 
-  document.getElementById('netIncome').addEventListener('input', function(e) {
-    state.income = parseFloat(e.target.value) || 0;
-    saveState();
-    recalcAll();
-  });
+    // Kategorie hinzufügen
+    document.getElementById('btnAddCategory').addEventListener('click', () => {
+      state.categories.push({
+        id: `cat_${Date.now()}`,
+        name: 'Neue Kategorie',
+        color: '#3b82f6',
+        items: []
+      });
+      persistState();
+      renderApp();
+    });
 
-  updateClock();
-  setInterval(updateClock, 1000);
+    // Reset auf leeres 0-€-Template
+    document.getElementById('btnResetDemo').addEventListener('click', () => {
+      if (confirm('Möchtest du alle Slider und Einnahmen wirklich auf 0 € zurücksetzen?')) {
+        state = getDefaultData();
+        // Alle Werte auf 0 setzen
+        state.incomes.forEach(i => i.value = 0);
+        state.categories.forEach(c => c.items.forEach(it => it.value = 0));
+        state.savingsGoal.startCapital = 0;
+        persistState();
+        renderApp();
+      }
+    });
 
-  window.addEventListener('DOMContentLoaded', render);
-  render();
-</script>
+    // Initialer Start
+    setInterval(updateClock, 1000);
+    updateClock();
+    initGoalEditorInputs();
+    renderApp();
+  </script>
 </body>
 </html>
