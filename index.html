@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mein Budget Planer</title>
+  <style>
+    :root {
+      --bg: #0d0f12;
+      --card: #15181e;
+      --text: #f0f3f8;
+      --muted: #8b949e;
+      --border: #262c36;
+      --green: #22c55e;
+      --red: #ef4444;
+      --blue: #3b82f6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); padding: 16px; display: flex; justify-content: center; }
+    .container { width: 100%; max-width: 650px; }
+
+    .top-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .mode-btn { background: #21262d; border: 1px solid var(--border); color: #fff; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .mode-btn.active { background: #1f6feb; border-color: #388bfd; }
+
+    .kpi-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+    .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 6px; text-align: center; }
+    .kpi-val { font-size: 1.25rem; font-weight: 700; }
+    .kpi-sub { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+
+    .progress-bar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: #222; margin-bottom: 20px; }
+    .bar-seg { height: 100%; transition: width 0.15s ease; }
+
+    .income-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+    .income-row { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+    .num-input { background: #0d0f12; border: 1px solid var(--border); color: #fff; padding: 8px 12px; border-radius: 8px; font-size: 1.1rem; font-weight: 600; width: 140px; -webkit-appearance: none; }
+
+    .group-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+    .group-title { font-size: 1rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    
+    .item-card { background: #0d0f12; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+    .item-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .item-name { font-size: 0.88rem; font-weight: 500; }
+    .val-badge { background: #1c2128; border: 1px solid var(--border); padding: 2px 8px; border-radius: 5px; font-size: 0.82rem; }
+    
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: #262c36;
+      outline: none;
+      margin: 10px 0 4px 0;
+      touch-action: pan-y;
+      cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    /* Editor Elemente */
+    .editor-only { display: none !important; }
+    .edit-active .editor-only { display: block !important; }
+
+    .edit-header-row { display: flex; align-items: center; gap: 8px; flex: 1; margin-right: 8px; }
+    .title-input { background: #0d0f12; border: 1px solid var(--border); color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 0.95rem; font-weight: 600; flex: 1; }
+    .color-picker { width: 32px; height: 32px; border: none; border-radius: 6px; background: transparent; cursor: pointer; }
+    .edit-item-row { display: flex; align-items: center; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #262c36; }
+    .text-input-sm { background: #15181e; border: 1px solid var(--border); color: #fff; padding: 6px 8px; border-radius: 6px; font-size: 0.8rem; }
+    .del-btn { background: transparent; border: none; color: var(--red); font-size: 1.1rem; cursor: pointer; padding: 4px 8px; }
+    
+    .add-row { display: flex; gap: 6px; margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .add-btn { background: #21262d; border: 1px solid var(--border); color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; }
+    .add-group-btn { background: #1f6feb; border: none; color: #fff; padding: 10px 18px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 16px; }
+  </style>
+</head>
+<body>
+
+<div class="container" id="appContainer">
+  <div class="top-toolbar">
+    <span style="font-size: 0.9rem; font-weight: 600; color: var(--muted);" id="statusIndicator">Ansichtsmodus</span>
+    <button class="mode-btn" id="toggleEditBtn" onclick="toggleEditMode()">
+      <span>⚙️</span> <span id="btnText">Editor-Modus</span>
+    </button>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-val" id="kpiExp">0 €</div><div class="kpi-sub">Gesamtausgaben</div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpiSurplus" style="color:var(--green)">0 €</div><div class="kpi-sub">Überschuss</div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpiRate">0 %</div><div class="kpi-sub">Sparquote</div></div>
+  </div>
+
+  <div class="progress-bar" id="progressBar"></div>
+
+  <div class="income-box">
+    <label style="font-size:0.85rem;color:var(--muted)">Monatliches Nettoeinkommen</label>
+    <div class="income-row">
+      <input type="number" id="netIncome" class="num-input" value="0" step="50" placeholder="0">
+      <span>€</span>
+    </div>
+  </div>
+
+  <div id="groupsContainer"></div>
+
+  <div class="editor-only">
+    <button class="add-group-btn" onclick="addNewCategory()">+ Neue Kategorie erstellen</button>
+  </div>
+</div>
+
+<script>
+  var DEMO_DATA = {
+    income: 0,
+    categories: [
+      {
+        id: "c_fix", name: "Fixkosten & Verträge", color: "#3b82f6",
+        items: [
+          { id: "i_rent", name: "Miete / Wohnen", value: 0, min: 0, max: 1200, step: 25 },
+          { id: "i_mobile", name: "Mobilfunk & Internet", value: 0, min: 0, max: 150, step: 5 },
+          { id: "i_subs", name: "Abos & Raten", value: 0, min: 0, max: 200, step: 5 }
+        ]
+      },
+      {
+        id: "c_food", name: "Lebensmittel & Haushalt", color: "#22c55e",
+        items: [
+          { id: "i_groceries", name: "Wocheneinkauf Supermarkt", value: 0, min: 0, max: 600, step: 20 },
+          { id: "i_drogerie", name: "Drogerie & Hygiene", value: 0, min: 0, max: 150, step: 5 },
+          { id: "i_dining", name: "Lieferdienst & Imbiss", value: 0, min: 0, max: 200, step: 10 }
+        ]
+      },
+      {
+        id: "c_car", name: "Kfz & Mobilität", color: "#ef4444",
+        items: [
+          { id: "i_fuel", name: "Kraftstoff / Laden", value: 0, min: 0, max: 500, step: 10 },
+          { id: "i_repair", name: "Kfz-Reparaturen & Wartung", value: 0, min: 0, max: 300, step: 10 },
+          { id: "i_tax_ins", name: "Versicherung & Steuer", value: 0, min: 0, max: 200, step: 5 }
+        ]
+      },
+      {
+        id: "c_savings", name: "Sparen & Rücklagen", color: "#eab308",
+        items: [
+          { id: "i_emergency", name: "Notgroschen / Tagesgeld", value: 0, min: 0, max: 600, step: 25 },
+          { id: "i_special", name: "Sonderziel (z. B. Hochzeit)", value: 0, min: 0, max: 600, step: 25 }
+        ]
+      },
+      {
+        id: "c_leisure", name: "Freizeit & Taschengeld", color: "#a855f7",
+        items: [
+          { id: "i_hobby", name: "Hobbys & Shopping", value: 0, min: 0, max: 300, step: 10 },
+          { id: "i_pocket", name: "Bargeld / Puffer", value: 0, min: 0, max: 200, step: 10 }
+        ]
+      }
+    ]
+  };
+
+  var isEditMode = false;
+  var state;
+
+  try {
+    var stored = localStorage.getItem('budget_app_v4');
+    state = stored ? JSON.parse(stored) : DEMO_DATA;
+  } catch (e) {
+    state = DEMO_DATA;
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem('budget_app_v4', JSON.stringify(state));
+    } catch (e) {}
+  }
+
+  function toggleEditMode() {
+    isEditMode = !isEditMode;
+    var btn = document.getElementById('toggleEditBtn');
+    var status = document.getElementById('statusIndicator');
+    var container = document.getElementById('appContainer');
+
+    if (isEditMode) {
+      btn.classList.add('active');
+      btn.innerHTML = '<span>✓</span> Fertig';
+      status.textContent = "Editor-Modus aktiv";
+      container.classList.add('edit-active');
+    } else {
+      btn.classList.remove('active');
+      btn.innerHTML = '<span>⚙️</span> Editor-Modus';
+      status.textContent = "Ansichtsmodus";
+      container.classList.remove('edit-active');
+    }
+    render();
+  }
+
+  function getSliderBg(val, min, max, color) {
+    var pct = max > min ? ((val - min) / (max - min)) * 100 : 0;
+    return 'linear-gradient(to right, ' + color + ' 0%, ' + color + ' ' + pct + '%, #262c36 ' + pct + '%, #262c36 100%)';
+  }
+
+  function render() {
+    var container = document.getElementById('groupsContainer');
+    container.innerHTML = '';
+    
+    document.getElementById('netIncome').value = state.income || '';
+
+    state.categories.forEach(function(cat) {
+      var gBox = document.createElement('div');
+      gBox.className = 'group-box';
+      
+      var title = document.createElement('div');
+      title.className = 'group-title';
+
+      if (!isEditMode) {
+        title.style.color = cat.color;
+        title.innerHTML = '<span>● ' + cat.name + '</span><span id="sum_' + cat.id + '">0 €</span>';
+      } else {
+        title.innerHTML = 
+          '<div class="edit-header-row">' +
+            '<input type="color" class="color-picker" value="' + cat.color + '" onchange="updateCatColor(\'' + cat.id + '\', this.value)">' +
+            '<input type="text" class="title-input" value="' + cat.name + '" onchange="updateCatName(\'' + cat.id + '\', this.value)">' +
+          '</div>' +
+          '<button class="del-btn" title="Kategorie löschen" onclick="deleteCategory(\'' + cat.id + '\')">🗑️</button>';
+      }
+      gBox.appendChild(title);
+
+      cat.items.forEach(function(item) {
+        var card = document.createElement('div');
+        card.className = 'item-card';
+
+        var inner = 
+          '<div class="item-top">' +
+            '<span class="item-name">' + item.name + '</span>' +
+            '<span class="val-badge" id="v_' + item.id + '">' + item.value + ' €</span>' +
+          '</div>' +
+          '<input type="range" id="slider_' + item.id + '" min="' + item.min + '" max="' + item.max + '" step="' + item.step + '" value="' + item.value + '" ' +
+            'oninput="handleSliderMove(\'' + cat.id + '\', \'' + item.id + '\', this.value)" ' +
+            'style="accent-color:' + cat.color + '; background:' + getSliderBg(item.value, item.min, item.max, cat.color) + ';">';
+
+        if (isEditMode) {
+          inner += 
+            '<div class="edit-item-row">' +
+              '<input type="text" class="text-input-sm" value="' + item.name + '" placeholder="Name" style="flex:1" onchange="renameItem(\'' + cat.id + '\', \'' + item.id + '\', this.value)">' +
+              '<span style="font-size:0.75rem;color:var(--muted)">Max:</span>' +
+              '<input type="number" class="text-input-sm" value="' + item.max + '" style="width:70px" onchange="updateItemMax(\'' + cat.id + '\', \'' + item.id + '\', this.value)">' +
+              '<button class="del-btn" title="Posten löschen" onclick="removeItem(\'' + cat.id + '\', \'' + item.id + '\')">✕</button>' +
+            '</div>';
+        }
+
+        card.innerHTML = inner;
+        gBox.appendChild(card);
+      });
+
+      // Erscheint ausschließlich im Editor-Modus
+      if (isEditMode) {
+        var addRow = document.createElement('div');
+        addRow.className = 'add-row';
+        addRow.innerHTML = 
+          '<input type="text" placeholder="Neuer Posten..." id="in_name_' + cat.id + '" class="text-input-sm" style="flex:1">' +
+          '<input type="number" placeholder="Max (€)" id="in_max_' + cat.id + '" class="text-input-sm" style="max-width:80px" value="200">' +
+          '<button class="add-btn" onclick="addItem(\'' + cat.id + '\')">+ Posten</button>';
+        gBox.appendChild(addRow);
+      }
+
+      container.appendChild(gBox);
+    });
+
+    updateDashboardKPIs();
+  }
+
+  window.handleSliderMove = function(catId, itemId, val) {
+    var cat = state.categories.find(function(c) { return c.id === catId; });
+    var item = cat.items.find(function(i) { return i.id === itemId; });
+    item.value = parseInt(val, 10) || 0;
+    saveState();
+    
+    var badge = document.getElementById('v_' + itemId);
+    if (badge) badge.textContent = item.value + ' €';
+
+    var slider = document.getElementById('slider_' + itemId);
+    if (slider) slider.style.background = getSliderBg(item.value, item.min, item.max, cat.color);
+
+    updateDashboardKPIs();
+  };
+
+  function updateDashboardKPIs() {
+    var totalExp = 0;
+    var catTotals = [];
+
+    state.categories.forEach(function(cat) {
+      var gTot = 0;
+      cat.items.forEach(function(i) { gTot += i.value; });
+      totalExp += gTot;
+      catTotals.push({ id: cat.id, total: gTot, color: cat.color });
+      
+      var catSumEl = document.getElementById('sum_' + cat.id);
+      if (catSumEl) catSumEl.textContent = gTot.toLocaleString('de-DE') + ' €';
+    });
+
+    var inc = state.income || 0;
+    var surplus = inc - totalExp;
+    var rate = inc > 0 ? Math.round((surplus / inc) * 100) : 0;
+
+    document.getElementById('kpiExp').textContent = totalExp.toLocaleString('de-DE') + ' €';
+    var sEl = document.getElementById('kpiSurplus');
+    sEl.textContent = surplus.toLocaleString('de-DE') + ' €';
+    sEl.style.color = surplus >= 0 ? 'var(--green)' : 'var(--red)';
+    document.getElementById('kpiRate').textContent = rate + ' %';
+
+    var pBar = document.getElementById('progressBar');
+    pBar.innerHTML = '';
+    if (totalExp > 0) {
+      catTotals.forEach(function(c) {
+        var seg = document.createElement('div');
+        seg.className = 'bar-seg';
+        seg.style.background = c.color;
+        seg.style.width = ((c.total / totalExp) * 100) + '%';
+        pBar.appendChild(seg);
+      });
+    }
+  }
+
+  window.updateCatName = function(catId, newName) {
+    var cat = state.categories.find(function(c) { return c.id === catId; });
+    if (cat) { cat.name = newName; saveState(); }
+  };
+
+  window.updateCatColor = function(catId, newColor) {
+    var cat = state.categories.find(function(c) { return c.id === catId; });
+    if (cat) { cat.color = newColor; saveState(); render(); }
+  };
+
+  window.deleteCategory = function(catId) {
+    if (confirm("Kategorie samt aller Posten löschen?")) {
+      state.categories = state.categories.filter(function(c) { return c.id !== catId; });
+      saveState();
+      render();
+    }
+  };
+
+  window.addNewCategory = function() {
+    state.categories.push({
+      id: 'cat_' + Date.now(),
+      name: 'Neue Kategorie',
+      color: '#3b82f6',
+      items: []
+    });
+    saveState();
+    render();
+  };
+
+  window.renameItem = function(catId, itemId, newName) {
+    var cat = state.categories.find(function(c) { return c.id === catId; });
+    var item = cat.items.find(function(i) { return i.id === itemId; });
+    if (item) { item.name = newName; saveState(); }
+  };
+
+  window.updateItemMax = function(catId, itemId, newMax) {
+    var cat = state.categories.find(function(c) { return c.id === catId; });
+    var item = cat.items.find(function(i) { return i.id === itemId; });
+    if (item) {
+      item.max = parseInt(newMax, 10) || 100;
+      if (item.value > item.max) item.value = item.max;
+      saveState();
+      render();
+    }
+  };
+
+  window.addItem = function(catId) {
+    var nameIn = document.getElementById('in_name_' + catId);
+    var maxIn = document.getElementById('in_max_' + catId);
+    var name = nameIn.value.trim();
+    var maxVal = parseInt(maxIn.value, 10) || 200;
+    if (!name) return;
+
+    var cat = state.categories.find(function(c) { return c.id === catId; });
+    cat.items.push({
+      id: 'i_' + Date.now(),
+      name: name,
+      value: 0,
+      min: 0,
+      max: maxVal,
+      step: 5
+    });
+    saveState();
+    render();
+  };
+
+  window.removeItem = function(catId, itemId) {
+    var cat = state.categories.find(function(c) { return c.id === catId; });
+    cat.items = cat.items.filter(function(i) { return i.id !== itemId; });
+    saveState();
+    render();
+  };
+
+  document.getElementById('netIncome').addEventListener('input', function(e) {
+    state.income = parseFloat(e.target.value) || 0;
+    saveState();
+    updateDashboardKPIs();
+  });
+
+  window.addEventListener('DOMContentLoaded', render);
+  render();
+</script>
+</body>
+</html>
