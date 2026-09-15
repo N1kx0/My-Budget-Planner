@@ -312,18 +312,21 @@
     /* Variables Einkommen Detail-Box */
     .variable-inputs-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
       gap: 6px;
       margin-top: 6px;
       background: rgba(0, 0, 0, 0.2);
       padding: 8px;
       border-radius: 6px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .var-field {
       display: flex;
       flex-direction: column;
       gap: 2px;
+      min-width: 0;
     }
 
     .var-field label {
@@ -331,6 +334,9 @@
       color: var(--text-muted);
       text-transform: uppercase;
       font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .var-field input {
@@ -342,6 +348,9 @@
       font-size: 0.85rem;
       text-align: right;
       outline: none;
+      width: 100%;
+      box-sizing: border-box;
+      min-width: 0;
     }
 
     .tag-variable {
@@ -413,7 +422,7 @@
     }
 
     /* ==========================================================================
-       Finanzen-Page: Schulden, Kredite & Raten Styling
+       Finanzen-Page: Schulden, Kredite & Raten Styling (FIXIERT)
        ========================================================================== */
     .loan-card {
       background: rgba(255, 255, 255, 0.02);
@@ -423,6 +432,8 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+      min-width: 0;
+      overflow: hidden;
     }
 
     .loan-card.paid-off {
@@ -430,10 +441,27 @@
       background: rgba(16, 185, 129, 0.05);
     }
 
+    /* Header-Fix gegen Text-Überlappung */
     .loan-header-row {
       display: flex;
       justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .loan-title-group {
+      display: flex;
       align-items: center;
+      gap: 6px;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .loan-title-group .loan-name {
+      min-width: 0;
+      flex: 1;
+      word-break: break-word;
     }
 
     .loan-progress-container {
@@ -476,7 +504,7 @@
       background: rgba(139, 92, 246, 0.2);
       color: #c4b5fd;
       border: 1px solid var(--debt-color);
-      padding: 5px 10px;
+      padding: 6px 10px;
       border-radius: 6px;
       font-size: 0.8rem;
       font-weight: 600;
@@ -491,20 +519,25 @@
       transform: scale(0.96);
     }
 
+    /* Grid-Fix: Verhindert das Rausrutschen der rechten Eingabefelder */
     .loan-editor-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 8px;
       background: rgba(0, 0, 0, 0.25);
       padding: 8px;
       border-radius: 6px;
       margin-top: 6px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .loan-field {
       display: flex;
       flex-direction: column;
       gap: 2px;
+      min-width: 0;
+      width: 100%;
     }
 
     .loan-field label {
@@ -512,6 +545,9 @@
       color: var(--text-muted);
       text-transform: uppercase;
       font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .loan-field input {
@@ -519,9 +555,12 @@
       border: 1px solid var(--border);
       border-radius: 4px;
       color: var(--text-main);
-      padding: 4px 6px;
+      padding: 6px 8px;
       font-size: 0.85rem;
       outline: none;
+      width: 100%;
+      box-sizing: border-box;
+      min-width: 0;
     }
 
     /* Buttons & Utilities */
@@ -693,7 +732,7 @@
       <button type="button" class="toggle-btn" id="btnYear">Jahr (x12)</button>
     </div>
 
-    <!-- 4. Globales KPI-Dashboard (berücksichtigt Kredite & Rechnungen) -->
+    <!-- 4. Globales KPI-Dashboard -->
     <section class="kpi-grid">
       <div class="kpi-card">
         <span class="kpi-title">Ausgaben gesamt</span>
@@ -909,7 +948,6 @@
             ]
           }
         ],
-        // NEU IN PHASE 2: Finanzen, Kredite & Dauerrechnungen
         liabilities: {
           loans: [
             {
@@ -997,7 +1035,7 @@
           });
         }
 
-        // 4. NEU: Liabilities (Kredite & Rechnungen) migrieren
+        // 4. Liabilities
         if (!stored.liabilities) {
           stored.liabilities = defaults.liabilities;
         } else {
@@ -1022,7 +1060,7 @@
     }
 
     /* ==========================================================================
-       3. Rechnerische Hilfsfunktionen & Fixkosten-Integration
+       3. Rechnerische Hilfsfunktionen
        ========================================================================== */
     function getMultiplier() {
       return currentViewMode === 'year' ? 12 : 1;
@@ -1045,7 +1083,6 @@
       return (state.incomes || []).reduce((sum, inc) => sum + getEffectiveIncome(inc), 0);
     }
 
-    // Berechnet die monatlichen aktiven Raten (abbezahlte Kredite = 0 €)
     function calcMonthlyLoanCosts() {
       if (!state.liabilities || !Array.isArray(state.liabilities.loans)) return 0;
       return state.liabilities.loans.reduce((sum, loan) => {
@@ -1054,13 +1091,11 @@
       }, 0);
     }
 
-    // Berechnet die monatlichen Dauerrechnungen
     function calcMonthlyRecurringCosts() {
       if (!state.liabilities || !Array.isArray(state.liabilities.recurringBills)) return 0;
       return state.liabilities.recurringBills.reduce((sum, bill) => sum + (Number(bill.monthlyCost) || 0), 0);
     }
 
-    // Variable Budget-Ausgaben (Kategorien)
     function calcMonthlyCategoryExpenses() {
       let sum = 0;
       (state.categories || []).forEach(cat => {
@@ -1071,13 +1106,12 @@
       return sum;
     }
 
-    // Gesamtausgaben: Kategorien + Kredite + Dauerrechnungen
     function calcMonthlyTotalExpenses() {
       return calcMonthlyCategoryExpenses() + calcMonthlyLoanCosts() + calcMonthlyRecurringCosts();
     }
 
     /* ==========================================================================
-       4. Render-Pipeline: Globales Dashboard & Segmentierter Balken
+       4. Render-Pipeline: Globales Dashboard & Balken
        ========================================================================== */
     function renderKPIs() {
       const mult = getMultiplier();
@@ -1111,7 +1145,6 @@
 
       const base = Math.max(mIncome, mTotalExpenses);
 
-      // 1. Kategorien-Segmente
       state.categories.forEach(cat => {
         const catSum = (cat.items || []).reduce((s, it) => s + (Number(it.value) || 0), 0);
         if (catSum > 0) {
@@ -1124,7 +1157,6 @@
         }
       });
 
-      // 2. Kredite & Raten Segment (Lila)
       const loanSum = calcMonthlyLoanCosts();
       if (loanSum > 0) {
         const pct = (loanSum / base) * 100;
@@ -1136,7 +1168,6 @@
         track.appendChild(seg);
       }
 
-      // 3. Dauerrechnungen Segment (Cyan/Blau)
       const recurringSum = calcMonthlyRecurringCosts();
       if (recurringSum > 0) {
         const pct = (recurringSum / base) * 100;
@@ -1150,7 +1181,7 @@
     }
 
     /* ==========================================================================
-       5. Render: Budget-Seite (Einkommen & Kategorien)
+       5. Render: Budget-Seite
        ========================================================================== */
     function renderIncomes() {
       const container = document.getElementById('incomesList');
@@ -1169,7 +1200,7 @@
 
           row.innerHTML = `
             <div class="item-info">
-              <div style="display:flex; align-items:center; gap:6px; flex:1;">
+              <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:0;">
                 <span class="tag-variable">VARIABEL</span>
                 <input type="text" class="item-name-input" value="${inc.name}" ${!isEditorActive ? 'readonly' : ''}>
               </div>
@@ -1382,7 +1413,7 @@
     }
 
     /* ==========================================================================
-       6. Render: Finanzen-Page (Kredite, Raten & Dauerrechnungen)
+       6. Render: Finanzen-Page (Kredite & Dauerrechnungen)
        ========================================================================== */
     function renderFinancePage() {
       renderLoansList();
@@ -1411,12 +1442,12 @@
 
         card.innerHTML = `
           <div class="loan-header-row">
-            <div style="display:flex; align-items:center; gap:6px; flex:1;">
+            <div class="loan-title-group">
               <input type="text" class="item-name-input loan-name" value="${loan.name}" ${!isEditorActive ? 'readonly' : ''} style="font-weight:700;">
-              ${isPaidOff ? '<span class="badge" style="background:rgba(16,185,129,0.2); color:var(--success); font-size:0.65rem;">ABBEZAHLT ✔️</span>' : ''}
+              ${isPaidOff ? '<span class="badge" style="background:rgba(16,185,129,0.2); color:var(--success); font-size:0.65rem; white-space:nowrap;">ABBEZAHLT ✔️</span>' : ''}
             </div>
-            <div style="display:flex; align-items:center; gap:6px;">
-              <span style="font-weight:700; font-size:0.95rem; color:${isPaidOff ? 'var(--success)' : 'var(--debt-color)'};">
+            <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+              <span style="font-weight:700; font-size:0.95rem; color:${isPaidOff ? 'var(--success)' : 'var(--debt-color)'}; white-space:nowrap;">
                 ${formatEUR(rate * mult)} <span style="font-size:0.75rem; color:var(--text-muted);">/ ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}</span>
               </span>
               <button type="button" class="btn-danger editor-only del-loan-btn">🗑️</button>
@@ -1445,7 +1476,7 @@
             ` : '<span style="font-size:0.75rem; color:var(--success);">Dieser Kredit belastet nicht mehr deine Fixkosten.</span>'}
           </div>
 
-          <!-- Vollständige Editier-Felder im Editor-Modus -->
+          <!-- Vollständig ausgerichtetes Grid ohne Overflow -->
           <div class="loan-editor-grid editor-only">
             <div class="loan-field">
               <label>Gesamtschuld (€)</label>
@@ -1466,13 +1497,11 @@
           </div>
         `;
 
-        // Event: Name ändern
         card.querySelector('.loan-name').addEventListener('change', (e) => {
           loan.name = e.target.value;
           persistState();
         });
 
-        // Event: Quick-Button "+1 Rate tilgen"
         const quickPayBtn = card.querySelector('.quick-pay-btn');
         if (quickPayBtn) {
           quickPayBtn.addEventListener('click', () => {
@@ -1482,7 +1511,6 @@
           });
         }
 
-        // Editor Inputs Events
         const inpTotal = card.querySelector('.edit-loan-total');
         const inpPaid = card.querySelector('.edit-loan-paid');
         const inpRate = card.querySelector('.edit-loan-rate');
@@ -1512,7 +1540,6 @@
           renderApp();
         });
 
-        // Löschen
         card.querySelector('.del-loan-btn').addEventListener('click', () => {
           state.liabilities.loans.splice(idx, 1);
           persistState();
@@ -1682,9 +1709,8 @@
     }
 
     /* ==========================================================================
-       9. Event-Listener & Tab-Navigation
+       9. Event-Listener & Navigation
        ========================================================================== */
-    // Tab-Umschaltung
     const tabBudget = document.getElementById('tabBudget');
     const tabFinance = document.getElementById('tabFinance');
     const pageBudget = document.getElementById('pageBudget');
@@ -1708,7 +1734,6 @@
       renderApp();
     });
 
-    // Umschalter: Monat / Jahr
     const btnMonth = document.getElementById('btnMonth');
     const btnYear = document.getElementById('btnYear');
 
@@ -1726,7 +1751,6 @@
       renderApp();
     });
 
-    // Editor-Modus
     const btnToggleMode = document.getElementById('btnToggleMode');
     btnToggleMode.addEventListener('click', () => {
       isEditorActive = !isEditorActive;
@@ -1735,7 +1759,6 @@
       renderApp();
     });
 
-    // Einnahmen hinzufügen
     document.getElementById('btnAddIncomeFix').addEventListener('click', () => {
       state.incomes.push({ id: `inc_${Date.now()}`, name: 'Festes Gehalt', type: 'fixed', value: 0 });
       persistState();
@@ -1755,14 +1778,12 @@
       renderApp();
     });
 
-    // Kategorie hinzufügen
     document.getElementById('btnAddCategory').addEventListener('click', () => {
       state.categories.push({ id: `cat_${Date.now()}`, name: 'Neue Kategorie', color: '#3b82f6', items: [] });
       persistState();
       renderApp();
     });
 
-    // Kredite & Dauerrechnungen hinzufügen
     document.getElementById('btnAddLoan').addEventListener('click', () => {
       state.liabilities.loans.push({
         id: `loan_${Date.now()}`,
@@ -1787,7 +1808,6 @@
       renderApp();
     });
 
-    // Settings Modal
     const modal = document.getElementById('settingsModal');
     const btnOpenSettings = document.getElementById('btnOpenSettings');
     const btnCloseSettings = document.getElementById('btnCloseSettings');
@@ -1817,7 +1837,6 @@
     btnCloseSettings.addEventListener('click', closeSettingsModal);
     btnSaveSettings.addEventListener('click', closeSettingsModal);
 
-    // Reset auf leeres Template
     document.getElementById('btnResetDemo').addEventListener('click', () => {
       if (confirm('Möchtest du alle Werte wirklich auf 0 € zurücksetzen?')) {
         state = getDefaultData();
@@ -1834,7 +1853,6 @@
       }
     });
 
-    // Start
     setInterval(updateClock, 1000);
     updateClock();
     initGoalEditorInputs();
