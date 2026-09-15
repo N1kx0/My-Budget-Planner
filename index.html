@@ -19,6 +19,7 @@
       --danger: #ef4444;
       --warning: #f59e0b;
       --debt-color: #8b5cf6;
+      --emergency-color: #06b6d4;
       --radius: 12px;
     }
 
@@ -144,7 +145,7 @@
       border: 1px solid rgba(245, 158, 11, 0.4);
     }
 
-    /* Haupt-Navigation (Tabs) */
+    /* Haupt-Navigation */
     .main-nav {
       display: flex;
       background: var(--bg-card);
@@ -177,7 +178,7 @@
       color: #fff;
     }
 
-    /* Modus-Umschalter: Monat / Jahr */
+    /* Zeitraum-Umschalter */
     .view-toggle {
       display: flex;
       background: var(--bg-card);
@@ -387,60 +388,6 @@
       pointer-events: none;
     }
 
-    /* Variables Einkommen */
-    .variable-inputs-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
-      gap: 6px;
-      margin-top: 6px;
-      background: rgba(0, 0, 0, 0.2);
-      padding: 8px;
-      border-radius: 6px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    .var-field {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      min-width: 0;
-    }
-
-    .var-field label {
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-weight: 700;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .var-field input {
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      color: var(--text-main);
-      padding: 4px 6px;
-      font-size: 0.85rem;
-      text-align: right;
-      outline: none;
-      width: 100%;
-      box-sizing: border-box;
-      min-width: 0;
-    }
-
-    .tag-variable {
-      font-size: 0.65rem;
-      background: rgba(245, 158, 11, 0.15);
-      color: var(--warning);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: 700;
-      border: 1px solid rgba(245, 158, 11, 0.3);
-    }
-
     /* Schieberegler */
     .range-slider {
       -webkit-appearance: none;
@@ -474,33 +421,8 @@
       border: 2px solid var(--accent);
     }
 
-    /* Sparziel-Box */
-    .goal-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      background: var(--bg-input);
-      padding: 10px;
-      border-radius: 8px;
-    }
-
-    .goal-stat-item {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .goal-stat-label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .goal-stat-val {
-      font-size: 0.95rem;
-      font-weight: 700;
-    }
-
-    /* Finanzen & Kredite */
-    .loan-card {
+    /* Notgroschen & Kredite Styling */
+    .loan-card, .emergency-card {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -512,7 +434,7 @@
       overflow: hidden;
     }
 
-    .loan-card.paid-off {
+    .loan-card.paid-off, .emergency-card.goal-reached {
       border-color: rgba(16, 185, 129, 0.4);
       background: rgba(16, 185, 129, 0.05);
     }
@@ -566,14 +488,15 @@
       justify-content: space-between;
       align-items: center;
       margin-top: 4px;
-      gap: 8px;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     .btn-quick-pay {
       background: rgba(139, 92, 246, 0.2);
       color: #c4b5fd;
       border: 1px solid var(--debt-color);
-      padding: 6px 10px;
+      padding: 5px 10px;
       border-radius: 6px;
       font-size: 0.8rem;
       font-weight: 600;
@@ -585,6 +508,25 @@
     }
 
     .btn-quick-pay:active {
+      transform: scale(0.96);
+    }
+
+    .btn-quick-emergency {
+      background: rgba(6, 182, 212, 0.15);
+      color: #67e8f9;
+      border: 1px solid var(--emergency-color);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-quick-emergency:active {
       transform: scale(0.96);
     }
 
@@ -631,7 +573,80 @@
       min-width: 0;
     }
 
-    /* Timeline & Historie */
+    /* Chart & Timeline */
+    .chart-container {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 12px 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chart-toggle-group {
+      display: flex;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      padding: 2px;
+      border-radius: 8px;
+      gap: 2px;
+    }
+
+    .chart-mode-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .chart-mode-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .svg-wrapper {
+      position: relative;
+      width: 100%;
+      height: 190px;
+      touch-action: none;
+    }
+
+    .chart-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .chart-tooltip {
+      position: absolute;
+      top: 6px;
+      right: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(4px);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-main);
+      pointer-events: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: none;
+    }
+
     .timeline-summary {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -694,16 +709,6 @@
       padding: 2px 0;
     }
 
-    .timeline-entry-income {
-      color: var(--success);
-      font-weight: 600;
-    }
-
-    .timeline-entry-expense {
-      color: var(--danger);
-      font-weight: 600;
-    }
-
     .history-card {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--border);
@@ -719,82 +724,6 @@
     .history-card:hover {
       background: rgba(255, 255, 255, 0.05);
       border-color: var(--accent);
-    }
-
-    /* ==========================================================================
-       NEU: Interaktiver SVG-Graph Styling
-       ========================================================================== */
-    .chart-container {
-      position: relative;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px 12px 10px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .chart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .chart-toggle-group {
-      display: flex;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      padding: 2px;
-      border-radius: 8px;
-      gap: 2px;
-    }
-
-    .chart-mode-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .chart-mode-btn.active {
-      background: var(--accent);
-      color: #fff;
-    }
-
-    .svg-wrapper {
-      position: relative;
-      width: 100%;
-      height: 190px;
-      touch-action: none; /* Verhindert Ruckeln beim Wischen über das Chart */
-    }
-
-    .chart-svg {
-      width: 100%;
-      height: 100%;
-      overflow: visible;
-    }
-
-    .chart-tooltip {
-      position: absolute;
-      top: 6px;
-      right: 12px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(4px);
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--text-main);
-      pointer-events: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      display: none;
     }
 
     /* Buttons & Utilities */
@@ -877,7 +806,7 @@
       display: none !important;
     }
 
-    /* Settings Modal */
+    /* Modal Styling */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -1045,7 +974,7 @@
       <button type="button" class="nav-btn" id="tabTimeline">📅 Timeline & Chart</button>
     </nav>
 
-    <!-- 4. Globaler Zeitraum-Umschalter: Monat / Jahr -->
+    <!-- 4. Globaler Zeitraum-Umschalter -->
     <div class="view-toggle">
       <button type="button" class="toggle-btn active" id="btnMonth">Monat</button>
       <button type="button" class="toggle-btn" id="btnYear">Jahr (x12)</button>
@@ -1080,7 +1009,7 @@
          ==================================================================== -->
     <div class="page-view" id="pageBudget">
       
-      <!-- Einnahmen & Konten -->
+      <!-- Einnahmen & Gehälter -->
       <section class="card">
         <div class="card-header">
           <h2 class="card-title">💵 Einnahmen & Gehälter</h2>
@@ -1132,13 +1061,70 @@
     </div>
 
     <!-- ====================================================================
-         SEITE 2: FINANZEN, KREDITE & DAUERRECHNUNGEN
+         SEITE 2: FINANZEN, NOTGROSCHEN & KREDITE
          ==================================================================== -->
     <div class="page-view hidden" id="pageFinance">
       
-      <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); padding: 12px; border-radius: var(--radius); font-size: 0.8rem; color: #c4b5fd;">
-        💡 <strong>Fixkosten-Automatik:</strong> Aktive Monatsraten und Dauerrechnungen werden automatisch als feste Fixkosten in dein Dashboard und in die Sparquote eingerechnet.
-      </div>
+      <!-- NEU: Voll editierbarer Notgroschen & Rücklagen -->
+      <section class="card" id="emergencyFundCard">
+        <div class="card-header">
+          <h2 class="card-title">🛡️ Notgroschen & Rücklagen</h2>
+          <span id="emergencyMonthlyRateDisplay" style="font-size: 0.95rem; font-weight: 700; color: var(--emergency-color);">0,00 € / mtl.</span>
+        </div>
+        
+        <div class="emergency-card" id="emergencyBox">
+          <div class="loan-header-row">
+            <div class="loan-title-group">
+              <input type="text" class="item-name-input" id="emergencyTitleInput" value="Notgroschen-Puffer" ${!isEditorActive ? 'readonly' : ''} style="font-weight:700;">
+              <span id="emergencyBadge" class="badge" style="display:none; background:rgba(16,185,129,0.2); color:var(--success); font-size:0.65rem; width:fit-content;">ZIEL ERREICHT ✔️</span>
+            </div>
+            <span id="emergencyTotalHeader" style="font-weight:700; font-size:0.95rem; color:var(--emergency-color);">0,00 €</span>
+          </div>
+
+          <div class="loan-progress-container">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:600;">
+              <span id="emergencyProgressLabel">0,00 € (0 %)</span>
+              <span id="emergencyTargetLabel">Ziel: 0,00 €</span>
+            </div>
+            <div class="loan-progress-bar">
+              <div class="loan-progress-fill" id="emergencyProgressFill" style="background:var(--emergency-color); width:0%;"></div>
+            </div>
+            <div class="loan-metrics-row">
+              <span id="emergencyRemainingLabel">Noch offen: 0,00 €</span>
+              <span id="emergencyMonthsLabel">Laufzeit: -- Monate</span>
+            </div>
+          </div>
+
+          <div class="loan-actions-row hide-in-archive">
+            <button type="button" class="btn-quick-emergency" id="btnEmergencyAdd50">⚡ +50 €</button>
+            <button type="button" class="btn-quick-emergency" id="btnEmergencyAdd100">⚡ +100 €</button>
+            <button type="button" class="btn-quick-emergency" id="btnEmergencyAddSurplus">⚡ Überschuss zuweisen</button>
+          </div>
+
+          <!-- Vollständiger In-Place Editor -->
+          <div class="loan-editor-grid editor-only hide-in-archive">
+            <div class="loan-field">
+              <label>Zielbetrag (€)</label>
+              <input type="number" step="any" id="editEmergencyTarget">
+            </div>
+            <div class="loan-field">
+              <label>Aktueller Ist-Stand (€)</label>
+              <input type="number" step="any" id="editEmergencyCurrent">
+            </div>
+            <div class="loan-field">
+              <label>Monatl. Sparrate (€)</label>
+              <input type="number" step="any" id="editEmergencyMonthly">
+            </div>
+            <div class="loan-field">
+              <label>In Monatsbudget abziehen?</label>
+              <select id="editEmergencyInclude" class="custom-select" style="padding:5px;">
+                <option value="true">Ja (als Fixkosten)</option>
+                <option value="false">Nein (nur manuell)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <!-- Kredite & Ratenkäufe -->
       <section class="card">
@@ -1163,11 +1149,11 @@
     </div>
 
     <!-- ====================================================================
-         SEITE 3: KALENDER, LIQUIDITÄT & CHART (NEU)
+         SEITE 3: KALENDER, LIQUIDITÄT & CHART
          ==================================================================== -->
     <div class="page-view hidden" id="pageTimeline">
       
-      <!-- NEU: Interaktiver SVG Graph Card -->
+      <!-- Interaktiver SVG Graph -->
       <section class="chart-container">
         <div class="chart-header">
           <h2 class="card-title" id="chartTitle">📈 Liquiditäts-Kurve</h2>
@@ -1366,13 +1352,11 @@
     };
 
     /* ==========================================================================
-       2. Globale Zustände & Datenstruktur (Schema)
+       2. Zentrales All-in-One Schema & Zustand
        ========================================================================== */
     const STORAGE_KEY = 'budget_app_blank_v10';
     let currentViewMode = 'month';
-    let currentTab = 'budget';
     let isEditorActive = false;
-    let chartViewMode = 'daily'; // 'daily' (Tag 1-31) | 'history' (Monatstrend)
 
     const SYSTEM_NOW = new Date();
     let viewedDate = new Date(SYSTEM_NOW.getFullYear(), SYSTEM_NOW.getMonth(), 1);
@@ -1381,6 +1365,11 @@
 
     function getDefaultData() {
       return {
+        // UI & App-Präferenzen
+        uiState: {
+          activeTab: 'budget',
+          chartViewMode: 'daily'
+        },
         settings: {
           showSliders: true,
           sliderStep: 10,
@@ -1390,6 +1379,15 @@
         cashflow: {
           startGiro: 1200,
           tagesgeld: 4500
+        },
+        // NEU: Vollständig editierbare Notgroschen- & Rücklagen-Planung
+        emergencyFund: {
+          title: 'Notgroschen (3 Monatsgehälter)',
+          targetAmount: 7500,
+          currentAmount: 2500,
+          monthlyContribution: 200,
+          includeInMonthlyBudget: true,
+          dueDay: 1
         },
         incomes: [
           { id: 'inc_1', name: 'Hauptgehalt', type: 'fixed', value: 2500, dueDay: 28 },
@@ -1437,8 +1435,8 @@
         },
         savingsGoal: {
           visible: true,
-          title: 'Notgroschen & Rücklagen',
-          target: 15000,
+          title: 'Vermögensaufbau',
+          target: 20000,
           startCapital: 3000,
           targetDate: '2028-12-31',
           interestRate: 3.5,
@@ -1459,6 +1457,14 @@
         const stored = JSON.parse(raw);
         const defaults = getDefaultData();
 
+        // 1. UI-Status migrieren
+        if (!stored.uiState) stored.uiState = defaults.uiState;
+        else {
+          if (!stored.uiState.activeTab) stored.uiState.activeTab = 'budget';
+          if (!stored.uiState.chartViewMode) stored.uiState.chartViewMode = 'daily';
+        }
+
+        // 2. Settings & Theme
         if (!stored.settings) stored.settings = defaults.settings;
         else {
           if (stored.settings.showSliders === undefined) stored.settings.showSliders = true;
@@ -1467,12 +1473,25 @@
           if (!stored.settings.theme) stored.settings.theme = { ...THEME_PRESETS.midnight };
         }
 
+        // 3. Cashflow
         if (!stored.cashflow) stored.cashflow = defaults.cashflow;
         else {
           if (stored.cashflow.startGiro === undefined) stored.cashflow.startGiro = 1200;
           if (stored.cashflow.tagesgeld === undefined) stored.cashflow.tagesgeld = 4500;
         }
 
+        // 4. NEU: EmergencyFund migrieren
+        if (!stored.emergencyFund) stored.emergencyFund = defaults.emergencyFund;
+        else {
+          if (!stored.emergencyFund.title) stored.emergencyFund.title = 'Notgroschen-Puffer';
+          if (stored.emergencyFund.targetAmount === undefined) stored.emergencyFund.targetAmount = 7500;
+          if (stored.emergencyFund.currentAmount === undefined) stored.emergencyFund.currentAmount = 2500;
+          if (stored.emergencyFund.monthlyContribution === undefined) stored.emergencyFund.monthlyContribution = 200;
+          if (stored.emergencyFund.includeInMonthlyBudget === undefined) stored.emergencyFund.includeInMonthlyBudget = true;
+          if (stored.emergencyFund.dueDay === undefined) stored.emergencyFund.dueDay = 1;
+        }
+
+        // 5. Incomes & DueDay
         if (!Array.isArray(stored.incomes)) stored.incomes = defaults.incomes;
         else {
           stored.incomes.forEach(inc => {
@@ -1486,6 +1505,7 @@
           });
         }
 
+        // 6. Kategorien & DueDay
         if (!Array.isArray(stored.categories)) stored.categories = defaults.categories;
         else {
           stored.categories.forEach(cat => {
@@ -1500,6 +1520,7 @@
           });
         }
 
+        // 7. Liabilities
         if (!stored.liabilities) stored.liabilities = defaults.liabilities;
         else {
           if (!Array.isArray(stored.liabilities.loans)) stored.liabilities.loans = defaults.liabilities.loans;
@@ -1509,6 +1530,7 @@
           else stored.liabilities.recurringBills.forEach(b => { if (b.dueDay === undefined) b.dueDay = 1; });
         }
 
+        // 8. Sparziel & Historie
         if (!stored.savingsGoal) stored.savingsGoal = defaults.savingsGoal;
         if (!Array.isArray(stored.history)) stored.history = [];
 
@@ -1568,6 +1590,15 @@
       return (state.incomes || []).reduce((sum, inc) => sum + getEffectiveIncome(inc), 0);
     }
 
+    function calcMonthlyEmergencyContribution() {
+      if (isArchiveViewing && currentArchiveSnapshot) return currentArchiveSnapshot.emergencyContribution || 0;
+      const ef = state.emergencyFund;
+      if (!ef || !ef.includeInMonthlyBudget) return 0;
+      const target = Number(ef.targetAmount) || 0;
+      const current = Number(ef.currentAmount) || 0;
+      return current < target ? (Number(ef.monthlyContribution) || 0) : 0;
+    }
+
     function calcMonthlyLoanCosts() {
       if (isArchiveViewing && currentArchiveSnapshot) return currentArchiveSnapshot.loanCosts || 0;
       if (!state.liabilities || !Array.isArray(state.liabilities.loans)) return 0;
@@ -1596,7 +1627,7 @@
 
     function calcMonthlyTotalExpenses() {
       if (isArchiveViewing && currentArchiveSnapshot) return currentArchiveSnapshot.expenses;
-      return calcMonthlyCategoryExpenses() + calcMonthlyLoanCosts() + calcMonthlyRecurringCosts();
+      return calcMonthlyCategoryExpenses() + calcMonthlyLoanCosts() + calcMonthlyRecurringCosts() + calcMonthlyEmergencyContribution();
     }
 
     function createDueDaySelectHTML(selectedDay, className = 'due-day-select') {
@@ -1619,7 +1650,7 @@
     }
 
     /* ==========================================================================
-       6. Render-Pipeline: Globales Dashboard & Balken
+       6. Render-Pipeline: Globales Dashboard & Progress-Bar
        ========================================================================== */
     function renderKPIs() {
       const mult = getMultiplier();
@@ -1653,6 +1684,7 @@
 
       const base = Math.max(mIncome, mTotalExpenses);
 
+      // 1. Kategorien
       const cats = (isArchiveViewing && currentArchiveSnapshot?.categories) ? currentArchiveSnapshot.categories : state.categories;
       cats.forEach(cat => {
         const catSum = (cat.items || []).reduce((s, it) => s + (Number(it.value) || 0), 0);
@@ -1666,6 +1698,19 @@
         }
       });
 
+      // 2. Notgroschen Segment (Türkis)
+      const emerg = calcMonthlyEmergencyContribution();
+      if (emerg > 0) {
+        const pct = (emerg / base) * 100;
+        const seg = document.createElement('div');
+        seg.className = 'progress-segment';
+        seg.style.width = `${pct}%`;
+        seg.style.backgroundColor = 'var(--emergency-color)';
+        seg.title = 'Notgroschen-Rücklage';
+        track.appendChild(seg);
+      }
+
+      // 3. Kredite Segment (Lila)
       const loanSum = calcMonthlyLoanCosts();
       if (loanSum > 0) {
         const pct = (loanSum / base) * 100;
@@ -1677,6 +1722,7 @@
         track.appendChild(seg);
       }
 
+      // 4. Dauerrechnungen Segment
       const recurringSum = calcMonthlyRecurringCosts();
       if (recurringSum > 0) {
         const pct = (recurringSum / base) * 100;
@@ -1960,11 +2006,103 @@
     }
 
     /* ==========================================================================
-       8. Render: Finanzen-Page
+       8. Render: Finanzen-Page (Notgroschen, Kredite & Dauerrechnungen)
        ========================================================================== */
     function renderFinancePage() {
+      renderEmergencyFund();
       renderLoansList();
       renderRecurringList();
+    }
+
+    // NEU: Vollständig editierbarer Notgroschen & Rücklagen
+    function renderEmergencyFund() {
+      const ef = isArchiveViewing && currentArchiveSnapshot?.emergencyFund ? currentArchiveSnapshot.emergencyFund : state.emergencyFund;
+      const mult = getMultiplier();
+
+      const target = Number(ef.targetAmount) || 0;
+      const current = Number(ef.currentAmount) || 0;
+      const monthly = Number(ef.monthlyContribution) || 0;
+      const remaining = Math.max(0, target - current);
+      const pct = target > 0 ? Math.min(100, Math.round((current / target) * 100)) : 100;
+      const monthsLeft = monthly > 0 ? Math.ceil(remaining / monthly) : 0;
+      const isGoalReached = remaining <= 0;
+
+      // Header & Badges
+      document.getElementById('emergencyTitleInput').value = ef.title;
+      document.getElementById('emergencyTotalHeader').textContent = `${formatEUR(target * mult)}`;
+      document.getElementById('emergencyMonthlyRateDisplay').textContent = `${formatEUR((ef.includeInMonthlyBudget ? monthly : 0) * mult)} / ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}`;
+      
+      const badge = document.getElementById('emergencyBadge');
+      badge.style.display = isGoalReached ? 'inline-block' : 'none';
+
+      // Box Status & Progress
+      const box = document.getElementById('emergencyBox');
+      box.classList.toggle('goal-reached', isGoalReached);
+
+      document.getElementById('emergencyProgressLabel').textContent = `${formatEUR(current)} (${pct} %)`;
+      document.getElementById('emergencyTargetLabel').textContent = `Ziel: ${formatEUR(target)}`;
+      
+      const fill = document.getElementById('emergencyProgressFill');
+      fill.style.width = `${pct}%`;
+      fill.style.background = isGoalReached ? 'var(--success)' : 'var(--emergency-color)';
+
+      document.getElementById('emergencyRemainingLabel').innerHTML = `Noch offen: <strong>${formatEUR(remaining)}</strong>`;
+      document.getElementById('emergencyMonthsLabel').innerHTML = isGoalReached ? 'Vollständig aufgebaut' : `Noch ca. <strong>${monthsLeft} Monate</strong>`;
+
+      // Inputs im Editor synchronisieren
+      const inpTarget = document.getElementById('editEmergencyTarget');
+      const inpCurrent = document.getElementById('editEmergencyCurrent');
+      const inpMonthly = document.getElementById('editEmergencyMonthly');
+      const selInclude = document.getElementById('editEmergencyInclude');
+
+      inpTarget.value = target;
+      inpCurrent.value = current;
+      inpMonthly.value = monthly;
+      selInclude.value = ef.includeInMonthlyBudget ? 'true' : 'false';
+
+      if (!isArchiveViewing) {
+        // Quick-Action Buttons
+        document.getElementById('btnEmergencyAdd50').onclick = () => {
+          ef.currentAmount = Math.min(ef.targetAmount, ef.currentAmount + 50);
+          persistState();
+          renderApp();
+        };
+
+        document.getElementById('btnEmergencyAdd100').onclick = () => {
+          ef.currentAmount = Math.min(ef.targetAmount, ef.currentAmount + 100);
+          persistState();
+          renderApp();
+        };
+
+        document.getElementById('btnEmergencyAddSurplus').onclick = () => {
+          const surplus = calcMonthlyIncome() - calcMonthlyTotalExpenses();
+          if (surplus > 0) {
+            ef.currentAmount = Math.min(ef.targetAmount, ef.currentAmount + Math.round(surplus));
+            persistState();
+            renderApp();
+          } else {
+            alert('Aktuell ist kein freier Monatsüberschuss vorhanden.');
+          }
+        };
+
+        // Titel Input
+        document.getElementById('emergencyTitleInput').onchange = (e) => {
+          ef.title = e.target.value;
+          persistState();
+        };
+
+        // Live Editor In-Place Updates
+        const updateEmergencyLive = () => {
+          persistState();
+          renderKPIs();
+          renderEmergencyFund();
+        };
+
+        inpTarget.oninput = () => { ef.targetAmount = parseFloat(inpTarget.value) || 0; updateEmergencyLive(); };
+        inpCurrent.oninput = () => { ef.currentAmount = parseFloat(inpCurrent.value) || 0; updateEmergencyLive(); };
+        inpMonthly.oninput = () => { ef.monthlyContribution = parseFloat(inpMonthly.value) || 0; updateEmergencyLive(); };
+        selInclude.onchange = () => { ef.includeInMonthlyBudget = (selInclude.value === 'true'); updateEmergencyLive(); };
+      }
     }
 
     function renderLoansList() {
@@ -2199,17 +2337,18 @@
     }
 
     /* ==========================================================================
-       9. Render: Interaktiver SVG Graph (Tag 1-31 & Historie-Trend)
+       9. Render: Interaktiver SVG Graph
        ========================================================================== */
     function renderInteractiveChart() {
       const titleEl = document.getElementById('chartTitle');
       const btnDaily = document.getElementById('btnChartModeDaily');
       const btnHist = document.getElementById('btnChartModeHistory');
 
-      btnDaily.classList.toggle('active', chartViewMode === 'daily');
-      btnHist.classList.toggle('active', chartViewMode === 'history');
+      const mode = state.uiState.chartViewMode || 'daily';
+      btnDaily.classList.toggle('active', mode === 'daily');
+      btnHist.classList.toggle('active', mode === 'history');
 
-      if (chartViewMode === 'daily') {
+      if (mode === 'daily') {
         titleEl.textContent = `📈 Liquiditäts-Kurve (${getPeriodLabel(viewedDate)})`;
         renderDailyCashflowSvg();
       } else {
@@ -2229,7 +2368,6 @@
       crossGroup.innerHTML = '';
       tooltip.style.display = 'none';
 
-      // 31 Tage simulieren
       const startGiro = isArchiveViewing && currentArchiveSnapshot ? currentArchiveSnapshot.startGiro : state.cashflow.startGiro;
       let running = Number(startGiro) || 0;
       const balances = [];
@@ -2238,6 +2376,7 @@
       const categories = (isArchiveViewing && currentArchiveSnapshot?.categories) ? currentArchiveSnapshot.categories : state.categories;
       const loans = (isArchiveViewing && currentArchiveSnapshot?.loans) ? currentArchiveSnapshot.loans : state.liabilities.loans;
       const recurring = (isArchiveViewing && currentArchiveSnapshot?.recurringBills) ? currentArchiveSnapshot.recurringBills : state.liabilities.recurringBills;
+      const emergency = (isArchiveViewing && currentArchiveSnapshot?.emergencyFund) ? currentArchiveSnapshot.emergencyFund : state.emergencyFund;
 
       for (let day = 1; day <= 31; day++) {
         let delta = 0;
@@ -2249,11 +2388,16 @@
         });
         (recurring || []).forEach(b => { if ((b.dueDay || 1) === day) delta -= (Number(b.monthlyCost) || 0); });
 
+        // Notgroschen Abbuchung
+        if (emergency && emergency.includeInMonthlyBudget && (emergency.dueDay || 1) === day) {
+          const remEmerg = Math.max(0, (Number(emergency.targetAmount) || 0) - (Number(emergency.currentAmount) || 0));
+          if (remEmerg > 0) delta -= (Number(emergency.monthlyContribution) || 0);
+        }
+
         running += delta;
         balances.push({ day, balance: running });
       }
 
-      // Min/Max Skalierung
       const allVals = balances.map(b => b.balance);
       const minVal = Math.min(0, ...allVals);
       const maxVal = Math.max(100, ...allVals) * 1.15;
@@ -2266,14 +2410,12 @@
 
       const zeroY = pY(0);
 
-      // Null-Linie & Grid
       gridGroup.innerHTML = `
         <line x1="20" y1="${zeroY}" x2="${W - 10}" y2="${zeroY}" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="3,3"/>
         <text x="25" y="${zeroY - 4}" fill="var(--text-muted)" font-size="9">0 €</text>
         <text x="25" y="${pY(maxVal * 0.9)}" fill="var(--text-muted)" font-size="9">${formatEUR(maxVal * 0.9)}</text>
       `;
 
-      // Pfad-Punkte berechnen
       let dPath = `M ${pX(1)} ${pY(balances[0].balance)}`;
       for (let i = 1; i < balances.length; i++) {
         dPath += ` L ${pX(balances[i].day)} ${pY(balances[i].balance)}`;
@@ -2281,13 +2423,11 @@
 
       const dArea = `${dPath} L ${pX(31)} ${H - 20} L ${pX(1)} ${H - 20} Z`;
 
-      // Fläche & Linie
       dataGroup.innerHTML = `
         <path d="${dArea}" fill="url(#chartGradient)"/>
         <path d="${dPath}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
       `;
 
-      // Interaktiver Tracker (Crosshair & Dot)
       crossGroup.innerHTML = `
         <line id="svgCrossLine" x1="0" y1="10" x2="0" y2="${H - 20}" stroke="var(--text-main)" stroke-width="1" stroke-dasharray="2,2" opacity="0"/>
         <circle id="svgCrossDot" cx="0" cy="0" r="4.5" fill="var(--accent)" stroke="#fff" stroke-width="2" opacity="0"/>
@@ -2354,7 +2494,6 @@
         return;
       }
 
-      // Chronologisch aufsteigend für den Zeitstrahl
       const sorted = [...history].sort((a, b) => a.period.localeCompare(b.period));
 
       const W = 500;
@@ -2380,11 +2519,8 @@
         const ySurplus = pY(Math.max(0, item.surplus));
 
         barsHTML += `
-          <!-- Einnahmen Balken (Grün) -->
           <rect x="${xCenter - bW - 2}" y="${yInc}" width="${bW}" height="${hInc}" fill="var(--success)" opacity="0.8" rx="3"/>
-          <!-- Ausgaben Balken (Rot) -->
           <rect x="${xCenter + 2}" y="${yExp}" width="${bW}" height="${hExp}" fill="var(--danger)" opacity="0.8" rx="3"/>
-          <!-- Monatskürzel -->
           <text x="${xCenter}" y="${H - 12}" text-anchor="middle" fill="var(--text-muted)" font-size="10">${item.period.slice(2)}</text>
         `;
 
@@ -2399,7 +2535,6 @@
         <path d="${trendLine}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="3,3"/>
       `;
 
-      // Legende
       gridGroup.innerHTML = `
         <line x1="20" y1="${H - 30}" x2="${W - 10}" y2="${H - 30}" stroke="var(--border)" stroke-width="1"/>
         <g transform="translate(300, 10)">
@@ -2410,7 +2545,6 @@
         </g>
       `;
 
-      // Interaktiver Tooltip für Balken
       const svgEl = document.getElementById('interactiveChartSvg');
       svgEl.onpointermove = (evt) => {
         const rect = svgEl.getBoundingClientRect();
@@ -2455,10 +2589,12 @@
         categoryExpenses: calcMonthlyCategoryExpenses(),
         loanCosts: calcMonthlyLoanCosts(),
         recurringCosts: calcMonthlyRecurringCosts(),
+        emergencyContribution: calcMonthlyEmergencyContribution(),
         incomes: JSON.parse(JSON.stringify(state.incomes)),
         categories: JSON.parse(JSON.stringify(state.categories)),
         loans: JSON.parse(JSON.stringify(state.liabilities.loans)),
-        recurringBills: JSON.parse(JSON.stringify(state.liabilities.recurringBills))
+        recurringBills: JSON.parse(JSON.stringify(state.liabilities.recurringBills)),
+        emergencyFund: JSON.parse(JSON.stringify(state.emergencyFund))
       };
 
       const existingIdx = state.history.findIndex(h => h.period === periodKey);
@@ -2636,6 +2772,7 @@
       const categories = (isArchiveViewing && currentArchiveSnapshot?.categories) ? currentArchiveSnapshot.categories : state.categories;
       const loans = (isArchiveViewing && currentArchiveSnapshot?.loans) ? currentArchiveSnapshot.loans : state.liabilities.loans;
       const recurring = (isArchiveViewing && currentArchiveSnapshot?.recurringBills) ? currentArchiveSnapshot.recurringBills : state.liabilities.recurringBills;
+      const emergency = (isArchiveViewing && currentArchiveSnapshot?.emergencyFund) ? currentArchiveSnapshot.emergencyFund : state.emergencyFund;
 
       (incomes || []).forEach(inc => {
         const amount = getEffectiveIncome(inc);
@@ -2663,6 +2800,15 @@
         const day = Math.min(31, Math.max(1, bill.dueDay || 1));
         if (cost > 0) dailyEvents[day].push({ name: bill.name, amount: cost, type: 'expense' });
       });
+
+      if (emergency && emergency.includeInMonthlyBudget) {
+        const remEmerg = Math.max(0, (Number(emergency.targetAmount) || 0) - (Number(emergency.currentAmount) || 0));
+        const rate = Number(emergency.monthlyContribution) || 0;
+        const day = Math.min(31, Math.max(1, emergency.dueDay || 1));
+        if (remEmerg > 0 && rate > 0) {
+          dailyEvents[day].push({ name: `Rücklage: ${emergency.title}`, amount: rate, type: 'expense' });
+        }
+      }
 
       for (let day = 1; day <= 31; day++) {
         const events = dailyEvents[day];
@@ -2817,12 +2963,14 @@
       applySettingsToUI();
       updateMonthNavigatorUI();
       renderKPIs();
-      if (currentTab === 'budget') {
+
+      const activeTab = state.uiState.activeTab || 'budget';
+      if (activeTab === 'budget') {
         renderIncomes();
         renderCategories();
-      } else if (currentTab === 'finance') {
+      } else if (activeTab === 'finance') {
         renderFinancePage();
-      } else if (currentTab === 'timeline') {
+      } else if (activeTab === 'timeline') {
         renderTimelinePage();
       }
     }
@@ -2839,7 +2987,9 @@
     const pageTimeline = document.getElementById('pageTimeline');
 
     function switchTab(targetTab) {
-      currentTab = targetTab;
+      state.uiState.activeTab = targetTab;
+      persistState();
+
       tabBudget.classList.toggle('active', targetTab === 'budget');
       tabFinance.classList.toggle('active', targetTab === 'finance');
       tabTimeline.classList.toggle('active', targetTab === 'timeline');
@@ -2855,14 +3005,16 @@
     tabFinance.addEventListener('click', () => switchTab('finance'));
     tabTimeline.addEventListener('click', () => switchTab('timeline'));
 
-    // Chart-Mode Switcher (31 Tage vs Monats-Trend)
+    // Chart-Mode Switcher
     document.getElementById('btnChartModeDaily').addEventListener('click', () => {
-      chartViewMode = 'daily';
+      state.uiState.chartViewMode = 'daily';
+      persistState();
       renderInteractiveChart();
     });
 
     document.getElementById('btnChartModeHistory').addEventListener('click', () => {
-      chartViewMode = 'history';
+      state.uiState.chartViewMode = 'history';
+      persistState();
       renderInteractiveChart();
     });
 
@@ -3056,6 +3208,7 @@
       updatePresetChipHighlight('custom');
       applyTheme(state.settings.theme);
       persistState();
+      renderInteractiveChart();
     });
 
     themeColorCard.addEventListener('input', (e) => {
@@ -3064,6 +3217,7 @@
       updatePresetChipHighlight('custom');
       applyTheme(state.settings.theme);
       persistState();
+      renderInteractiveChart();
     });
 
     themeRadiusSlider.addEventListener('input', (e) => {
@@ -3082,12 +3236,15 @@
         state.categories.forEach(c => c.items.forEach(it => it.value = 0));
         state.liabilities.loans = [];
         state.liabilities.recurringBills = [];
+        state.emergencyFund.currentAmount = 0;
         state.savingsGoal.startCapital = 0;
         persistState();
         renderApp();
       }
     });
 
+    // Start-Initialisierung: Gespeicherten Tab aktivieren
+    switchTab(state.uiState.activeTab || 'budget');
     setInterval(updateClock, 1000);
     updateClock();
     initGoalEditorInputs();
