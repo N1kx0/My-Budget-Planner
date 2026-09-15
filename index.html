@@ -87,6 +87,63 @@
       gap: 6px;
     }
 
+    /* Monats-Navigator / Picker (NEU) */
+    .month-navigator {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 6px 10px;
+    }
+
+    .nav-arrow-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 4px 10px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .nav-arrow-btn:hover {
+      background: var(--bg-input);
+    }
+
+    .month-display-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .month-label {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .live-badge {
+      font-size: 0.65rem;
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .archive-badge {
+      font-size: 0.65rem;
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--warning);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
     /* Haupt-Navigation (Tabs) */
     .main-nav {
       display: flex;
@@ -574,7 +631,7 @@
       min-width: 0;
     }
 
-    /* Timeline Styling */
+    /* Timeline & Historie */
     .timeline-summary {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -647,6 +704,24 @@
       font-weight: 600;
     }
 
+    /* Historie Liste / Tabelle */
+    .history-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .history-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--accent);
+    }
+
     /* Buttons & Utilities */
     .btn {
       background: var(--accent);
@@ -695,6 +770,11 @@
       display: none !important;
     }
 
+    /* Archiv-Modus Sperre */
+    body.archive-mode .hide-in-archive {
+      display: none !important;
+    }
+
     .color-picker-dot {
       width: 14px;
       height: 14px;
@@ -723,9 +803,7 @@
       display: none !important;
     }
 
-    /* ==========================================================================
-       Settings & Design-Editor Modal Styling
-       ========================================================================== */
+    /* Settings Modal */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -807,7 +885,6 @@
       outline: none;
     }
 
-    /* Theme Preset Kacheln */
     .theme-preset-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -868,20 +945,39 @@
       </button>
     </header>
 
-    <!-- 2. Haupt-Navigation: 3 Tabs -->
+    <!-- 2. Monats-Navigator / Picker (NEU) -->
+    <div class="month-navigator">
+      <button type="button" class="nav-arrow-btn" id="btnPrevMonth" title="Vorheriger Monat">◀</button>
+      <div class="month-display-group">
+        <span class="month-label" id="currentMonthLabel">September 2026</span>
+        <span id="monthStatusBadge" class="live-badge">AKTUELL (LIVE)</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 4px;">
+        <button type="button" class="btn btn-secondary" id="btnTodayMonth" style="padding: 4px 8px; font-size: 0.75rem;">Heute</button>
+        <button type="button" class="nav-arrow-btn" id="btnNextMonth" title="Nächster Monat">▶</button>
+      </div>
+    </div>
+
+    <!-- Banner im Archiv-Modus -->
+    <div id="archiveNoticeBanner" class="page-view hidden" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); padding: 10px 14px; border-radius: var(--radius); font-size: 0.8rem; color: var(--warning); display: flex; justify-content: space-between; align-items: center;">
+      <span>📖 <strong>Archiv-Ansicht:</strong> Du betrachtest einen gespeicherten Vormonat (schreibgeschützt).</span>
+      <button type="button" class="btn" id="btnExitArchive" style="padding: 4px 8px; font-size: 0.75rem;">Zurück zu Live</button>
+    </div>
+
+    <!-- 3. Haupt-Navigation: 3 Tabs -->
     <nav class="main-nav">
       <button type="button" class="nav-btn active" id="tabBudget">📊 Budget</button>
       <button type="button" class="nav-btn" id="tabFinance">💳 Finanzen</button>
-      <button type="button" class="nav-btn" id="tabTimeline">📅 Timeline</button>
+      <button type="button" class="nav-btn" id="tabTimeline">📅 Timeline & Archiv</button>
     </nav>
 
-    <!-- 3. Globaler Zeitraum-Umschalter: Monat / Jahr -->
+    <!-- 4. Globaler Zeitraum-Umschalter: Monat / Jahr -->
     <div class="view-toggle">
       <button type="button" class="toggle-btn active" id="btnMonth">Monat</button>
       <button type="button" class="toggle-btn" id="btnYear">Jahr (x12)</button>
     </div>
 
-    <!-- 4. Globales KPI-Dashboard -->
+    <!-- 5. Globales KPI-Dashboard -->
     <section class="kpi-grid">
       <div class="kpi-card">
         <span class="kpi-title">Ausgaben gesamt</span>
@@ -900,7 +996,7 @@
       </div>
     </section>
 
-    <!-- 5. Dynamischer Fortschrittsbalken -->
+    <!-- 6. Dynamischer Fortschrittsbalken -->
     <section class="progress-bar-wrapper">
       <div class="progress-track" id="progressBar"></div>
     </section>
@@ -917,7 +1013,7 @@
           <span id="totalIncomeHeader" style="font-size: 0.95rem; font-weight: 700; color: var(--success);">0,00 €</span>
         </div>
         <div class="item-list" id="incomesList"></div>
-        <div class="editor-only" style="gap: 8px;">
+        <div class="editor-only hide-in-archive" style="gap: 8px;">
           <button type="button" class="btn btn-secondary" id="btnAddIncomeFix">+ Festes Gehalt</button>
           <button type="button" class="btn btn-secondary" id="btnAddIncomeVar" style="border-color: var(--warning); color: var(--warning);">+ Variables Gehalt</button>
         </div>
@@ -926,9 +1022,9 @@
       <!-- Ausgaben-Kategorien -->
       <div id="categoriesContainer" style="display: flex; flex-direction: column; gap: 16px;"></div>
 
-      <button type="button" class="btn btn-secondary editor-only" id="btnAddCategory">+ Neue Ausgabenkategorie</button>
+      <button type="button" class="btn btn-secondary editor-only hide-in-archive" id="btnAddCategory">+ Neue Ausgabenkategorie</button>
 
-      <!-- Sparziel mit Zinseszins & Prognose -->
+      <!-- Sparziel -->
       <section class="card" id="savingsGoalCard">
         <div class="card-header">
           <h2 class="card-title" id="goalTitleDisplay">🎯 Sparziel</h2>
@@ -951,7 +1047,7 @@
         </div>
 
         <!-- Editor-Felder für Sparziel -->
-        <div class="editor-only" style="flex-direction: column; gap: 8px;">
+        <div class="editor-only hide-in-archive" style="flex-direction: column; gap: 8px;">
           <label style="font-size: 0.75rem; color: var(--text-muted);">Titel: <input type="text" id="goalTitleInput" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:4px; border-radius:4px; width:100%;"></label>
           <label style="font-size: 0.75rem; color: var(--text-muted);">Zielbetrag (€): <input type="number" id="goalTargetInput" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:4px; border-radius:4px; width:100%;"></label>
           <label style="font-size: 0.75rem; color: var(--text-muted);">Startkapital (€): <input type="number" id="goalStartInput" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:4px; border-radius:4px; width:100%;"></label>
@@ -971,14 +1067,14 @@
         💡 <strong>Fixkosten-Automatik:</strong> Aktive Monatsraten und Dauerrechnungen werden automatisch als feste Fixkosten in dein Dashboard und in die Sparquote eingerechnet.
       </div>
 
-      <!-- Kredite, Ratenkäufe & Schulden -->
+      <!-- Kredite & Ratenkäufe -->
       <section class="card">
         <div class="card-header">
           <h2 class="card-title">💳 Kredite & Ratenkäufe</h2>
           <span id="totalLoansRateHeader" style="font-size: 0.95rem; font-weight: 700; color: var(--debt-color);">0,00 € / mtl.</span>
         </div>
         <div class="item-list" id="loansList"></div>
-        <button type="button" class="btn btn-secondary editor-only" id="btnAddLoan">+ Kredit / Ratenkauf hinzufügen</button>
+        <button type="button" class="btn btn-secondary editor-only hide-in-archive" id="btnAddLoan">+ Kredit / Ratenkauf hinzufügen</button>
       </section>
 
       <!-- Feste Dauerrechnungen & Verträge -->
@@ -988,13 +1084,13 @@
           <span id="totalRecurringHeader" style="font-size: 0.95rem; font-weight: 700; color: var(--accent);">0,00 € / mtl.</span>
         </div>
         <div class="item-list" id="recurringList"></div>
-        <button type="button" class="btn btn-secondary editor-only" id="btnAddRecurring">+ Dauerrechnung hinzufügen</button>
+        <button type="button" class="btn btn-secondary editor-only hide-in-archive" id="btnAddRecurring">+ Dauerrechnung hinzufügen</button>
       </section>
 
     </div>
 
     <!-- ====================================================================
-         SEITE 3: KALENDER & TAGESGENAUE LIQUIDITÄT
+         SEITE 3: KALENDER, LIQUIDITÄT & HISTORIE
          ==================================================================== -->
     <div class="page-view hidden" id="pageTimeline">
       
@@ -1002,7 +1098,9 @@
       <section class="card">
         <div class="card-header">
           <h2 class="card-title">🏦 Girokonto & Liquidität</h2>
-          <span style="font-size: 0.8rem; color: var(--text-muted);">Monats-Cashflow</span>
+          <button type="button" class="btn hide-in-archive" id="btnArchiveMonth" style="padding: 5px 10px; font-size: 0.75rem;">
+            💾 Diesen Monat archivieren
+          </button>
         </div>
 
         <div class="timeline-summary">
@@ -1023,6 +1121,15 @@
         <div id="timelineAlertContainer"></div>
       </section>
 
+      <!-- NEU: Monats-Historie & Snapshot-Archiv -->
+      <section class="card">
+        <div class="card-header">
+          <h2 class="card-title">📜 Monats-Historie & Archiv</h2>
+          <span id="historyCountBadge" style="font-size: 0.8rem; color: var(--text-muted);">0 Monate archiviert</span>
+        </div>
+        <div class="item-list" id="historyListContainer"></div>
+      </section>
+
       <!-- Monats-Timeline Tag für Tag -->
       <section class="card">
         <div class="card-header">
@@ -1034,15 +1141,15 @@
 
     </div>
 
-    <!-- 6. Footer: Editor-Modus & Reset -->
+    <!-- 7. Footer: Editor-Modus & Reset -->
     <footer class="footer-actions">
-      <button type="button" class="btn" id="btnToggleMode">✏️ Editor-Modus</button>
-      <button type="button" class="btn btn-secondary editor-only" id="btnResetDemo" style="color: var(--danger); border-color: var(--danger);">Reset auf 0 €</button>
+      <button type="button" class="btn hide-in-archive" id="btnToggleMode">✏️ Editor-Modus</button>
+      <button type="button" class="btn btn-secondary editor-only hide-in-archive" id="btnResetDemo" style="color: var(--danger); border-color: var(--danger);">Reset auf 0 €</button>
     </footer>
 
   </main>
 
-  <!-- 7. Settings & Design-Editor Modal -->
+  <!-- 8. Settings & Design-Editor Modal -->
   <div class="modal-overlay" id="settingsModal">
     <div class="modal-card">
       <div class="modal-title">
@@ -1050,7 +1157,6 @@
         <button type="button" class="btn-danger" id="btnCloseSettings" style="font-size: 1.2rem;">✕</button>
       </div>
 
-      <!-- Sektion: Design Presets -->
       <div class="setting-section-title">Theme Presets</div>
       <div class="theme-preset-grid">
         <button type="button" class="theme-chip" data-theme="midnight">
@@ -1071,11 +1177,10 @@
         </button>
         <button type="button" class="theme-chip" data-theme="light" style="grid-column: span 2;">
           <span class="theme-color-preview" style="background: #2563eb;"></span>
-          Clean Light (Heller Modus)
+          Clean Light
         </button>
       </div>
 
-      <!-- Sektion: Live Design-Editor (Custom) -->
       <div class="setting-section-title">Design-Editor (Farben & Stil)</div>
       
       <div class="setting-row">
@@ -1110,7 +1215,6 @@
         <input type="range" id="themeRadiusSlider" min="2" max="24" step="2" style="width: 110px;">
       </div>
 
-      <!-- Sektion: Verhaltens-Optionen -->
       <div class="setting-section-title">Funktionen & Steuerung</div>
 
       <div class="setting-row">
@@ -1155,61 +1259,11 @@
        1. Theme Presets Definition
        ========================================================================== */
     const THEME_PRESETS = {
-      midnight: {
-        name: 'midnight',
-        bgMain: '#0f172a',
-        bgCard: '#1e293b',
-        bgInput: '#0b1329',
-        border: '#334155',
-        textMain: '#f8fafc',
-        textMuted: '#94a3b8',
-        accent: '#3b82f6',
-        radius: 12
-      },
-      oled: {
-        name: 'oled',
-        bgMain: '#000000',
-        bgCard: '#121212',
-        bgInput: '#1a1a1a',
-        border: '#2a2a2a',
-        textMain: '#ffffff',
-        textMuted: '#a0a0a0',
-        accent: '#3b82f6',
-        radius: 10
-      },
-      cyber: {
-        name: 'cyber',
-        bgMain: '#0d0b18',
-        bgCard: '#1b162f',
-        bgInput: '#120d24',
-        border: '#3a2e63',
-        textMain: '#ffffff',
-        textMuted: '#a79bc7',
-        accent: '#06b6d4',
-        radius: 14
-      },
-      emerald: {
-        name: 'emerald',
-        bgMain: '#061a14',
-        bgCard: '#0d2b22',
-        bgInput: '#081f18',
-        border: '#174738',
-        textMain: '#f0fdf4',
-        textMuted: '#86efac',
-        accent: '#10b981',
-        radius: 12
-      },
-      light: {
-        name: 'light',
-        bgMain: '#f1f5f9',
-        bgCard: '#ffffff',
-        bgInput: '#e2e8f0',
-        border: '#cbd5e1',
-        textMain: '#0f172a',
-        textMuted: '#64748b',
-        accent: '#2563eb',
-        radius: 12
-      }
+      midnight: { name: 'midnight', bgMain: '#0f172a', bgCard: '#1e293b', bgInput: '#0b1329', border: '#334155', textMain: '#f8fafc', textMuted: '#94a3b8', accent: '#3b82f6', radius: 12 },
+      oled: { name: 'oled', bgMain: '#000000', bgCard: '#121212', bgInput: '#1a1a1a', border: '#2a2a2a', textMain: '#ffffff', textMuted: '#a0a0a0', accent: '#3b82f6', radius: 10 },
+      cyber: { name: 'cyber', bgMain: '#0d0b18', bgCard: '#1b162f', bgInput: '#120d24', border: '#3a2e63', textMain: '#ffffff', textMuted: '#a79bc7', accent: '#06b6d4', radius: 14 },
+      emerald: { name: 'emerald', bgMain: '#061a14', bgCard: '#0d2b22', bgInput: '#081f18', border: '#174738', textMain: '#f0fdf4', textMuted: '#86efac', accent: '#10b981', radius: 12 },
+      light: { name: 'light', bgMain: '#f1f5f9', bgCard: '#ffffff', bgInput: '#e2e8f0', border: '#cbd5e1', textMain: '#0f172a', textMuted: '#64748b', accent: '#2563eb', radius: 12 }
     };
 
     /* ==========================================================================
@@ -1219,6 +1273,12 @@
     let currentViewMode = 'month';
     let currentTab = 'budget';
     let isEditorActive = false;
+
+    // Zeitrechnung & Navigation
+    const SYSTEM_NOW = new Date();
+    let viewedDate = new Date(SYSTEM_NOW.getFullYear(), SYSTEM_NOW.getMonth(), 1);
+    let isArchiveViewing = false;
+    let currentArchiveSnapshot = null;
 
     function getDefaultData() {
       return {
@@ -1268,24 +1328,8 @@
         ],
         liabilities: {
           loans: [
-            {
-              id: 'loan_1',
-              name: 'KFZ-Finanzierung',
-              totalAmount: 12000,
-              paidAmount: 4800,
-              monthlyRate: 300,
-              totalMonths: 40,
-              dueDay: 15
-            },
-            {
-              id: 'loan_2',
-              name: 'PayPal Ratenkauf (Laptop)',
-              totalAmount: 1200,
-              paidAmount: 800,
-              monthlyRate: 100,
-              totalMonths: 12,
-              dueDay: 10
-            }
+            { id: 'loan_1', name: 'KFZ-Finanzierung', totalAmount: 12000, paidAmount: 4800, monthlyRate: 300, totalMonths: 40, dueDay: 15 },
+            { id: 'loan_2', name: 'PayPal Ratenkauf (Laptop)', totalAmount: 1200, paidAmount: 800, monthlyRate: 100, totalMonths: 12, dueDay: 10 }
           ],
           recurringBills: [
             { id: 'rec_1', name: 'Mobilfunkvertrag', monthlyCost: 45, endDate: '2027-06-30', dueDay: 5 },
@@ -1300,7 +1344,9 @@
           targetDate: '2028-12-31',
           interestRate: 3.5,
           color: '#8b5cf6'
-        }
+        },
+        // NEU: Historie / Archivierte Monats-Snapshots
+        history: []
       };
     }
 
@@ -1326,17 +1372,15 @@
         }
 
         // 2. Cashflow
-        if (!stored.cashflow) {
-          stored.cashflow = defaults.cashflow;
-        } else {
+        if (!stored.cashflow) stored.cashflow = defaults.cashflow;
+        else {
           if (stored.cashflow.startGiro === undefined) stored.cashflow.startGiro = 1200;
           if (stored.cashflow.tagesgeld === undefined) stored.cashflow.tagesgeld = 4500;
         }
 
         // 3. Incomes & DueDay
-        if (!Array.isArray(stored.incomes)) {
-          stored.incomes = defaults.incomes;
-        } else {
+        if (!Array.isArray(stored.incomes)) stored.incomes = defaults.incomes;
+        else {
           stored.incomes.forEach(inc => {
             if (!inc.type) inc.type = 'fixed';
             if (inc.dueDay === undefined) inc.dueDay = 28;
@@ -1349,9 +1393,8 @@
         }
 
         // 4. Kategorien & DueDay
-        if (!Array.isArray(stored.categories)) {
-          stored.categories = defaults.categories;
-        } else {
+        if (!Array.isArray(stored.categories)) stored.categories = defaults.categories;
+        else {
           stored.categories.forEach(cat => {
             if (!cat.color) cat.color = '#3b82f6';
             if (Array.isArray(cat.items)) {
@@ -1365,9 +1408,8 @@
         }
 
         // 5. Liabilities
-        if (!stored.liabilities) {
-          stored.liabilities = defaults.liabilities;
-        } else {
+        if (!stored.liabilities) stored.liabilities = defaults.liabilities;
+        else {
           if (!Array.isArray(stored.liabilities.loans)) stored.liabilities.loans = defaults.liabilities.loans;
           else stored.liabilities.loans.forEach(l => { if (l.dueDay === undefined) l.dueDay = 15; });
 
@@ -1377,6 +1419,9 @@
 
         // 6. Sparziel
         if (!stored.savingsGoal) stored.savingsGoal = defaults.savingsGoal;
+
+        // 7. NEU: Historie migrieren
+        if (!Array.isArray(stored.history)) stored.history = [];
 
         return stored;
       } catch (e) {
@@ -1392,7 +1437,7 @@
     }
 
     /* ==========================================================================
-       4. Theme Engine: CSS Custom Properties dynamisch injizieren
+       4. Theme Engine
        ========================================================================== */
     function applyTheme(theme) {
       const root = document.documentElement;
@@ -1405,13 +1450,12 @@
       root.style.setProperty('--accent', theme.accent);
       root.style.setProperty('--radius', `${theme.radius || 12}px`);
 
-      // Browser Statusleiste anpassen
       const metaTheme = document.querySelector('meta[name="theme-color"]');
       if (metaTheme) metaTheme.setAttribute('content', theme.bgMain);
     }
 
     /* ==========================================================================
-       5. Rechnerische Hilfsfunktionen
+       5. Rechnerische Hilfsfunktionen & Datenquellen (Live vs. Archiv)
        ========================================================================== */
     function getMultiplier() {
       return currentViewMode === 'year' ? 12 : 1;
@@ -1431,10 +1475,12 @@
     }
 
     function calcMonthlyIncome() {
+      if (isArchiveViewing && currentArchiveSnapshot) return currentArchiveSnapshot.income;
       return (state.incomes || []).reduce((sum, inc) => sum + getEffectiveIncome(inc), 0);
     }
 
     function calcMonthlyLoanCosts() {
+      if (isArchiveViewing && currentArchiveSnapshot) return currentArchiveSnapshot.loanCosts || 0;
       if (!state.liabilities || !Array.isArray(state.liabilities.loans)) return 0;
       return state.liabilities.loans.reduce((sum, loan) => {
         const remaining = Math.max(0, (Number(loan.totalAmount) || 0) - (Number(loan.paidAmount) || 0));
@@ -1443,11 +1489,13 @@
     }
 
     function calcMonthlyRecurringCosts() {
+      if (isArchiveViewing && currentArchiveSnapshot) return currentArchiveSnapshot.recurringCosts || 0;
       if (!state.liabilities || !Array.isArray(state.liabilities.recurringBills)) return 0;
       return state.liabilities.recurringBills.reduce((sum, bill) => sum + (Number(bill.monthlyCost) || 0), 0);
     }
 
     function calcMonthlyCategoryExpenses() {
+      if (isArchiveViewing && currentArchiveSnapshot) return currentArchiveSnapshot.categoryExpenses || 0;
       let sum = 0;
       (state.categories || []).forEach(cat => {
         (cat.items || []).forEach(item => {
@@ -1458,6 +1506,7 @@
     }
 
     function calcMonthlyTotalExpenses() {
+      if (isArchiveViewing && currentArchiveSnapshot) return currentArchiveSnapshot.expenses;
       return calcMonthlyCategoryExpenses() + calcMonthlyLoanCosts() + calcMonthlyRecurringCosts();
     }
 
@@ -1470,8 +1519,18 @@
       return html;
     }
 
+    function getPeriodKey(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      return `${y}-${m}`;
+    }
+
+    function getPeriodLabel(date) {
+      return date.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
+    }
+
     /* ==========================================================================
-       6. Render-Pipeline: Globales Dashboard & Progress-Bar
+       6. Render-Pipeline: Globales Dashboard & Fortschrittsbalken
        ========================================================================== */
     function renderKPIs() {
       const mult = getMultiplier();
@@ -1492,7 +1551,7 @@
       document.getElementById('subSurplus').textContent = labelSuffix;
 
       const incModeText = state.settings.incomeCalculationMode === 'min' ? ' (Min)' : ' (Ø)';
-      document.getElementById('totalIncomeHeader').textContent = `${formatEUR(mIncome * mult)}${incModeText}`;
+      document.getElementById('totalIncomeHeader').textContent = `${formatEUR(mIncome * mult)}${isArchiveViewing ? ' (Archiv)' : incModeText}`;
 
       renderProgressBar(mIncome, mTotalExpenses);
       renderSavingsGoal(mSurplus);
@@ -1505,7 +1564,9 @@
 
       const base = Math.max(mIncome, mTotalExpenses);
 
-      state.categories.forEach(cat => {
+      // Kategorien Segmente
+      const cats = (isArchiveViewing && currentArchiveSnapshot?.categories) ? currentArchiveSnapshot.categories : state.categories;
+      cats.forEach(cat => {
         const catSum = (cat.items || []).reduce((s, it) => s + (Number(it.value) || 0), 0);
         if (catSum > 0) {
           const pct = (catSum / base) * 100;
@@ -1517,6 +1578,7 @@
         }
       });
 
+      // Kredite Segment
       const loanSum = calcMonthlyLoanCosts();
       if (loanSum > 0) {
         const pct = (loanSum / base) * 100;
@@ -1528,6 +1590,7 @@
         track.appendChild(seg);
       }
 
+      // Dauerrechnungen Segment
       const recurringSum = calcMonthlyRecurringCosts();
       if (recurringSum > 0) {
         const pct = (recurringSum / base) * 100;
@@ -1548,7 +1611,9 @@
       container.innerHTML = '';
       const mult = getMultiplier();
 
-      state.incomes.forEach((inc, idx) => {
+      const incomes = (isArchiveViewing && currentArchiveSnapshot?.incomes) ? currentArchiveSnapshot.incomes : state.incomes;
+
+      incomes.forEach((inc, idx) => {
         const row = document.createElement('div');
         row.className = 'item-row';
 
@@ -1563,20 +1628,20 @@
               <div style="display:flex; flex-direction:column; gap:2px; flex:1; min-width:0;">
                 <div style="display:flex; align-items:center; gap:6px;">
                   <span class="tag-variable">VARIABEL</span>
-                  <input type="text" class="item-name-input" value="${inc.name}" ${!isEditorActive ? 'readonly' : ''}>
+                  <input type="text" class="item-name-input" value="${inc.name}" ${!isEditorActive || isArchiveViewing ? 'readonly' : ''}>
                 </div>
                 <div class="item-meta-row">
-                  <span>📅 Eingang: ${!isEditorActive ? `Tag ${inc.dueDay || 28}` : ''}</span>
-                  <div class="editor-only">${createDueDaySelectHTML(inc.dueDay || 28, 'inc-due-day')}</div>
+                  <span>📅 Eingang: ${!isEditorActive || isArchiveViewing ? `Tag ${inc.dueDay || 28}` : ''}</span>
+                  <div class="editor-only hide-in-archive">${createDueDaySelectHTML(inc.dueDay || 28, 'inc-due-day')}</div>
                 </div>
               </div>
               <div class="item-inputs">
                 <span style="font-weight:700; font-size:0.95rem; color:var(--warning);">${formatEUR(effVal)}</span>
-                <button type="button" class="btn-danger editor-only del-inc-btn">🗑️</button>
+                <button type="button" class="btn-danger editor-only hide-in-archive del-inc-btn">🗑️</button>
               </div>
             </div>
             
-            <div class="variable-inputs-grid editor-only">
+            <div class="variable-inputs-grid editor-only hide-in-archive">
               <div class="var-field">
                 <label>Min (Worst-Case)</label>
                 <input type="number" step="any" class="var-min" value="${minVal}">
@@ -1592,36 +1657,38 @@
             </div>
           `;
 
-          const nameInp = row.querySelector('.item-name-input');
-          const minInp = row.querySelector('.var-min');
-          const avgInp = row.querySelector('.var-avg');
-          const maxInp = row.querySelector('.var-max');
-          const dueDaySel = row.querySelector('.inc-due-day');
-          const delBtn = row.querySelector('.del-inc-btn');
+          if (!isArchiveViewing) {
+            const nameInp = row.querySelector('.item-name-input');
+            const minInp = row.querySelector('.var-min');
+            const avgInp = row.querySelector('.var-avg');
+            const maxInp = row.querySelector('.var-max');
+            const dueDaySel = row.querySelector('.inc-due-day');
+            const delBtn = row.querySelector('.del-inc-btn');
 
-          nameInp.addEventListener('change', (e) => { inc.name = e.target.value; persistState(); });
+            nameInp.addEventListener('change', (e) => { inc.name = e.target.value; persistState(); });
 
-          const handleVarChange = (inputEl, field) => {
-            const raw = parseFloat(inputEl.value) || 0;
-            inc[field] = currentViewMode === 'year' ? (raw / 12) : raw;
-            persistState();
-            renderKPIs();
-          };
+            const handleVarChange = (inputEl, field) => {
+              const raw = parseFloat(inputEl.value) || 0;
+              inc[field] = currentViewMode === 'year' ? (raw / 12) : raw;
+              persistState();
+              renderKPIs();
+            };
 
-          minInp.addEventListener('input', () => handleVarChange(minInp, 'minValue'));
-          avgInp.addEventListener('input', () => handleVarChange(avgInp, 'avgValue'));
-          maxInp.addEventListener('input', () => handleVarChange(maxInp, 'maxValue'));
+            minInp.addEventListener('input', () => handleVarChange(minInp, 'minValue'));
+            avgInp.addEventListener('input', () => handleVarChange(avgInp, 'avgValue'));
+            maxInp.addEventListener('input', () => handleVarChange(maxInp, 'maxValue'));
 
-          dueDaySel.addEventListener('change', (e) => {
-            inc.dueDay = parseInt(e.target.value, 10) || 28;
-            persistState();
-          });
+            dueDaySel.addEventListener('change', (e) => {
+              inc.dueDay = parseInt(e.target.value, 10) || 28;
+              persistState();
+            });
 
-          delBtn.addEventListener('click', () => {
-            state.incomes.splice(idx, 1);
-            persistState();
-            renderApp();
-          });
+            delBtn.addEventListener('click', () => {
+              state.incomes.splice(idx, 1);
+              persistState();
+              renderApp();
+            });
+          }
 
         } else {
           const displayedValue = (inc.value * mult).toFixed(2);
@@ -1629,46 +1696,48 @@
           row.innerHTML = `
             <div class="item-info">
               <div style="display:flex; flex-direction:column; gap:2px; flex:1; min-width:0;">
-                <input type="text" class="item-name-input" value="${inc.name}" ${!isEditorActive ? 'readonly' : ''}>
+                <input type="text" class="item-name-input" value="${inc.name}" ${!isEditorActive || isArchiveViewing ? 'readonly' : ''}>
                 <div class="item-meta-row">
-                  <span>📅 Eingang: ${!isEditorActive ? `Tag ${inc.dueDay || 28}` : ''}</span>
-                  <div class="editor-only">${createDueDaySelectHTML(inc.dueDay || 28, 'inc-due-day')}</div>
+                  <span>📅 Eingang: ${!isEditorActive || isArchiveViewing ? `Tag ${inc.dueDay || 28}` : ''}</span>
+                  <div class="editor-only hide-in-archive">${createDueDaySelectHTML(inc.dueDay || 28, 'inc-due-day')}</div>
                 </div>
               </div>
               <div class="item-inputs">
                 <div class="number-input-wrapper">
-                  <input type="number" step="any" value="${displayedValue}">
+                  <input type="number" step="any" value="${displayedValue}" ${isArchiveViewing ? 'readonly' : ''}>
                   <span class="currency-symbol">€</span>
                 </div>
-                <button type="button" class="btn-danger editor-only del-inc-btn">🗑️</button>
+                <button type="button" class="btn-danger editor-only hide-in-archive del-inc-btn">🗑️</button>
               </div>
             </div>
           `;
 
-          const nameInput = row.querySelector('.item-name-input');
-          const numInput = row.querySelector('input[type="number"]');
-          const dueDaySel = row.querySelector('.inc-due-day');
-          const delBtn = row.querySelector('.del-inc-btn');
+          if (!isArchiveViewing) {
+            const nameInput = row.querySelector('.item-name-input');
+            const numInput = row.querySelector('input[type="number"]');
+            const dueDaySel = row.querySelector('.inc-due-day');
+            const delBtn = row.querySelector('.del-inc-btn');
 
-          nameInput.addEventListener('change', (e) => { inc.name = e.target.value; persistState(); });
+            nameInput.addEventListener('change', (e) => { inc.name = e.target.value; persistState(); });
 
-          numInput.addEventListener('input', (e) => {
-            const raw = parseFloat(e.target.value) || 0;
-            inc.value = currentViewMode === 'year' ? (raw / 12) : raw;
-            persistState();
-            renderKPIs();
-          });
+            numInput.addEventListener('input', (e) => {
+              const raw = parseFloat(e.target.value) || 0;
+              inc.value = currentViewMode === 'year' ? (raw / 12) : raw;
+              persistState();
+              renderKPIs();
+            });
 
-          dueDaySel.addEventListener('change', (e) => {
-            inc.dueDay = parseInt(e.target.value, 10) || 28;
-            persistState();
-          });
+            dueDaySel.addEventListener('change', (e) => {
+              inc.dueDay = parseInt(e.target.value, 10) || 28;
+              persistState();
+            });
 
-          delBtn.addEventListener('click', () => {
-            state.incomes.splice(idx, 1);
-            persistState();
-            renderApp();
-          });
+            delBtn.addEventListener('click', () => {
+              state.incomes.splice(idx, 1);
+              persistState();
+              renderApp();
+            });
+          }
         }
 
         container.appendChild(row);
@@ -1681,7 +1750,9 @@
       const mult = getMultiplier();
       const stepVal = (state.settings.sliderStep || 10) * mult;
 
-      state.categories.forEach((cat, cIdx) => {
+      const cats = (isArchiveViewing && currentArchiveSnapshot?.categories) ? currentArchiveSnapshot.categories : state.categories;
+
+      cats.forEach((cat, cIdx) => {
         const card = document.createElement('section');
         card.className = 'card';
 
@@ -1690,45 +1761,48 @@
         card.innerHTML = `
           <div class="card-header">
             <div style="display: flex; align-items: center; gap: 8px;">
-              <input type="color" class="color-picker-dot editor-only" value="${cat.color}">
+              <input type="color" class="color-picker-dot editor-only hide-in-archive" value="${cat.color}">
               <h2 class="card-title">
-                <input type="text" class="item-name-input" value="${cat.name}" ${!isEditorActive ? 'readonly' : ''} style="font-size: 1.05rem; font-weight: 700;">
+                <input type="text" class="item-name-input" value="${cat.name}" ${!isEditorActive || isArchiveViewing ? 'readonly' : ''} style="font-size: 1.05rem; font-weight: 700;">
               </h2>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="cat-sum-badge" style="font-size: 0.95rem; font-weight: 700;">${formatEUR(catSum)}</span>
-              <button type="button" class="btn-danger editor-only del-cat-btn">🗑️</button>
+              <button type="button" class="btn-danger editor-only hide-in-archive del-cat-btn">🗑️</button>
             </div>
           </div>
           <div class="item-list"></div>
-          <button type="button" class="btn btn-secondary editor-only add-item-btn">+ Posten hinzufügen</button>
+          <button type="button" class="btn btn-secondary editor-only hide-in-archive add-item-btn">+ Posten hinzufügen</button>
         `;
 
+        if (!isArchiveViewing) {
+          const colorPicker = card.querySelector('input[type="color"]');
+          const titleInput = card.querySelector('.item-name-input');
+          const delCatBtn = card.querySelector('.del-cat-btn');
+          const addItemBtn = card.querySelector('.add-item-btn');
+
+          colorPicker.addEventListener('input', (e) => {
+            cat.color = e.target.value;
+            persistState();
+            renderApp();
+          });
+
+          titleInput.addEventListener('change', (e) => { cat.name = e.target.value; persistState(); });
+
+          delCatBtn.addEventListener('click', () => {
+            state.categories.splice(cIdx, 1);
+            persistState();
+            renderApp();
+          });
+
+          addItemBtn.addEventListener('click', () => {
+            cat.items.push({ id: `item_${Date.now()}`, name: 'Neuer Posten', value: 0, max: 500, dueDay: 1 });
+            persistState();
+            renderApp();
+          });
+        }
+
         const list = card.querySelector('.item-list');
-        const colorPicker = card.querySelector('input[type="color"]');
-        const titleInput = card.querySelector('.item-name-input');
-        const delCatBtn = card.querySelector('.del-cat-btn');
-        const addItemBtn = card.querySelector('.add-item-btn');
-
-        colorPicker.addEventListener('input', (e) => {
-          cat.color = e.target.value;
-          persistState();
-          renderApp();
-        });
-
-        titleInput.addEventListener('change', (e) => { cat.name = e.target.value; persistState(); });
-
-        delCatBtn.addEventListener('click', () => {
-          state.categories.splice(cIdx, 1);
-          persistState();
-          renderApp();
-        });
-
-        addItemBtn.addEventListener('click', () => {
-          cat.items.push({ id: `item_${Date.now()}`, name: 'Neuer Posten', value: 0, max: 500, dueDay: 1 });
-          persistState();
-          renderApp();
-        });
 
         cat.items.forEach((item, iIdx) => {
           const itemRow = document.createElement('div');
@@ -1740,66 +1814,68 @@
           itemRow.innerHTML = `
             <div class="item-info">
               <div style="display:flex; flex-direction:column; gap:2px; flex:1; min-width:0;">
-                <input type="text" class="item-name-input" value="${item.name}" ${!isEditorActive ? 'readonly' : ''}>
+                <input type="text" class="item-name-input" value="${item.name}" ${!isEditorActive || isArchiveViewing ? 'readonly' : ''}>
                 <div class="item-meta-row">
-                  <span>📅 Abbuchung: ${!isEditorActive ? `Tag ${item.dueDay || 1}` : ''}</span>
-                  <div class="editor-only">${createDueDaySelectHTML(item.dueDay || 1, 'item-due-day')}</div>
+                  <span>📅 Abbuchung: ${!isEditorActive || isArchiveViewing ? `Tag ${item.dueDay || 1}` : ''}</span>
+                  <div class="editor-only hide-in-archive">${createDueDaySelectHTML(item.dueDay || 1, 'item-due-day')}</div>
                 </div>
               </div>
               <div class="item-inputs">
                 <div class="number-input-wrapper">
-                  <input type="number" step="any" value="${displayedVal}">
+                  <input type="number" step="any" value="${displayedVal}" ${isArchiveViewing ? 'readonly' : ''}>
                   <span class="currency-symbol">€</span>
                 </div>
-                <button type="button" class="btn-danger editor-only del-item-btn">🗑️</button>
+                <button type="button" class="btn-danger editor-only hide-in-archive del-item-btn">🗑️</button>
               </div>
             </div>
-            <input type="range" class="range-slider" min="0" max="${currentMax}" step="${stepVal}" value="${displayedVal}">
+            ${!isArchiveViewing ? `<input type="range" class="range-slider" min="0" max="${currentMax}" step="${stepVal}" value="${displayedVal}">` : ''}
           `;
 
-          const nameInp = itemRow.querySelector('.item-name-input');
-          const numInp = itemRow.querySelector('input[type="number"]');
-          const slider = itemRow.querySelector('input[type="range"]');
-          const dueDaySel = itemRow.querySelector('.item-due-day');
-          const delItemBtn = itemRow.querySelector('.del-item-btn');
+          if (!isArchiveViewing) {
+            const nameInp = itemRow.querySelector('.item-name-input');
+            const numInp = itemRow.querySelector('input[type="number"]');
+            const slider = itemRow.querySelector('input[type="range"]');
+            const dueDaySel = itemRow.querySelector('.item-due-day');
+            const delItemBtn = itemRow.querySelector('.del-item-btn');
 
-          slider.style.accentColor = cat.color || 'var(--accent)';
+            slider.style.accentColor = cat.color || 'var(--accent)';
 
-          const syncValues = (newVal) => {
-            let numeric = parseFloat(newVal) || 0;
+            const syncValues = (newVal) => {
+              let numeric = parseFloat(newVal) || 0;
 
-            if (numeric > (item.max * mult)) {
-              item.max = Math.ceil(currentViewMode === 'year' ? (numeric / 12) * 1.25 : numeric * 1.25);
-              slider.max = (item.max * mult);
-            }
+              if (numeric > (item.max * mult)) {
+                item.max = Math.ceil(currentViewMode === 'year' ? (numeric / 12) * 1.25 : numeric * 1.25);
+                slider.max = (item.max * mult);
+              }
 
-            item.value = currentViewMode === 'year' ? (numeric / 12) : numeric;
-            persistState();
+              item.value = currentViewMode === 'year' ? (numeric / 12) : numeric;
+              persistState();
 
-            numInp.value = numeric;
-            slider.value = numeric;
+              numInp.value = numeric;
+              slider.value = numeric;
 
-            renderKPIs();
-            card.querySelector('.cat-sum-badge').textContent = formatEUR(
-              cat.items.reduce((s, it) => s + (Number(it.value) || 0), 0) * mult
-            );
-          };
+              renderKPIs();
+              card.querySelector('.cat-sum-badge').textContent = formatEUR(
+                cat.items.reduce((s, it) => s + (Number(it.value) || 0), 0) * mult
+              );
+            };
 
-          slider.addEventListener('input', (e) => syncValues(e.target.value));
-          numInp.addEventListener('input', (e) => syncValues(e.target.value));
+            slider.addEventListener('input', (e) => syncValues(e.target.value));
+            numInp.addEventListener('input', (e) => syncValues(e.target.value));
 
-          dueDaySel.addEventListener('change', (e) => {
-            item.dueDay = parseInt(e.target.value, 10) || 1;
-            persistState();
-          });
+            dueDaySel.addEventListener('change', (e) => {
+              item.dueDay = parseInt(e.target.value, 10) || 1;
+              persistState();
+            });
 
-          nameInp.addEventListener('change', (e) => { item.name = e.target.value; persistState(); });
+            nameInp.addEventListener('change', (e) => { item.name = e.target.value; persistState(); });
 
-          delItemBtn.addEventListener('click', () => {
-            cat.items.splice(iIdx, 1);
-            persistState();
-            renderApp();
-          });
+            delItemBtn.addEventListener('click', () => {
+              cat.items.splice(iIdx, 1);
+              persistState();
+              renderApp();
+            });
+          }
 
           list.appendChild(itemRow);
         });
@@ -1809,7 +1885,7 @@
     }
 
     /* ==========================================================================
-       8. Render: Finanzen-Page (Kredite & Dauerrechnungen)
+       8. Render: Finanzen-Page
        ========================================================================== */
     function renderFinancePage() {
       renderLoansList();
@@ -1824,7 +1900,9 @@
       const totalMonthlyRate = calcMonthlyLoanCosts();
       document.getElementById('totalLoansRateHeader').textContent = `${formatEUR(totalMonthlyRate * mult)} / ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}`;
 
-      state.liabilities.loans.forEach((loan, idx) => {
+      const loans = (isArchiveViewing && currentArchiveSnapshot?.loans) ? currentArchiveSnapshot.loans : state.liabilities.loans;
+
+      loans.forEach((loan, idx) => {
         const total = Number(loan.totalAmount) || 0;
         const paid = Number(loan.paidAmount) || 0;
         const rate = Number(loan.monthlyRate) || 0;
@@ -1840,19 +1918,19 @@
           <div class="loan-header-row">
             <div class="loan-title-group">
               <div style="display:flex; align-items:center; gap:6px;">
-                <input type="text" class="item-name-input loan-name" value="${loan.name}" ${!isEditorActive ? 'readonly' : ''} style="font-weight:700;">
+                <input type="text" class="item-name-input loan-name" value="${loan.name}" ${!isEditorActive || isArchiveViewing ? 'readonly' : ''} style="font-weight:700;">
                 ${isPaidOff ? '<span class="badge loan-badge-paid" style="background:rgba(16,185,129,0.2); color:var(--success); font-size:0.65rem; white-space:nowrap;">ABBEZAHLT ✔️</span>' : ''}
               </div>
               <div class="item-meta-row">
-                <span>📅 Rate fällig: ${!isEditorActive ? `Tag ${loan.dueDay || 15}` : ''}</span>
-                <div class="editor-only">${createDueDaySelectHTML(loan.dueDay || 15, 'loan-due-day')}</div>
+                <span>📅 Rate fällig: ${!isEditorActive || isArchiveViewing ? `Tag ${loan.dueDay || 15}` : ''}</span>
+                <div class="editor-only hide-in-archive">${createDueDaySelectHTML(loan.dueDay || 15, 'loan-due-day')}</div>
               </div>
             </div>
             <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
               <span class="loan-rate-header-display" style="font-weight:700; font-size:0.95rem; color:${isPaidOff ? 'var(--success)' : 'var(--debt-color)'}; white-space:nowrap;">
                 ${formatEUR(rate * mult)} <span style="font-size:0.75rem; color:var(--text-muted);">/ ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}</span>
               </span>
-              <button type="button" class="btn-danger editor-only del-loan-btn">🗑️</button>
+              <button type="button" class="btn-danger editor-only hide-in-archive del-loan-btn">🗑️</button>
             </div>
           </div>
 
@@ -1870,7 +1948,7 @@
             </div>
           </div>
 
-          <div class="loan-actions-row">
+          <div class="loan-actions-row hide-in-archive">
             ${!isPaidOff ? `
               <button type="button" class="btn-quick-pay quick-pay-btn">
                 ⚡ +1 Rate (${formatEUR(rate)}) tilgen
@@ -1878,7 +1956,7 @@
             ` : '<span style="font-size:0.75rem; color:var(--success);">Dieser Kredit belastet nicht mehr deine Fixkosten.</span>'}
           </div>
 
-          <div class="loan-editor-grid editor-only">
+          <div class="loan-editor-grid editor-only hide-in-archive">
             <div class="loan-field">
               <label>Gesamtschuld (€)</label>
               <input type="number" step="any" class="edit-loan-total" value="${total}">
@@ -1898,90 +1976,77 @@
           </div>
         `;
 
-        card.querySelector('.loan-name').addEventListener('change', (e) => {
-          loan.name = e.target.value;
-          persistState();
-        });
+        if (!isArchiveViewing) {
+          card.querySelector('.loan-name').addEventListener('change', (e) => {
+            loan.name = e.target.value;
+            persistState();
+          });
 
-        const dueDaySel = card.querySelector('.loan-due-day');
-        dueDaySel.addEventListener('change', (e) => {
-          loan.dueDay = parseInt(e.target.value, 10) || 15;
-          persistState();
-        });
+          const dueDaySel = card.querySelector('.loan-due-day');
+          dueDaySel.addEventListener('change', (e) => {
+            loan.dueDay = parseInt(e.target.value, 10) || 15;
+            persistState();
+          });
 
-        const quickPayBtn = card.querySelector('.quick-pay-btn');
-        if (quickPayBtn) {
-          quickPayBtn.addEventListener('click', () => {
-            loan.paidAmount = Math.min(loan.totalAmount, loan.paidAmount + loan.monthlyRate);
+          const quickPayBtn = card.querySelector('.quick-pay-btn');
+          if (quickPayBtn) {
+            quickPayBtn.addEventListener('click', () => {
+              loan.paidAmount = Math.min(loan.totalAmount, loan.paidAmount + loan.monthlyRate);
+              persistState();
+              renderApp();
+            });
+          }
+
+          const updateLoanLive = () => {
+            persistState();
+
+            const curTotal = Number(loan.totalAmount) || 0;
+            const curPaid = Number(loan.paidAmount) || 0;
+            const curRate = Number(loan.monthlyRate) || 0;
+            const curRemaining = Math.max(0, curTotal - curPaid);
+            const curPercent = curTotal > 0 ? Math.min(100, Math.round((curPaid / curTotal) * 100)) : 100;
+            const curMonths = curRate > 0 ? Math.ceil(curRemaining / curRate) : 0;
+            const curPaidOff = curRemaining <= 0;
+
+            card.classList.toggle('paid-off', curPaidOff);
+            card.querySelector('.loan-paid-text').textContent = `Getilgt: ${formatEUR(curPaid)} (${curPercent} %)`;
+            card.querySelector('.loan-total-text').textContent = `Gesamt: ${formatEUR(curTotal)}`;
+            
+            const fill = card.querySelector('.loan-progress-fill');
+            fill.style.width = `${curPercent}%`;
+            fill.style.background = curPaidOff ? 'var(--success)' : 'var(--debt-color)';
+
+            card.querySelector('.loan-remaining-text').innerHTML = `Restschuld: <strong>${formatEUR(curRemaining)}</strong>`;
+            card.querySelector('.loan-months-text').innerHTML = curPaidOff ? 'Abgeschlossen' : `Noch ca. <strong>${curMonths} Monate</strong>`;
+
+            const rateDisplay = card.querySelector('.loan-rate-header-display');
+            rateDisplay.style.color = curPaidOff ? 'var(--success)' : 'var(--debt-color)';
+            rateDisplay.innerHTML = `${formatEUR(curRate * mult)} <span style="font-size:0.75rem; color:var(--text-muted);">/ ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}</span>`;
+
+            const qBtn = card.querySelector('.quick-pay-btn');
+            if (qBtn) qBtn.textContent = `⚡ +1 Rate (${formatEUR(curRate)}) tilgen`;
+
+            const totalRate = calcMonthlyLoanCosts();
+            document.getElementById('totalLoansRateHeader').textContent = `${formatEUR(totalRate * mult)} / ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}`;
+            renderKPIs();
+          };
+
+          const inpTotal = card.querySelector('.edit-loan-total');
+          const inpPaid = card.querySelector('.edit-loan-paid');
+          const inpRate = card.querySelector('.edit-loan-rate');
+          const inpMonths = card.querySelector('.edit-loan-months');
+
+          inpTotal.addEventListener('input', () => { loan.totalAmount = parseFloat(inpTotal.value) || 0; updateLoanLive(); });
+          inpPaid.addEventListener('input', () => { loan.paidAmount = parseFloat(inpPaid.value) || 0; updateLoanLive(); });
+          inpRate.addEventListener('input', () => { loan.monthlyRate = parseFloat(inpRate.value) || 0; updateLoanLive(); });
+          inpMonths.addEventListener('input', () => { loan.totalMonths = parseInt(inpMonths.value, 10) || 12; persistState(); });
+
+          card.querySelector('.del-loan-btn').addEventListener('click', () => {
+            state.liabilities.loans.splice(idx, 1);
             persistState();
             renderApp();
           });
         }
-
-        const updateLoanLive = () => {
-          persistState();
-
-          const curTotal = Number(loan.totalAmount) || 0;
-          const curPaid = Number(loan.paidAmount) || 0;
-          const curRate = Number(loan.monthlyRate) || 0;
-          const curRemaining = Math.max(0, curTotal - curPaid);
-          const curPercent = curTotal > 0 ? Math.min(100, Math.round((curPaid / curTotal) * 100)) : 100;
-          const curMonths = curRate > 0 ? Math.ceil(curRemaining / curRate) : 0;
-          const curPaidOff = curRemaining <= 0;
-
-          card.classList.toggle('paid-off', curPaidOff);
-          card.querySelector('.loan-paid-text').textContent = `Getilgt: ${formatEUR(curPaid)} (${curPercent} %)`;
-          card.querySelector('.loan-total-text').textContent = `Gesamt: ${formatEUR(curTotal)}`;
-          
-          const fill = card.querySelector('.loan-progress-fill');
-          fill.style.width = `${curPercent}%`;
-          fill.style.background = curPaidOff ? 'var(--success)' : 'var(--debt-color)';
-
-          card.querySelector('.loan-remaining-text').innerHTML = `Restschuld: <strong>${formatEUR(curRemaining)}</strong>`;
-          card.querySelector('.loan-months-text').innerHTML = curPaidOff ? 'Abgeschlossen' : `Noch ca. <strong>${curMonths} Monate</strong>`;
-
-          const rateDisplay = card.querySelector('.loan-rate-header-display');
-          rateDisplay.style.color = curPaidOff ? 'var(--success)' : 'var(--debt-color)';
-          rateDisplay.innerHTML = `${formatEUR(curRate * mult)} <span style="font-size:0.75rem; color:var(--text-muted);">/ ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}</span>`;
-
-          const qBtn = card.querySelector('.quick-pay-btn');
-          if (qBtn) qBtn.textContent = `⚡ +1 Rate (${formatEUR(curRate)}) tilgen`;
-
-          const totalRate = calcMonthlyLoanCosts();
-          document.getElementById('totalLoansRateHeader').textContent = `${formatEUR(totalRate * mult)} / ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}`;
-          renderKPIs();
-        };
-
-        const inpTotal = card.querySelector('.edit-loan-total');
-        const inpPaid = card.querySelector('.edit-loan-paid');
-        const inpRate = card.querySelector('.edit-loan-rate');
-        const inpMonths = card.querySelector('.edit-loan-months');
-
-        inpTotal.addEventListener('input', () => {
-          loan.totalAmount = parseFloat(inpTotal.value) || 0;
-          updateLoanLive();
-        });
-
-        inpPaid.addEventListener('input', () => {
-          loan.paidAmount = parseFloat(inpPaid.value) || 0;
-          updateLoanLive();
-        });
-
-        inpRate.addEventListener('input', () => {
-          loan.monthlyRate = parseFloat(inpRate.value) || 0;
-          updateLoanLive();
-        });
-
-        inpMonths.addEventListener('input', () => {
-          loan.totalMonths = parseInt(inpMonths.value, 10) || 12;
-          persistState();
-        });
-
-        card.querySelector('.del-loan-btn').addEventListener('click', () => {
-          state.liabilities.loans.splice(idx, 1);
-          persistState();
-          renderApp();
-        });
 
         container.appendChild(card);
       });
@@ -1995,7 +2060,9 @@
       const totalRecurring = calcMonthlyRecurringCosts();
       document.getElementById('totalRecurringHeader').textContent = `${formatEUR(totalRecurring * mult)} / ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}`;
 
-      state.liabilities.recurringBills.forEach((bill, idx) => {
+      const recs = (isArchiveViewing && currentArchiveSnapshot?.recurringBills) ? currentArchiveSnapshot.recurringBills : state.liabilities.recurringBills;
+
+      recs.forEach((bill, idx) => {
         const row = document.createElement('div');
         row.className = 'item-row';
 
@@ -2004,30 +2071,28 @@
         let formattedDate = '';
         if (bill.endDate) {
           const parts = bill.endDate.split('-');
-          if (parts.length === 3) {
-            formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
-          }
+          if (parts.length === 3) formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
         }
 
         row.innerHTML = `
           <div class="item-info">
             <div style="display:flex; flex-direction:column; gap:2px; flex:1; min-width:0;">
-              <input type="text" class="item-name-input rec-name" value="${bill.name}" ${!isEditorActive ? 'readonly' : ''}>
+              <input type="text" class="item-name-input rec-name" value="${bill.name}" ${!isEditorActive || isArchiveViewing ? 'readonly' : ''}>
               <div class="item-meta-row">
-                <span>📅 Abbuchung: ${!isEditorActive ? `Tag ${bill.dueDay || 1}` : ''}</span>
-                <div class="editor-only">${createDueDaySelectHTML(bill.dueDay || 1, 'rec-due-day')}</div>
+                <span>📅 Abbuchung: ${!isEditorActive || isArchiveViewing ? `Tag ${bill.dueDay || 1}` : ''}</span>
+                <div class="editor-only hide-in-archive">${createDueDaySelectHTML(bill.dueDay || 1, 'rec-due-day')}</div>
                 ${formattedDate ? `<span>• Bis ${formattedDate}</span>` : ''}
               </div>
             </div>
             <div class="item-inputs">
               <div class="number-input-wrapper">
-                <input type="number" step="any" class="rec-cost" value="${displayedCost}">
+                <input type="number" step="any" class="rec-cost" value="${displayedCost}" ${isArchiveViewing ? 'readonly' : ''}>
                 <span class="currency-symbol">€</span>
               </div>
-              <button type="button" class="btn-danger editor-only del-rec-btn">🗑️</button>
+              <button type="button" class="btn-danger editor-only hide-in-archive del-rec-btn">🗑️</button>
             </div>
           </div>
-          <div class="editor-only" style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+          <div class="editor-only hide-in-archive" style="display:flex; align-items:center; gap:8px; margin-top:6px;">
             <label style="font-size:0.75rem; color:var(--text-muted); display:flex; align-items:center; gap:6px;">
               Vertragsende: 
               <input type="date" class="rec-date" value="${bill.endDate || ''}" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; border-radius:4px; padding:3px 6px;">
@@ -2035,66 +2100,150 @@
           </div>
         `;
 
-        const nameInp = row.querySelector('.rec-name');
-        const costInp = row.querySelector('.rec-cost');
-        const dateInp = row.querySelector('.rec-date');
-        const dueDaySel = row.querySelector('.rec-due-day');
-        const delBtn = row.querySelector('.del-rec-btn');
+        if (!isArchiveViewing) {
+          const nameInp = row.querySelector('.rec-name');
+          const costInp = row.querySelector('.rec-cost');
+          const dateInp = row.querySelector('.rec-date');
+          const dueDaySel = row.querySelector('.rec-due-day');
+          const delBtn = row.querySelector('.del-rec-btn');
 
-        nameInp.addEventListener('change', (e) => { bill.name = e.target.value; persistState(); });
+          nameInp.addEventListener('change', (e) => { bill.name = e.target.value; persistState(); });
 
-        costInp.addEventListener('input', (e) => {
-          const raw = parseFloat(e.target.value) || 0;
-          bill.monthlyCost = currentViewMode === 'year' ? (raw / 12) : raw;
-          persistState();
-          renderKPIs();
-          document.getElementById('totalRecurringHeader').textContent = `${formatEUR(calcMonthlyRecurringCosts() * mult)} / ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}`;
-        });
+          costInp.addEventListener('input', (e) => {
+            const raw = parseFloat(e.target.value) || 0;
+            bill.monthlyCost = currentViewMode === 'year' ? (raw / 12) : raw;
+            persistState();
+            renderKPIs();
+            document.getElementById('totalRecurringHeader').textContent = `${formatEUR(calcMonthlyRecurringCosts() * mult)} / ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}`;
+          });
 
-        dateInp.addEventListener('change', (e) => {
-          bill.endDate = e.target.value;
-          persistState();
-          renderRecurringList();
-        });
+          dateInp.addEventListener('change', (e) => {
+            bill.endDate = e.target.value;
+            persistState();
+            renderRecurringList();
+          });
 
-        dueDaySel.addEventListener('change', (e) => {
-          bill.dueDay = parseInt(e.target.value, 10) || 1;
-          persistState();
-        });
+          dueDaySel.addEventListener('change', (e) => {
+            bill.dueDay = parseInt(e.target.value, 10) || 1;
+            persistState();
+          });
 
-        delBtn.addEventListener('click', () => {
-          state.liabilities.recurringBills.splice(idx, 1);
-          persistState();
-          renderApp();
-        });
+          delBtn.addEventListener('click', () => {
+            state.liabilities.recurringBills.splice(idx, 1);
+            persistState();
+            renderApp();
+          });
+        }
 
         container.appendChild(row);
       });
     }
 
     /* ==========================================================================
-       9. Render: Timeline & Liquiditäts-Planung
+       9. Render: Timeline & Historie-Archiv
        ========================================================================== */
     function renderTimelinePage() {
       const giroInp = document.getElementById('inputStartGiro');
       const tagesInp = document.getElementById('inputTagesgeld');
 
-      giroInp.value = state.cashflow.startGiro;
-      tagesInp.value = state.cashflow.tagesgeld;
+      if (isArchiveViewing && currentArchiveSnapshot) {
+        giroInp.value = currentArchiveSnapshot.startGiro || 0;
+        tagesInp.value = currentArchiveSnapshot.tagesgeld || 0;
+        giroInp.setAttribute('readonly', 'true');
+        tagesInp.setAttribute('readonly', 'true');
+      } else {
+        giroInp.removeAttribute('readonly');
+        tagesInp.removeAttribute('readonly');
+        giroInp.value = state.cashflow.startGiro;
+        tagesInp.value = state.cashflow.tagesgeld;
 
-      giroInp.oninput = (e) => {
-        state.cashflow.startGiro = parseFloat(e.target.value) || 0;
-        persistState();
-        buildTimelineSchedule();
-      };
+        giroInp.oninput = (e) => {
+          state.cashflow.startGiro = parseFloat(e.target.value) || 0;
+          persistState();
+          buildTimelineSchedule();
+        };
 
-      tagesInp.oninput = (e) => {
-        state.cashflow.tagesgeld = parseFloat(e.target.value) || 0;
-        persistState();
-        buildTimelineSchedule();
-      };
+        tagesInp.oninput = (e) => {
+          state.cashflow.tagesgeld = parseFloat(e.target.value) || 0;
+          persistState();
+          buildTimelineSchedule();
+        };
+      }
 
+      renderHistoryList();
       buildTimelineSchedule();
+    }
+
+    function renderHistoryList() {
+      const container = document.getElementById('historyListContainer');
+      const countBadge = document.getElementById('historyCountBadge');
+      container.innerHTML = '';
+
+      const history = state.history || [];
+      countBadge.textContent = `${history.length} Monate archiviert`;
+
+      if (history.length === 0) {
+        container.innerHTML = `
+          <div style="font-size:0.8rem; color:var(--text-muted); text-align:center; padding:12px;">
+            Noch keine Monate archiviert. Klicke oben auf <strong>„💾 Diesen Monat archivieren“</strong>, um den aktuellen Monat festzuhalten.
+          </div>
+        `;
+        return;
+      }
+
+      // Chronologisch absteigend sortiert anzeigen
+      const sorted = [...history].sort((a, b) => b.period.localeCompare(a.period));
+
+      sorted.forEach(snap => {
+        const card = document.createElement('div');
+        card.className = 'history-card';
+
+        const isCurrentlySelected = isArchiveViewing && currentArchiveSnapshot?.period === snap.period;
+        if (isCurrentlySelected) {
+          card.style.borderColor = 'var(--warning)';
+          card.style.background = 'rgba(245, 158, 11, 0.08)';
+        }
+
+        card.innerHTML = `
+          <div style="display:flex; flex-direction:column; gap:2px;">
+            <div style="font-weight:700; font-size:0.9rem; display:flex; align-items:center; gap:6px;">
+              <span>${snap.label}</span>
+              ${isCurrentlySelected ? '<span class="archive-badge">AUSGEWÄHLT</span>' : ''}
+            </div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">
+              Ausgaben: ${formatEUR(snap.expenses)} • Sparquote: ${snap.savingsRate.toFixed(1)} %
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-weight:700; font-size:0.9rem; color:${snap.surplus >= 0 ? 'var(--success)' : 'var(--danger)'};">
+              ${snap.surplus >= 0 ? '+' : ''}${formatEUR(snap.surplus)}
+            </span>
+            <button type="button" class="btn-danger del-snap-btn" title="Snapshot löschen" style="font-size:0.8rem;">🗑️</button>
+          </div>
+        `;
+
+        // Klick öffnet Snapshot im Monats-Navigator
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.del-snap-btn')) return;
+          loadSnapshotIntoView(snap);
+        });
+
+        // Snapshot löschen
+        card.querySelector('.del-snap-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (confirm(`Möchtest du das Archiv für ${snap.label} wirklich löschen?`)) {
+            state.history = state.history.filter(h => h.period !== snap.period);
+            persistState();
+            if (isArchiveViewing && currentArchiveSnapshot?.period === snap.period) {
+              switchToLiveView();
+            } else {
+              renderApp();
+            }
+          }
+        });
+
+        container.appendChild(card);
+      });
     }
 
     function buildTimelineSchedule() {
@@ -2103,20 +2252,26 @@
       container.innerHTML = '';
       alertContainer.innerHTML = '';
 
-      let runningBalance = Number(state.cashflow.startGiro) || 0;
+      const startGiro = isArchiveViewing && currentArchiveSnapshot ? currentArchiveSnapshot.startGiro : state.cashflow.startGiro;
+      let runningBalance = Number(startGiro) || 0;
       let lowestBalance = runningBalance;
       let lowestDay = 1;
 
       const dailyEvents = {};
       for (let day = 1; day <= 31; day++) dailyEvents[day] = [];
 
-      (state.incomes || []).forEach(inc => {
+      const incomes = (isArchiveViewing && currentArchiveSnapshot?.incomes) ? currentArchiveSnapshot.incomes : state.incomes;
+      const categories = (isArchiveViewing && currentArchiveSnapshot?.categories) ? currentArchiveSnapshot.categories : state.categories;
+      const loans = (isArchiveViewing && currentArchiveSnapshot?.loans) ? currentArchiveSnapshot.loans : state.liabilities.loans;
+      const recurring = (isArchiveViewing && currentArchiveSnapshot?.recurringBills) ? currentArchiveSnapshot.recurringBills : state.liabilities.recurringBills;
+
+      (incomes || []).forEach(inc => {
         const amount = getEffectiveIncome(inc);
         const day = Math.min(31, Math.max(1, inc.dueDay || 28));
         if (amount > 0) dailyEvents[day].push({ name: inc.name, amount: amount, type: 'income' });
       });
 
-      (state.categories || []).forEach(cat => {
+      (categories || []).forEach(cat => {
         (cat.items || []).forEach(item => {
           const val = Number(item.value) || 0;
           const day = Math.min(31, Math.max(1, item.dueDay || 1));
@@ -2124,14 +2279,14 @@
         });
       });
 
-      (state.liabilities?.loans || []).forEach(loan => {
+      (loans || []).forEach(loan => {
         const remaining = Math.max(0, (Number(loan.totalAmount) || 0) - (Number(loan.paidAmount) || 0));
         const rate = Number(loan.monthlyRate) || 0;
         const day = Math.min(31, Math.max(1, loan.dueDay || 15));
         if (remaining > 0 && rate > 0) dailyEvents[day].push({ name: `Rate: ${loan.name}`, amount: rate, type: 'expense' });
       });
 
-      (state.liabilities?.recurringBills || []).forEach(bill => {
+      (recurring || []).forEach(bill => {
         const cost = Number(bill.monthlyCost) || 0;
         const day = Math.min(31, Math.max(1, bill.dueDay || 1));
         if (cost > 0) dailyEvents[day].push({ name: bill.name, amount: cost, type: 'expense' });
@@ -2189,19 +2344,109 @@
       if (lowestBalance < 0) {
         alertBox.className = 'timeline-alert danger';
         alertBox.innerHTML = `
-          <span>⚠️ <strong>Liquiditäts-Engpass:</strong> Am <strong>${lowestDay}.</strong> fällt dein Girokonto voraussichtlich auf <strong>${formatEUR(lowestBalance)}</strong> ins Minus!</span>
+          <span>⚠️ <strong>Liquiditäts-Engpass:</strong> Am <strong>${lowestDay}.</strong> fiel/fällt das Girokonto auf <strong>${formatEUR(lowestBalance)}</strong> ins Minus!</span>
         `;
       } else {
         alertBox.className = 'timeline-alert success';
         alertBox.innerHTML = `
-          <span>✔️ <strong>Solide Liquidität:</strong> Dein Girokonto bleibt den gesamten Monat im Plus (Tiefstand: <strong>${formatEUR(lowestBalance)}</strong> am ${lowestDay}.).</span>
+          <span>✔️ <strong>Solide Liquidität:</strong> Girokonto blieb/bleibt im Plus (Tiefstand: <strong>${formatEUR(lowestBalance)}</strong> am ${lowestDay}.).</span>
         `;
       }
       alertContainer.appendChild(alertBox);
     }
 
     /* ==========================================================================
-       10. Sparziel-Berechnung
+       10. Snapshot-System: Speichern & Laden
+       ========================================================================== */
+    function archiveCurrentMonth() {
+      const periodKey = getPeriodKey(viewedDate);
+      const label = getPeriodLabel(viewedDate);
+
+      const mIncome = calcMonthlyIncome();
+      const mExpenses = calcMonthlyTotalExpenses();
+      const mSurplus = mIncome - mExpenses;
+      const savingsRate = mIncome > 0 ? (mSurplus / mIncome) * 100 : 0;
+
+      const snapshot = {
+        period: periodKey,
+        label: label,
+        timestamp: Date.now(),
+        income: mIncome,
+        expenses: mExpenses,
+        surplus: mSurplus,
+        savingsRate: savingsRate,
+        startGiro: Number(state.cashflow.startGiro) || 0,
+        tagesgeld: Number(state.cashflow.tagesgeld) || 0,
+        categoryExpenses: calcMonthlyCategoryExpenses(),
+        loanCosts: calcMonthlyLoanCosts(),
+        recurringCosts: calcMonthlyRecurringCosts(),
+        // Tiefe Kopie des Zustands für die Detailansicht
+        incomes: JSON.parse(JSON.stringify(state.incomes)),
+        categories: JSON.parse(JSON.stringify(state.categories)),
+        loans: JSON.parse(JSON.stringify(state.liabilities.loans)),
+        recurringBills: JSON.parse(JSON.stringify(state.liabilities.recurringBills))
+      };
+
+      // Bestehenden Snapshot dieses Monats überschreiben oder neuen anfügen
+      const existingIdx = state.history.findIndex(h => h.period === periodKey);
+      if (existingIdx >= 0) {
+        if (!confirm(`Es existiert bereits ein Archiv für ${label}. Möchtest du es mit den aktuellen Werten überschreiben?`)) {
+          return;
+        }
+        state.history[existingIdx] = snapshot;
+      } else {
+        state.history.push(snapshot);
+      }
+
+      persistState();
+      alert(`✔️ Snapshot für ${label} wurde erfolgreich archiviert!`);
+      renderApp();
+    }
+
+    function loadSnapshotIntoView(snapshot) {
+      isArchiveViewing = true;
+      currentArchiveSnapshot = snapshot;
+
+      // viewedDate anpassen
+      const [year, month] = snapshot.period.split('-').map(Number);
+      viewedDate = new Date(year, month - 1, 1);
+
+      updateMonthNavigatorUI();
+      renderApp();
+    }
+
+    function switchToLiveView() {
+      isArchiveViewing = false;
+      currentArchiveSnapshot = null;
+      viewedDate = new Date(SYSTEM_NOW.getFullYear(), SYSTEM_NOW.getMonth(), 1);
+      updateMonthNavigatorUI();
+      renderApp();
+    }
+
+    function updateMonthNavigatorUI() {
+      const labelEl = document.getElementById('currentMonthLabel');
+      const badgeEl = document.getElementById('monthStatusBadge');
+      const banner = document.getElementById('archiveNoticeBanner');
+
+      const isCurrentSystemMonth = viewedDate.getFullYear() === SYSTEM_NOW.getFullYear() && viewedDate.getMonth() === SYSTEM_NOW.getMonth();
+
+      labelEl.textContent = getPeriodLabel(viewedDate);
+
+      if (isArchiveViewing) {
+        badgeEl.textContent = 'ARCHIV (HISTORIE)';
+        badgeEl.className = 'archive-badge';
+        banner.classList.remove('hidden');
+        document.body.classList.add('archive-mode');
+      } else {
+        badgeEl.textContent = isCurrentSystemMonth ? 'AKTUELL (LIVE)' : 'PLANUNG (LIVE)';
+        badgeEl.className = 'live-badge';
+        banner.classList.add('hidden');
+        document.body.classList.remove('archive-mode');
+      }
+    }
+
+    /* ==========================================================================
+       11. Sparziel-Berechnung
        ========================================================================== */
     function renderSavingsGoal(monthlySurplus) {
       const g = state.savingsGoal;
@@ -2269,7 +2514,7 @@
     }
 
     /* ==========================================================================
-       11. Systemuhr & View Lifecycle
+       12. Systemuhr & View Lifecycle
        ========================================================================== */
     function updateClock() {
       const now = new Date();
@@ -2288,6 +2533,7 @@
     function renderApp() {
       applyTheme(state.settings.theme);
       applySettingsToUI();
+      updateMonthNavigatorUI();
       renderKPIs();
       if (currentTab === 'budget') {
         renderIncomes();
@@ -2300,7 +2546,7 @@
     }
 
     /* ==========================================================================
-       12. Event-Listener & Navigation
+       13. Event-Listener & Navigation
        ========================================================================== */
     const tabBudget = document.getElementById('tabBudget');
     const tabFinance = document.getElementById('tabFinance');
@@ -2326,6 +2572,39 @@
     tabBudget.addEventListener('click', () => switchTab('budget'));
     tabFinance.addEventListener('click', () => switchTab('finance'));
     tabTimeline.addEventListener('click', () => switchTab('timeline'));
+
+    // Monats-Navigator Blättern (◀ / ▶ / Heute)
+    document.getElementById('btnPrevMonth').addEventListener('click', () => {
+      viewedDate.setMonth(viewedDate.getMonth() - 1);
+      const targetPeriod = getPeriodKey(viewedDate);
+      const snap = (state.history || []).find(h => h.period === targetPeriod);
+      if (snap) {
+        loadSnapshotIntoView(snap);
+      } else {
+        isArchiveViewing = false;
+        currentArchiveSnapshot = null;
+        renderApp();
+      }
+    });
+
+    document.getElementById('btnNextMonth').addEventListener('click', () => {
+      viewedDate.setMonth(viewedDate.getMonth() + 1);
+      const targetPeriod = getPeriodKey(viewedDate);
+      const snap = (state.history || []).find(h => h.period === targetPeriod);
+      if (snap) {
+        loadSnapshotIntoView(snap);
+      } else {
+        isArchiveViewing = false;
+        currentArchiveSnapshot = null;
+        renderApp();
+      }
+    });
+
+    document.getElementById('btnTodayMonth').addEventListener('click', switchToLiveView);
+    document.getElementById('btnExitArchive').addEventListener('click', switchToLiveView);
+
+    // Monat archivieren Button
+    document.getElementById('btnArchiveMonth').addEventListener('click', archiveCurrentMonth);
 
     const btnMonth = document.getElementById('btnMonth');
     const btnYear = document.getElementById('btnYear');
@@ -2405,7 +2684,7 @@
     });
 
     /* ==========================================================================
-       13. Settings & Design-Modal Steuerung
+       14. Settings & Design-Modal Steuerung
        ========================================================================== */
     const modal = document.getElementById('settingsModal');
     const btnOpenSettings = document.getElementById('btnOpenSettings');
@@ -2455,13 +2734,11 @@
     btnCloseSettings.addEventListener('click', closeSettingsModal);
     btnSaveSettings.addEventListener('click', closeSettingsModal);
 
-    // Preset Klick Handler
     document.querySelectorAll('.theme-chip').forEach(chip => {
       chip.addEventListener('click', () => {
         const themeKey = chip.getAttribute('data-theme');
         if (THEME_PRESETS[themeKey]) {
           state.settings.theme = { ...THEME_PRESETS[themeKey] };
-          
           themeColorAccent.value = state.settings.theme.accent;
           themeColorBg.value = state.settings.theme.bgMain;
           themeColorCard.value = state.settings.theme.bgCard;
@@ -2474,7 +2751,6 @@
       });
     });
 
-    // Custom Live-Farbänderungen
     themeColorAccent.addEventListener('input', (e) => {
       state.settings.theme.accent = e.target.value;
       state.settings.theme.name = 'custom';
@@ -2505,7 +2781,6 @@
       persistState();
     });
 
-    // Reset auf leeres Template
     document.getElementById('btnResetDemo').addEventListener('click', () => {
       if (confirm('Möchtest du alle Werte wirklich auf 0 € zurücksetzen?')) {
         state = getDefaultData();
