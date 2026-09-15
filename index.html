@@ -38,6 +38,7 @@
       min-height: 100vh;
       overflow-x: hidden;
       padding: 16px 12px 60px 12px;
+      transition: background-color 0.25s ease, color 0.25s ease;
     }
 
     .app-container {
@@ -104,7 +105,7 @@
       padding: 10px 4px;
       font-size: 0.85rem;
       font-weight: 700;
-      border-radius: 8px;
+      border-radius: calc(var(--radius) - 3px);
       cursor: pointer;
       transition: all 0.2s ease;
       display: flex;
@@ -136,13 +137,13 @@
       padding: 8px 0;
       font-size: 0.85rem;
       font-weight: 700;
-      border-radius: 8px;
+      border-radius: calc(var(--radius) - 3px);
       cursor: pointer;
       transition: all 0.2s ease;
     }
 
     .toggle-btn.active {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.12);
       color: #fff;
     }
 
@@ -247,7 +248,7 @@
       gap: 6px;
       background: rgba(255, 255, 255, 0.02);
       padding: 10px;
-      border-radius: 8px;
+      border-radius: calc(var(--radius) - 4px);
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
@@ -445,7 +446,7 @@
     .loan-card {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: var(--radius);
       padding: 12px;
       display: flex;
       flex-direction: column;
@@ -573,9 +574,7 @@
       min-width: 0;
     }
 
-    /* ==========================================================================
-       NEU IN PHASE 3: Liquiditäts-Timeline & Kalender Styling
-       ========================================================================== */
+    /* Timeline Styling */
     .timeline-summary {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -584,7 +583,7 @@
 
     .timeline-alert {
       padding: 10px 12px;
-      border-radius: 8px;
+      border-radius: var(--radius);
       font-size: 0.8rem;
       display: flex;
       align-items: center;
@@ -613,7 +612,7 @@
     .timeline-day-card {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: var(--radius);
       padding: 10px 12px;
       display: flex;
       flex-direction: column;
@@ -654,7 +653,7 @@
       color: white;
       border: none;
       padding: 8px 14px;
-      border-radius: 8px;
+      border-radius: var(--radius);
       font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
@@ -662,6 +661,11 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
     }
 
     .btn-secondary {
@@ -719,7 +723,9 @@
       display: none !important;
     }
 
-    /* Settings Modal */
+    /* ==========================================================================
+       Settings & Design-Editor Modal Styling
+       ========================================================================== */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -744,7 +750,9 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       width: 100%;
-      max-width: 440px;
+      max-width: 460px;
+      max-height: 88vh;
+      overflow-y: auto;
       padding: 20px;
       display: flex;
       flex-direction: column;
@@ -757,6 +765,17 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+
+    .setting-section-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 6px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 4px;
     }
 
     .setting-row {
@@ -787,6 +806,51 @@
       font-size: 0.85rem;
       outline: none;
     }
+
+    /* Theme Preset Kacheln */
+    .theme-preset-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .theme-chip {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .theme-chip.active {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.15);
+    }
+
+    .theme-color-preview {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .color-input-styled {
+      -webkit-appearance: none;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      background: none;
+      padding: 0;
+    }
   </style>
 </head>
 <body>
@@ -800,7 +864,7 @@
         <span class="badge" id="timeBadge">--:--:--</span>
       </div>
       <button type="button" class="settings-btn" id="btnOpenSettings">
-        ⚙️ Optionen
+        🎨 Design & Optionen
       </button>
     </header>
 
@@ -930,7 +994,7 @@
     </div>
 
     <!-- ====================================================================
-         SEITE 3: KALENDER & TAGESGENAUE LIQUIDITÄT (NEU)
+         SEITE 3: KALENDER & TAGESGENAUE LIQUIDITÄT
          ==================================================================== -->
     <div class="page-view hidden" id="pageTimeline">
       
@@ -956,7 +1020,6 @@
           </div>
         </div>
 
-        <!-- Engpass-Warnung / Statusanzeige -->
         <div id="timelineAlertContainer"></div>
       </section>
 
@@ -979,13 +1042,76 @@
 
   </main>
 
-  <!-- 7. Settings-Modal -->
+  <!-- 7. Settings & Design-Editor Modal -->
   <div class="modal-overlay" id="settingsModal">
     <div class="modal-card">
       <div class="modal-title">
-        <span>⚙️ App-Optionen</span>
+        <span>🎨 Design & Optionen</span>
         <button type="button" class="btn-danger" id="btnCloseSettings" style="font-size: 1.2rem;">✕</button>
       </div>
+
+      <!-- Sektion: Design Presets -->
+      <div class="setting-section-title">Theme Presets</div>
+      <div class="theme-preset-grid">
+        <button type="button" class="theme-chip" data-theme="midnight">
+          <span class="theme-color-preview" style="background: #3b82f6;"></span>
+          Midnight Slate
+        </button>
+        <button type="button" class="theme-chip" data-theme="oled">
+          <span class="theme-color-preview" style="background: #ffffff; border: 1px solid #333;"></span>
+          OLED Black
+        </button>
+        <button type="button" class="theme-chip" data-theme="cyber">
+          <span class="theme-color-preview" style="background: #06b6d4;"></span>
+          Cyber Neon
+        </button>
+        <button type="button" class="theme-chip" data-theme="emerald">
+          <span class="theme-color-preview" style="background: #10b981;"></span>
+          Emerald Wealth
+        </button>
+        <button type="button" class="theme-chip" data-theme="light" style="grid-column: span 2;">
+          <span class="theme-color-preview" style="background: #2563eb;"></span>
+          Clean Light (Heller Modus)
+        </button>
+      </div>
+
+      <!-- Sektion: Live Design-Editor (Custom) -->
+      <div class="setting-section-title">Design-Editor (Farben & Stil)</div>
+      
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Akzentfarbe</div>
+          <div class="setting-desc">Farbe für Buttons, Tabs und Highlights.</div>
+        </div>
+        <input type="color" id="themeColorAccent" class="color-input-styled">
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Hintergrundfarbe</div>
+          <div class="setting-desc">Haupt-App-Hintergrund.</div>
+        </div>
+        <input type="color" id="themeColorBg" class="color-input-styled">
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Karten-Hintergrund</div>
+          <div class="setting-desc">Farbe der Dashboard- und Inhaltsboxen.</div>
+        </div>
+        <input type="color" id="themeColorCard" class="color-input-styled">
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Ecken-Abrundung</div>
+          <div class="setting-desc">Eckig (2px) bis Pillenförmig (24px).</div>
+        </div>
+        <input type="range" id="themeRadiusSlider" min="2" max="24" step="2" style="width: 110px;">
+      </div>
+
+      <!-- Sektion: Verhaltens-Optionen -->
+      <div class="setting-section-title">Funktionen & Steuerung</div>
 
       <div class="setting-row">
         <div>
@@ -1026,11 +1152,72 @@
 
   <script>
     /* ==========================================================================
-       1. Globale Zustände & Datenstruktur (Schema)
+       1. Theme Presets Definition
+       ========================================================================== */
+    const THEME_PRESETS = {
+      midnight: {
+        name: 'midnight',
+        bgMain: '#0f172a',
+        bgCard: '#1e293b',
+        bgInput: '#0b1329',
+        border: '#334155',
+        textMain: '#f8fafc',
+        textMuted: '#94a3b8',
+        accent: '#3b82f6',
+        radius: 12
+      },
+      oled: {
+        name: 'oled',
+        bgMain: '#000000',
+        bgCard: '#121212',
+        bgInput: '#1a1a1a',
+        border: '#2a2a2a',
+        textMain: '#ffffff',
+        textMuted: '#a0a0a0',
+        accent: '#3b82f6',
+        radius: 10
+      },
+      cyber: {
+        name: 'cyber',
+        bgMain: '#0d0b18',
+        bgCard: '#1b162f',
+        bgInput: '#120d24',
+        border: '#3a2e63',
+        textMain: '#ffffff',
+        textMuted: '#a79bc7',
+        accent: '#06b6d4',
+        radius: 14
+      },
+      emerald: {
+        name: 'emerald',
+        bgMain: '#061a14',
+        bgCard: '#0d2b22',
+        bgInput: '#081f18',
+        border: '#174738',
+        textMain: '#f0fdf4',
+        textMuted: '#86efac',
+        accent: '#10b981',
+        radius: 12
+      },
+      light: {
+        name: 'light',
+        bgMain: '#f1f5f9',
+        bgCard: '#ffffff',
+        bgInput: '#e2e8f0',
+        border: '#cbd5e1',
+        textMain: '#0f172a',
+        textMuted: '#64748b',
+        accent: '#2563eb',
+        radius: 12
+      }
+    };
+
+    /* ==========================================================================
+       2. Globale Zustände & Datenstruktur (Schema)
        ========================================================================== */
     const STORAGE_KEY = 'budget_app_blank_v10';
-    let currentViewMode = 'month'; // 'month' | 'year'
-    let currentTab = 'budget';     // 'budget' | 'finance' | 'timeline'
+    let currentViewMode = 'month';
+    let currentTab = 'budget';
     let isEditorActive = false;
 
     function getDefaultData() {
@@ -1038,7 +1225,8 @@
         settings: {
           showSliders: true,
           sliderStep: 10,
-          incomeCalculationMode: 'min'
+          incomeCalculationMode: 'min',
+          theme: { ...THEME_PRESETS.midnight }
         },
         cashflow: {
           startGiro: 1200,
@@ -1117,7 +1305,7 @@
     }
 
     /* ==========================================================================
-       2. Update-sicheres Laden & Schema-Migration
+       3. Update-sicheres Laden & Schema-Migration
        ========================================================================== */
     function loadAndMigrateData() {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -1127,16 +1315,17 @@
         const stored = JSON.parse(raw);
         const defaults = getDefaultData();
 
-        // 1. Settings
+        // 1. Settings & Theme
         if (!stored.settings) {
           stored.settings = defaults.settings;
         } else {
           if (stored.settings.showSliders === undefined) stored.settings.showSliders = true;
           if (!stored.settings.sliderStep) stored.settings.sliderStep = 10;
           if (!stored.settings.incomeCalculationMode) stored.settings.incomeCalculationMode = 'min';
+          if (!stored.settings.theme) stored.settings.theme = { ...THEME_PRESETS.midnight };
         }
 
-        // 2. Cashflow (NEU)
+        // 2. Cashflow
         if (!stored.cashflow) {
           stored.cashflow = defaults.cashflow;
         } else {
@@ -1175,7 +1364,7 @@
           });
         }
 
-        // 5. Liabilities & DueDay
+        // 5. Liabilities
         if (!stored.liabilities) {
           stored.liabilities = defaults.liabilities;
         } else {
@@ -1203,7 +1392,26 @@
     }
 
     /* ==========================================================================
-       3. Rechnerische Hilfsfunktionen
+       4. Theme Engine: CSS Custom Properties dynamisch injizieren
+       ========================================================================== */
+    function applyTheme(theme) {
+      const root = document.documentElement;
+      root.style.setProperty('--bg-main', theme.bgMain);
+      root.style.setProperty('--bg-card', theme.bgCard);
+      root.style.setProperty('--bg-input', theme.bgInput || '#0b1329');
+      root.style.setProperty('--border', theme.border || '#334155');
+      root.style.setProperty('--text-main', theme.textMain || '#f8fafc');
+      root.style.setProperty('--text-muted', theme.textMuted || '#94a3b8');
+      root.style.setProperty('--accent', theme.accent);
+      root.style.setProperty('--radius', `${theme.radius || 12}px`);
+
+      // Browser Statusleiste anpassen
+      const metaTheme = document.querySelector('meta[name="theme-color"]');
+      if (metaTheme) metaTheme.setAttribute('content', theme.bgMain);
+    }
+
+    /* ==========================================================================
+       5. Rechnerische Hilfsfunktionen
        ========================================================================== */
     function getMultiplier() {
       return currentViewMode === 'year' ? 12 : 1;
@@ -1253,7 +1461,6 @@
       return calcMonthlyCategoryExpenses() + calcMonthlyLoanCosts() + calcMonthlyRecurringCosts();
     }
 
-    // Erzeugt ein Dropdown für Fälligkeitstage (1 bis 31)
     function createDueDaySelectHTML(selectedDay, className = 'due-day-select') {
       let html = `<select class="${className}">`;
       for (let d = 1; d <= 31; d++) {
@@ -1264,7 +1471,7 @@
     }
 
     /* ==========================================================================
-       4. Render-Pipeline: Globales Dashboard & Balken
+       6. Render-Pipeline: Globales Dashboard & Progress-Bar
        ========================================================================== */
     function renderKPIs() {
       const mult = getMultiplier();
@@ -1334,7 +1541,7 @@
     }
 
     /* ==========================================================================
-       5. Render: Budget-Seite (mit Fälligkeitstagen)
+       7. Render: Budget-Seite
        ========================================================================== */
     function renderIncomes() {
       const container = document.getElementById('incomesList');
@@ -1602,7 +1809,7 @@
     }
 
     /* ==========================================================================
-       6. Render: Finanzen-Page (Kredite & Dauerrechnungen)
+       8. Render: Finanzen-Page (Kredite & Dauerrechnungen)
        ========================================================================== */
     function renderFinancePage() {
       renderLoansList();
@@ -1866,10 +2073,9 @@
     }
 
     /* ==========================================================================
-       7. Render: NEU - Kalender & Liquiditäts-Timeline (Phase 3)
+       9. Render: Timeline & Liquiditäts-Planung
        ========================================================================== */
     function renderTimelinePage() {
-      // Inputs initialisieren
       const giroInp = document.getElementById('inputStartGiro');
       const tagesInp = document.getElementById('inputTagesgeld');
 
@@ -1901,50 +2107,36 @@
       let lowestBalance = runningBalance;
       let lowestDay = 1;
 
-      // Alle 31 Tage simulieren
       const dailyEvents = {};
       for (let day = 1; day <= 31; day++) dailyEvents[day] = [];
 
-      // 1. Einnahmen zuweisen
       (state.incomes || []).forEach(inc => {
         const amount = getEffectiveIncome(inc);
         const day = Math.min(31, Math.max(1, inc.dueDay || 28));
-        if (amount > 0) {
-          dailyEvents[day].push({ name: inc.name, amount: amount, type: 'income' });
-        }
+        if (amount > 0) dailyEvents[day].push({ name: inc.name, amount: amount, type: 'income' });
       });
 
-      // 2. Budget-Kategorien zuweisen
       (state.categories || []).forEach(cat => {
         (cat.items || []).forEach(item => {
           const val = Number(item.value) || 0;
           const day = Math.min(31, Math.max(1, item.dueDay || 1));
-          if (val > 0) {
-            dailyEvents[day].push({ name: item.name, amount: val, type: 'expense' });
-          }
+          if (val > 0) dailyEvents[day].push({ name: item.name, amount: val, type: 'expense' });
         });
       });
 
-      // 3. Kredite zuweisen
       (state.liabilities?.loans || []).forEach(loan => {
         const remaining = Math.max(0, (Number(loan.totalAmount) || 0) - (Number(loan.paidAmount) || 0));
         const rate = Number(loan.monthlyRate) || 0;
         const day = Math.min(31, Math.max(1, loan.dueDay || 15));
-        if (remaining > 0 && rate > 0) {
-          dailyEvents[day].push({ name: `Rate: ${loan.name}`, amount: rate, type: 'expense' });
-        }
+        if (remaining > 0 && rate > 0) dailyEvents[day].push({ name: `Rate: ${loan.name}`, amount: rate, type: 'expense' });
       });
 
-      // 4. Dauerrechnungen zuweisen
       (state.liabilities?.recurringBills || []).forEach(bill => {
         const cost = Number(bill.monthlyCost) || 0;
         const day = Math.min(31, Math.max(1, bill.dueDay || 1));
-        if (cost > 0) {
-          dailyEvents[day].push({ name: bill.name, amount: cost, type: 'expense' });
-        }
+        if (cost > 0) dailyEvents[day].push({ name: bill.name, amount: cost, type: 'expense' });
       });
 
-      // Tag für Tag berechnen und Rendern
       for (let day = 1; day <= 31; day++) {
         const events = dailyEvents[day];
         let dayDelta = 0;
@@ -1961,7 +2153,6 @@
           lowestDay = day;
         }
 
-        // Tag nur rendern, wenn Buchungen anfallen
         if (events.length > 0) {
           const dayCard = document.createElement('div');
           dayCard.className = 'timeline-day-card';
@@ -1994,12 +2185,11 @@
         }
       }
 
-      // Engpass-Warnung erzeugen
       const alertBox = document.createElement('div');
       if (lowestBalance < 0) {
         alertBox.className = 'timeline-alert danger';
         alertBox.innerHTML = `
-          <span>⚠️ <strong>Liquiditäts-Engpass:</strong> Am <strong>${lowestDay}.</strong> fällt dein Girokonto voraussichtlich auf <strong>${formatEUR(lowestBalance)}</strong> ins Minus, bevor neues Geld eingeht!</span>
+          <span>⚠️ <strong>Liquiditäts-Engpass:</strong> Am <strong>${lowestDay}.</strong> fällt dein Girokonto voraussichtlich auf <strong>${formatEUR(lowestBalance)}</strong> ins Minus!</span>
         `;
       } else {
         alertBox.className = 'timeline-alert success';
@@ -2011,7 +2201,7 @@
     }
 
     /* ==========================================================================
-       8. Sparziel-Berechnung
+       10. Sparziel-Berechnung
        ========================================================================== */
     function renderSavingsGoal(monthlySurplus) {
       const g = state.savingsGoal;
@@ -2079,7 +2269,7 @@
     }
 
     /* ==========================================================================
-       9. Systemuhr & View Lifecycle
+       11. Systemuhr & View Lifecycle
        ========================================================================== */
     function updateClock() {
       const now = new Date();
@@ -2096,6 +2286,7 @@
     }
 
     function renderApp() {
+      applyTheme(state.settings.theme);
       applySettingsToUI();
       renderKPIs();
       if (currentTab === 'budget') {
@@ -2109,7 +2300,7 @@
     }
 
     /* ==========================================================================
-       10. Event-Listener & 3-Tab-Navigation
+       12. Event-Listener & Navigation
        ========================================================================== */
     const tabBudget = document.getElementById('tabBudget');
     const tabFinance = document.getElementById('tabFinance');
@@ -2213,6 +2404,9 @@
       renderApp();
     });
 
+    /* ==========================================================================
+       13. Settings & Design-Modal Steuerung
+       ========================================================================== */
     const modal = document.getElementById('settingsModal');
     const btnOpenSettings = document.getElementById('btnOpenSettings');
     const btnCloseSettings = document.getElementById('btnCloseSettings');
@@ -2222,11 +2416,30 @@
     const setSliderStep = document.getElementById('setSliderStep');
     const setIncomeMode = document.getElementById('setIncomeMode');
 
+    const themeColorAccent = document.getElementById('themeColorAccent');
+    const themeColorBg = document.getElementById('themeColorBg');
+    const themeColorCard = document.getElementById('themeColorCard');
+    const themeRadiusSlider = document.getElementById('themeRadiusSlider');
+
     function openSettingsModal() {
       setSliderEnabled.checked = state.settings.showSliders;
       setSliderStep.value = state.settings.sliderStep || 10;
       setIncomeMode.value = state.settings.incomeCalculationMode || 'min';
+
+      const curTheme = state.settings.theme || THEME_PRESETS.midnight;
+      themeColorAccent.value = curTheme.accent || '#3b82f6';
+      themeColorBg.value = curTheme.bgMain || '#0f172a';
+      themeColorCard.value = curTheme.bgCard || '#1e293b';
+      themeRadiusSlider.value = curTheme.radius || 12;
+
+      updatePresetChipHighlight(curTheme.name);
       modal.classList.add('active');
+    }
+
+    function updatePresetChipHighlight(presetName) {
+      document.querySelectorAll('.theme-chip').forEach(chip => {
+        chip.classList.toggle('active', chip.getAttribute('data-theme') === presetName);
+      });
     }
 
     function closeSettingsModal() {
@@ -2242,6 +2455,57 @@
     btnCloseSettings.addEventListener('click', closeSettingsModal);
     btnSaveSettings.addEventListener('click', closeSettingsModal);
 
+    // Preset Klick Handler
+    document.querySelectorAll('.theme-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const themeKey = chip.getAttribute('data-theme');
+        if (THEME_PRESETS[themeKey]) {
+          state.settings.theme = { ...THEME_PRESETS[themeKey] };
+          
+          themeColorAccent.value = state.settings.theme.accent;
+          themeColorBg.value = state.settings.theme.bgMain;
+          themeColorCard.value = state.settings.theme.bgCard;
+          themeRadiusSlider.value = state.settings.theme.radius;
+
+          updatePresetChipHighlight(themeKey);
+          applyTheme(state.settings.theme);
+          persistState();
+        }
+      });
+    });
+
+    // Custom Live-Farbänderungen
+    themeColorAccent.addEventListener('input', (e) => {
+      state.settings.theme.accent = e.target.value;
+      state.settings.theme.name = 'custom';
+      updatePresetChipHighlight('custom');
+      applyTheme(state.settings.theme);
+      persistState();
+    });
+
+    themeColorBg.addEventListener('input', (e) => {
+      state.settings.theme.bgMain = e.target.value;
+      state.settings.theme.name = 'custom';
+      updatePresetChipHighlight('custom');
+      applyTheme(state.settings.theme);
+      persistState();
+    });
+
+    themeColorCard.addEventListener('input', (e) => {
+      state.settings.theme.bgCard = e.target.value;
+      state.settings.theme.name = 'custom';
+      updatePresetChipHighlight('custom');
+      applyTheme(state.settings.theme);
+      persistState();
+    });
+
+    themeRadiusSlider.addEventListener('input', (e) => {
+      state.settings.theme.radius = parseInt(e.target.value, 10) || 12;
+      applyTheme(state.settings.theme);
+      persistState();
+    });
+
+    // Reset auf leeres Template
     document.getElementById('btnResetDemo').addEventListener('click', () => {
       if (confirm('Möchtest du alle Werte wirklich auf 0 € zurücksetzen?')) {
         state = getDefaultData();
