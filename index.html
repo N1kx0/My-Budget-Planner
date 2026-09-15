@@ -421,7 +421,7 @@
       border: 2px solid var(--accent);
     }
 
-    /* Notgroschen & Kredite Styling */
+    /* Sparziel-Boxen & Kredite Styling */
     .loan-card, .emergency-card {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--border);
@@ -554,6 +554,30 @@
       width: 100%;
       box-sizing: border-box;
       min-width: 0;
+    }
+
+    .goal-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: var(--bg-input);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .goal-stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .goal-stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .goal-stat-val {
+      font-size: 0.95rem;
+      font-weight: 700;
     }
 
     /* Chart & Timeline */
@@ -904,7 +928,7 @@
 
   <main class="app-container">
     
-    <!-- 1. Offline Hardware-Systemuhr & Settings Button -->
+    <!-- 1. Offline Systemuhr & Header -->
     <header class="header-bar">
       <div class="clock-group">
         <span class="badge" id="dateBadge">--.--.----</span>
@@ -966,7 +990,7 @@
       </div>
     </section>
 
-    <!-- 6. Dynamischer Fortschrittsbalken -->
+    <!-- 6. Progress Bar -->
     <section class="progress-bar-wrapper">
       <div class="progress-track" id="progressBar"></div>
     </section>
@@ -994,58 +1018,10 @@
 
       <button type="button" class="btn btn-secondary editor-only hide-in-archive" id="btnAddCategory">+ Neue Ausgabenkategorie</button>
 
-      <!-- Sparziel (Vollständig editierbar wie auf dem Screenshot) -->
-      <section class="card" id="savingsGoalCard">
-        <div class="card-header">
-          <div style="display:flex; align-items:center; gap:8px;">
-            <input type="color" class="color-picker-dot editor-only hide-in-archive" id="goalColorPicker">
-            <h2 class="card-title" id="goalTitleDisplay">🎯 Vermögensaufbau</h2>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span id="goalTargetDisplay" style="font-size: 0.95rem; font-weight: 700; color: var(--accent);">0,00 €</span>
-            <button type="button" class="btn-danger editor-only hide-in-archive" id="btnToggleGoalVisibility" title="Sparziel ausblenden">🗑️</button>
-          </div>
-        </div>
+      <!-- Dynamischer Multi-Sparziel Container -->
+      <div id="savingsGoalsContainer" style="display: flex; flex-direction: column; gap: 16px;"></div>
 
-        <div class="goal-stats">
-          <div class="goal-stat-item">
-            <span class="goal-stat-label">Endsummen-Prognose:</span>
-            <span class="goal-stat-val" id="goalForecastVal">0,00 €</span>
-          </div>
-          <div class="goal-stat-item">
-            <span class="goal-stat-label">Benötigt mtl.:</span>
-            <span class="goal-stat-val" id="goalRequiredRate">0,00 €</span>
-          </div>
-          <div class="goal-stat-item" style="grid-column: span 2; margin-top: 4px;">
-            <span class="goal-stat-label">Verbleibende Monate:</span>
-            <span class="goal-stat-val" id="goalRemainingMonths">0 Monate</span>
-          </div>
-        </div>
-
-        <!-- Editor-Felder: Direkt synchronisiert ohne Fokus-Verlust -->
-        <div class="editor-only hide-in-archive" style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">
-          <div class="loan-field">
-            <label>Titel:</label>
-            <input type="text" id="goalTitleInput">
-          </div>
-          <div class="loan-field">
-            <label>Zielbetrag (€):</label>
-            <input type="number" step="any" id="goalTargetInput">
-          </div>
-          <div class="loan-field">
-            <label>Startkapital (€):</label>
-            <input type="number" step="any" id="goalStartInput">
-          </div>
-          <div class="loan-field">
-            <label>Zieldatum:</label>
-            <input type="date" id="goalDateInput">
-          </div>
-          <div class="loan-field">
-            <label>Tagesgeldzins (% p.a.):</label>
-            <input type="number" step="0.1" id="goalRateInput">
-          </div>
-        </div>
-      </section>
+      <button type="button" class="btn btn-secondary editor-only hide-in-archive" id="btnAddSavingsGoal">+ Neues Sparziel hinzufügen</button>
 
     </div>
 
@@ -1141,7 +1117,7 @@
          ==================================================================== -->
     <div class="page-view hidden" id="pageTimeline">
       
-      <!-- Interaktiver SVG Graph -->
+      <!-- SVG Graph -->
       <section class="chart-container">
         <div class="chart-header">
           <h2 class="card-title" id="chartTitle">📈 Liquiditäts-Kurve</h2>
@@ -1213,7 +1189,7 @@
 
   </main>
 
-  <!-- 8. Settings & Eigene Themes Modal -->
+  <!-- 8. Settings & Themes Modal -->
   <div class="modal-overlay" id="settingsModal">
     <div class="modal-card">
       <div class="modal-title">
@@ -1221,11 +1197,9 @@
         <button type="button" class="btn-danger" id="btnCloseSettings" style="font-size: 1.2rem;">✕</button>
       </div>
 
-      <!-- Presets & Eigene Themes -->
       <div class="setting-section-title">Theme Presets & Eigene Themes</div>
       <div class="theme-preset-grid" id="themePresetsGrid"></div>
 
-      <!-- Design-Editor -->
       <div class="setting-section-title">Design-Editor</div>
       
       <div class="setting-row">
@@ -1248,14 +1222,12 @@
         <input type="range" id="themeRadiusSlider" min="2" max="24" step="2" style="width: 110px;">
       </div>
 
-      <!-- NEU: Eigenes Theme speichern -->
       <div class="setting-section-title">Eigenes Theme speichern</div>
       <div style="display:flex; gap:8px;">
         <input type="text" id="inputCustomThemeName" placeholder="Theme-Name (z.B. Mein Dark Mode)" style="flex:1; background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:6px 10px; border-radius:6px; font-size:0.85rem; outline:none;">
         <button type="button" class="btn" id="btnSaveCustomTheme" style="padding:6px 12px; font-size:0.85rem;">💾 Speichern</button>
       </div>
 
-      <!-- Funktionen & Steuerung -->
       <div class="setting-section-title">Funktionen & Steuerung</div>
 
       <div class="setting-row">
@@ -1322,7 +1294,7 @@
           incomeCalculationMode: 'min',
           theme: { ...BUILTIN_THEMES.midnight }
         },
-        customThemes: [], // NEU: Benutzerdefinierte Themes
+        customThemes: [],
         cashflow: {
           startGiro: 1200,
           tagesgeld: 4500
@@ -1379,22 +1351,24 @@
             { id: 'rec_2', name: 'Fitnessstudio', monthlyCost: 35, endDate: '', dueDay: 1 }
           ]
         },
-        // VOLL EDITIERBARES SPARZIEL (Screenshot-Anforderung)
-        savingsGoal: {
-          visible: true,
-          title: 'Vermögensaufbau',
-          target: 20000,
-          startCapital: 3000,
-          targetDate: '2028-12-31',
-          interestRate: 3.5,
-          color: '#3b82f6'
-        },
+        // Dynamisches Array für Multi-Sparziele
+        savingsGoals: [
+          {
+            id: 'goal_1',
+            title: 'Vermögensaufbau',
+            target: 20000,
+            startCapital: 3000,
+            targetDate: '2028-12-31',
+            interestRate: 3.5,
+            color: '#3b82f6'
+          }
+        ],
         history: []
       };
     }
 
     /* ==========================================================================
-       3. Update-sicheres Schema-Laden
+       3. Schema-Migration
        ========================================================================== */
     function loadAndMigrateData() {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -1412,7 +1386,25 @@
         if (!Array.isArray(stored.incomes)) stored.incomes = defaults.incomes;
         if (!Array.isArray(stored.categories)) stored.categories = defaults.categories;
         if (!stored.liabilities) stored.liabilities = defaults.liabilities;
-        if (!stored.savingsGoal) stored.savingsGoal = defaults.savingsGoal;
+        
+        // Migration altes einzelnes Sparziel zu Array
+        if (!Array.isArray(stored.savingsGoals)) {
+          if (stored.savingsGoal) {
+            stored.savingsGoals = [{
+              id: 'goal_legacy',
+              title: stored.savingsGoal.title || 'Vermögensaufbau',
+              target: stored.savingsGoal.target || 20000,
+              startCapital: stored.savingsGoal.startCapital || 0,
+              targetDate: stored.savingsGoal.targetDate || '2028-12-31',
+              interestRate: stored.savingsGoal.interestRate || 3.5,
+              color: stored.savingsGoal.color || '#3b82f6'
+            }];
+            delete stored.savingsGoal;
+          } else {
+            stored.savingsGoals = defaults.savingsGoals;
+          }
+        }
+
         if (!Array.isArray(stored.history)) stored.history = [];
 
         return stored;
@@ -1429,7 +1421,7 @@
     }
 
     /* ==========================================================================
-       4. Theme Engine (mit Custom Themes)
+       4. Theme Engine
        ========================================================================== */
     function applyTheme(theme) {
       const root = document.documentElement;
@@ -1447,7 +1439,7 @@
     }
 
     /* ==========================================================================
-       5. Rechnerische Hilfsfunktionen
+       5. Rechnerische Hilfsfunktionen (inkl. Mittelwert)
        ========================================================================== */
     function getMultiplier() {
       return currentViewMode === 'year' ? 12 : 1;
@@ -1457,11 +1449,17 @@
       return (val || 0).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
     }
 
+    // Rechnerischer Mittelwert für variable Gehälter
     function getEffectiveIncome(inc) {
       if (inc.type === 'variable') {
-        return state.settings.incomeCalculationMode === 'avg'
-          ? (Number(inc.avgValue) || 0)
-          : (Number(inc.minValue) || 0);
+        const min = Number(inc.minValue) || 0;
+        const max = Number(inc.maxValue) || 0;
+        const calculatedAvg = (min + max) / 2;
+        const effectiveAvg = (inc.avgValue !== undefined && inc.avgValue !== null && Number(inc.avgValue) > 0)
+          ? Number(inc.avgValue)
+          : calculatedAvg;
+
+        return state.settings.incomeCalculationMode === 'avg' ? effectiveAvg : min;
       }
       return Number(inc.value) || 0;
     }
@@ -1553,7 +1551,7 @@
       document.getElementById('totalIncomeHeader').textContent = `${formatEUR(mIncome * mult)}${isArchiveViewing ? ' (Archiv)' : incModeText}`;
 
       renderProgressBar(mIncome, mTotalExpenses);
-      renderSavingsGoal(mSurplus);
+      renderSavingsGoals(mSurplus);
     }
 
     function renderProgressBar(mIncome, mTotalExpenses) {
@@ -1800,340 +1798,168 @@
     }
 
     /* ==========================================================================
-       8. Sparziel-Logik (Voll editierbar & Tastatur-sicher)
+       8. Dynamische Sparziele (Multi-Goal & Vollständig editierbar)
        ========================================================================== */
-    function renderSavingsGoal(monthlySurplus) {
-      const g = state.savingsGoal;
-      const card = document.getElementById('savingsGoalCard');
-      if (!g || !g.visible) {
-        card.style.display = isEditorActive ? 'flex' : 'none';
-        if (!isEditorActive) return;
-      } else {
-        card.style.display = 'flex';
-      }
-
-      document.getElementById('goalTitleDisplay').textContent = `🎯 ${g.title || 'Vermögensaufbau'}`;
-      document.getElementById('goalTargetDisplay').textContent = formatEUR(g.target || 0);
-      document.getElementById('goalTargetDisplay').style.color = g.color || 'var(--accent)';
-      document.getElementById('goalColorPicker').value = g.color || '#3b82f6';
-
-      const today = new Date();
-      const targetDate = new Date(g.targetDate || '2028-12-31');
-      let diffMonths = (targetDate.getFullYear() - today.getFullYear()) * 12 + (targetDate.getMonth() - today.getMonth());
-      diffMonths = Math.max(1, diffMonths);
-
-      document.getElementById('goalRemainingMonths').textContent = `${diffMonths} Monate`;
-
-      const monthlyRate = (g.interestRate || 0) / 100 / 12;
-      let balanceForecast = Number(g.startCapital) || 0;
-      const safeSurplus = Math.max(0, monthlySurplus);
-
-      for (let m = 0; m < diffMonths; m++) {
-        balanceForecast = (balanceForecast + safeSurplus) * (1 + monthlyRate);
-      }
-
-      document.getElementById('goalForecastVal').textContent = formatEUR(balanceForecast);
-
-      let requiredMonthlyRate = 0;
-      if (monthlyRate === 0) {
-        requiredMonthlyRate = Math.max(0, (g.target - g.startCapital) / diffMonths);
-      } else {
-        const factor = Math.pow(1 + monthlyRate, diffMonths);
-        const numerator = g.target - (g.startCapital * factor);
-        const denominator = ((factor - 1) / monthlyRate) * (1 + monthlyRate);
-        requiredMonthlyRate = Math.max(0, numerator / denominator);
-      }
-
-      document.getElementById('goalRequiredRate').textContent = formatEUR(requiredMonthlyRate);
-    }
-
-    // In-Place Editor für das Sparziel (behält Tastatur-Fokus)
-    function initSavingsGoalEditor() {
-      const g = state.savingsGoal;
-      const titleInp = document.getElementById('goalTitleInput');
-      const targetInp = document.getElementById('goalTargetInput');
-      const startInp = document.getElementById('goalStartInput');
-      const dateInp = document.getElementById('goalDateInput');
-      const rateInp = document.getElementById('goalRateInput');
-      const colorPicker = document.getElementById('goalColorPicker');
-      const toggleVisBtn = document.getElementById('btnToggleGoalVisibility');
-
-      titleInp.value = g.title || '';
-      targetInp.value = g.target || 0;
-      startInp.value = g.startCapital || 0;
-      dateInp.value = g.targetDate || '2028-12-31';
-      rateInp.value = g.interestRate || 3.5;
-      colorPicker.value = g.color || '#3b82f6';
-
-      const updateGoalLive = () => {
-        persistState();
-        renderKPIs();
-      };
-
-      titleInp.oninput = () => { g.title = titleInp.value; updateGoalLive(); };
-      targetInp.oninput = () => { g.target = parseFloat(targetInp.value) || 0; updateGoalLive(); };
-      startInp.oninput = () => { g.startCapital = parseFloat(startInp.value) || 0; updateGoalLive(); };
-      dateInp.onchange = () => { g.targetDate = dateInp.value; updateGoalLive(); };
-      rateInp.oninput = () => { g.interestRate = parseFloat(rateInp.value) || 0; updateGoalLive(); };
-      colorPicker.oninput = () => { g.color = colorPicker.value; updateGoalLive(); };
-
-      toggleVisBtn.onclick = () => {
-        g.visible = !g.visible;
-        persistState();
-        renderApp();
-      };
-    }
-
-    /* ==========================================================================
-       9. Finanzen & Notgroschen
-       ========================================================================== */
-    function renderFinancePage() {
-      renderEmergencyFund();
-      renderLoansList();
-      renderRecurringList();
-    }
-
-    function renderEmergencyFund() {
-      const ef = isArchiveViewing && currentArchiveSnapshot?.emergencyFund ? currentArchiveSnapshot.emergencyFund : state.emergencyFund;
-      const mult = getMultiplier();
-
-      const target = Number(ef.targetAmount) || 0;
-      const current = Number(ef.currentAmount) || 0;
-      const monthly = Number(ef.monthlyContribution) || 0;
-      const remaining = Math.max(0, target - current);
-      const pct = target > 0 ? Math.min(100, Math.round((current / target) * 100)) : 100;
-      const monthsLeft = monthly > 0 ? Math.ceil(remaining / monthly) : 0;
-      const isGoalReached = remaining <= 0;
-
-      document.getElementById('emergencyTitleInput').value = ef.title;
-      document.getElementById('emergencyTotalHeader').textContent = `${formatEUR(target * mult)}`;
-      document.getElementById('emergencyMonthlyRateDisplay').textContent = `${formatEUR((ef.includeInMonthlyBudget ? monthly : 0) * mult)} / ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}`;
-      
-      const badge = document.getElementById('emergencyBadge');
-      badge.style.display = isGoalReached ? 'inline-block' : 'none';
-
-      const box = document.getElementById('emergencyBox');
-      box.classList.toggle('goal-reached', isGoalReached);
-
-      document.getElementById('emergencyProgressLabel').textContent = `${formatEUR(current)} (${pct} %)`;
-      document.getElementById('emergencyTargetLabel').textContent = `Ziel: ${formatEUR(target)}`;
-      
-      const fill = document.getElementById('emergencyProgressFill');
-      fill.style.width = `${pct}%`;
-      fill.style.background = isGoalReached ? 'var(--success)' : 'var(--emergency-color)';
-
-      document.getElementById('emergencyRemainingLabel').innerHTML = `Noch offen: <strong>${formatEUR(remaining)}</strong>`;
-      document.getElementById('emergencyMonthsLabel').innerHTML = isGoalReached ? 'Vollständig aufgebaut' : `Noch ca. <strong>${monthsLeft} Monate</strong>`;
-
-      const inpTarget = document.getElementById('editEmergencyTarget');
-      const inpCurrent = document.getElementById('editEmergencyCurrent');
-      const inpMonthly = document.getElementById('editEmergencyMonthly');
-      const selInclude = document.getElementById('editEmergencyInclude');
-
-      inpTarget.value = target;
-      inpCurrent.value = current;
-      inpMonthly.value = monthly;
-      selInclude.value = ef.includeInMonthlyBudget ? 'true' : 'false';
-
-      if (!isArchiveViewing) {
-        document.getElementById('btnEmergencyAdd50').onclick = () => {
-          ef.currentAmount = Math.min(ef.targetAmount, ef.currentAmount + 50);
-          persistState();
-          renderApp();
-        };
-
-        document.getElementById('btnEmergencyAdd100').onclick = () => {
-          ef.currentAmount = Math.min(ef.targetAmount, ef.currentAmount + 100);
-          persistState();
-          renderApp();
-        };
-
-        document.getElementById('btnEmergencyAddSurplus').onclick = () => {
-          const surplus = calcMonthlyIncome() - calcMonthlyTotalExpenses();
-          if (surplus > 0) {
-            ef.currentAmount = Math.min(ef.targetAmount, ef.currentAmount + Math.round(surplus));
-            persistState();
-            renderApp();
-          } else {
-            alert('Aktuell ist kein freier Monatsüberschuss vorhanden.');
-          }
-        };
-
-        document.getElementById('emergencyTitleInput').onchange = (e) => { ef.title = e.target.value; persistState(); };
-
-        const updateEmergencyLive = () => {
-          persistState();
-          renderKPIs();
-          renderEmergencyFund();
-        };
-
-        inpTarget.oninput = () => { ef.targetAmount = parseFloat(inpTarget.value) || 0; updateEmergencyLive(); };
-        inpCurrent.oninput = () => { ef.currentAmount = parseFloat(inpCurrent.value) || 0; updateEmergencyLive(); };
-        inpMonthly.oninput = () => { ef.monthlyContribution = parseFloat(inpMonthly.value) || 0; updateEmergencyLive(); };
-        selInclude.onchange = () => { ef.includeInMonthlyBudget = (selInclude.value === 'true'); updateEmergencyLive(); };
-      }
-    }
-
-    function renderLoansList() {
-      const container = document.getElementById('loansList');
+    function renderSavingsGoals(monthlySurplus) {
+      const container = document.getElementById('savingsGoalsContainer');
       container.innerHTML = '';
-      const mult = getMultiplier();
-      const totalMonthlyRate = calcMonthlyLoanCosts();
-      document.getElementById('totalLoansRateHeader').textContent = `${formatEUR(totalMonthlyRate * mult)} / ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}`;
-      const loans = (isArchiveViewing && currentArchiveSnapshot?.loans) ? currentArchiveSnapshot.loans : state.liabilities.loans;
 
-      loans.forEach((loan, idx) => {
-        const total = Number(loan.totalAmount) || 0;
-        const paid = Number(loan.paidAmount) || 0;
-        const rate = Number(loan.monthlyRate) || 0;
-        const remaining = Math.max(0, total - paid);
-        const percent = total > 0 ? Math.min(100, Math.round((paid / total) * 100)) : 100;
-        const remainingMonths = rate > 0 ? Math.ceil(remaining / rate) : 0;
-        const isPaidOff = remaining <= 0;
+      const goals = (isArchiveViewing && currentArchiveSnapshot?.savingsGoals)
+        ? currentArchiveSnapshot.savingsGoals
+        : state.savingsGoals;
 
-        const card = document.createElement('div');
-        card.className = `loan-card ${isPaidOff ? 'paid-off' : ''}`;
+      if (!goals || goals.length === 0) {
+        if (isEditorActive) {
+          container.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); text-align:center; padding:10px;">Keine Sparziele vorhanden. Klicke unten auf „+ Neues Sparziel hinzufügen“.</div>`;
+        }
+        return;
+      }
+
+      const safeSurplus = Math.max(0, monthlySurplus);
+      const today = new Date();
+
+      goals.forEach((g, idx) => {
+        const card = document.createElement('section');
+        card.className = 'card';
+
+        const targetDate = new Date(g.targetDate || '2028-12-31');
+        let diffMonths = (targetDate.getFullYear() - today.getFullYear()) * 12 + (targetDate.getMonth() - today.getMonth());
+        diffMonths = Math.max(1, diffMonths);
+
+        const monthlyRate = (g.interestRate || 0) / 100 / 12;
+        let balanceForecast = Number(g.startCapital) || 0;
+
+        for (let m = 0; m < diffMonths; m++) {
+          balanceForecast = (balanceForecast + safeSurplus) * (1 + monthlyRate);
+        }
+
+        let requiredMonthlyRate = 0;
+        if (monthlyRate === 0) {
+          requiredMonthlyRate = Math.max(0, (g.target - g.startCapital) / diffMonths);
+        } else {
+          const factor = Math.pow(1 + monthlyRate, diffMonths);
+          const numerator = g.target - (g.startCapital * factor);
+          const denominator = ((factor - 1) / monthlyRate) * (1 + monthlyRate);
+          requiredMonthlyRate = Math.max(0, numerator / denominator);
+        }
 
         card.innerHTML = `
-          <div class="loan-header-row">
-            <div class="loan-title-group">
-              <div style="display:flex; align-items:center; gap:6px;">
-                <input type="text" class="item-name-input loan-name" value="${loan.name}" ${!isEditorActive || isArchiveViewing ? 'readonly' : ''} style="font-weight:700;">
-                ${isPaidOff ? '<span class="badge" style="background:rgba(16,185,129,0.2); color:var(--success); font-size:0.65rem;">ABBEZAHLT ✔️</span>' : ''}
-              </div>
-              <div class="item-meta-row">
-                <span>📅 Rate fällig: ${!isEditorActive || isArchiveViewing ? `Tag ${loan.dueDay || 15}` : ''}</span>
-                <div class="editor-only hide-in-archive">${createDueDaySelectHTML(loan.dueDay || 15, 'loan-due-day')}</div>
-              </div>
+          <div class="card-header">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <input type="color" class="color-picker-dot editor-only hide-in-archive goal-color" value="${g.color || '#3b82f6'}">
+              <h2 class="card-title goal-title-display">🎯 ${g.title || 'Sparziel'}</h2>
             </div>
-            <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
-              <span class="loan-rate-header-display" style="font-weight:700; font-size:0.95rem; color:${isPaidOff ? 'var(--success)' : 'var(--debt-color)'};">
-                ${formatEUR(rate * mult)} <span style="font-size:0.75rem; color:var(--text-muted);">/ ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}</span>
-              </span>
-              <button type="button" class="btn-danger editor-only hide-in-archive del-loan-btn">🗑️</button>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="goal-target-display" style="font-size: 0.95rem; font-weight: 700; color: ${g.color || 'var(--accent)'};">${formatEUR(g.target || 0)}</span>
+              <button type="button" class="btn-danger editor-only hide-in-archive del-goal-btn" title="Sparziel löschen">🗑️</button>
             </div>
           </div>
 
-          <div class="loan-progress-container">
-            <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:600;">
-              <span class="loan-paid-text">Getilgt: ${formatEUR(paid)} (${percent} %)</span>
-              <span class="loan-total-text">Gesamt: ${formatEUR(total)}</span>
+          <div class="goal-stats">
+            <div class="goal-stat-item">
+              <span class="goal-stat-label">Endsummen-Prognose:</span>
+              <span class="goal-stat-val goal-forecast-val">${formatEUR(balanceForecast)}</span>
             </div>
-            <div class="loan-progress-bar">
-              <div class="loan-progress-fill" style="width:${percent}%; background:${isPaidOff ? 'var(--success)' : 'var(--debt-color)'};"></div>
+            <div class="goal-stat-item">
+              <span class="goal-stat-label">Benötigt mtl.:</span>
+              <span class="goal-stat-val goal-required-val">${formatEUR(requiredMonthlyRate)}</span>
             </div>
-            <div class="loan-metrics-row">
-              <span class="loan-remaining-text">Restschuld: <strong>${formatEUR(remaining)}</strong></span>
-              <span class="loan-months-text">${isPaidOff ? 'Abgeschlossen' : `Noch ca. <strong>${remainingMonths} Monate</strong>`}</span>
+            <div class="goal-stat-item" style="grid-column: span 2; margin-top: 4px;">
+              <span class="goal-stat-label">Verbleibende Monate:</span>
+              <span class="goal-stat-val goal-months-val">${diffMonths} Monate</span>
             </div>
           </div>
 
-          <div class="loan-actions-row hide-in-archive">
-            ${!isPaidOff ? `<button type="button" class="btn-quick-pay quick-pay-btn">⚡ +1 Rate (${formatEUR(rate)}) tilgen</button>` : '<span style="font-size:0.75rem; color:var(--success);">Abbezahlt.</span>'}
-          </div>
-
-          <div class="loan-editor-grid editor-only hide-in-archive">
-            <div class="loan-field"><label>Gesamtschuld (€)</label><input type="number" step="any" class="edit-loan-total" value="${total}"></div>
-            <div class="loan-field"><label>Bereits gezahlt (€)</label><input type="number" step="any" class="edit-loan-paid" value="${paid}"></div>
-            <div class="loan-field"><label>Monatsrate (€)</label><input type="number" step="any" class="edit-loan-rate" value="${rate}"></div>
-            <div class="loan-field"><label>Laufzeit (Monate)</label><input type="number" class="edit-loan-months" value="${loan.totalMonths || 12}"></div>
+          <!-- In-Place Editor-Felder (behält Tastatur offen) -->
+          <div class="editor-only hide-in-archive" style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">
+            <div class="loan-field">
+              <label>Titel:</label>
+              <input type="text" class="goal-inp-title" value="${g.title || ''}">
+            </div>
+            <div class="loan-field">
+              <label>Zielbetrag (€):</label>
+              <input type="number" step="any" class="goal-inp-target" value="${g.target || 0}">
+            </div>
+            <div class="loan-field">
+              <label>Startkapital (€):</label>
+              <input type="number" step="any" class="goal-inp-start" value="${g.startCapital || 0}">
+            </div>
+            <div class="loan-field">
+              <label>Zieldatum:</label>
+              <input type="date" class="goal-inp-date" value="${g.targetDate || '2028-12-31'}">
+            </div>
+            <div class="loan-field">
+              <label>Tagesgeldzins (% p.a.):</label>
+              <input type="number" step="0.1" class="goal-inp-rate" value="${g.interestRate || 0}">
+            </div>
           </div>
         `;
 
         if (!isArchiveViewing) {
-          card.querySelector('.loan-name').onchange = (e) => { loan.name = e.target.value; persistState(); };
-          card.querySelector('.loan-due-day').onchange = (e) => { loan.dueDay = parseInt(e.target.value, 10) || 15; persistState(); };
+          const colorPicker = card.querySelector('.goal-color');
+          const titleDisplay = card.querySelector('.goal-title-display');
+          const targetDisplay = card.querySelector('.goal-target-display');
+          const forecastVal = card.querySelector('.goal-forecast-val');
+          const requiredVal = card.querySelector('.goal-required-val');
+          const monthsVal = card.querySelector('.goal-months-val');
 
-          const qBtn = card.querySelector('.quick-pay-btn');
-          if (qBtn) {
-            qBtn.onclick = () => {
-              loan.paidAmount = Math.min(loan.totalAmount, loan.paidAmount + loan.monthlyRate);
-              persistState();
-              renderApp();
-            };
-          }
+          const inpTitle = card.querySelector('.goal-inp-title');
+          const inpTarget = card.querySelector('.goal-inp-target');
+          const inpStart = card.querySelector('.goal-inp-start');
+          const inpDate = card.querySelector('.goal-inp-date');
+          const inpRate = card.querySelector('.goal-inp-rate');
 
-          const updateLoanLive = () => {
+          const updateThisGoalLive = () => {
             persistState();
-            renderKPIs();
-            renderLoansList();
+
+            const curTargetDate = new Date(g.targetDate || '2028-12-31');
+            let cMonths = (curTargetDate.getFullYear() - today.getFullYear()) * 12 + (curTargetDate.getMonth() - today.getMonth());
+            cMonths = Math.max(1, cMonths);
+
+            const cMonthlyRate = (g.interestRate || 0) / 100 / 12;
+            let cBalance = Number(g.startCapital) || 0;
+            for (let m = 0; m < cMonths; m++) {
+              cBalance = (cBalance + safeSurplus) * (1 + cMonthlyRate);
+            }
+
+            let cRequired = 0;
+            if (cMonthlyRate === 0) {
+              cRequired = Math.max(0, (g.target - g.startCapital) / cMonths);
+            } else {
+              const fac = Math.pow(1 + cMonthlyRate, cMonths);
+              const num = g.target - (g.startCapital * fac);
+              const den = ((fac - 1) / cMonthlyRate) * (1 + cMonthlyRate);
+              cRequired = Math.max(0, num / den);
+            }
+
+            titleDisplay.textContent = `🎯 ${g.title || 'Sparziel'}`;
+            targetDisplay.textContent = formatEUR(g.target || 0);
+            targetDisplay.style.color = g.color || 'var(--accent)';
+            forecastVal.textContent = formatEUR(cBalance);
+            requiredVal.textContent = formatEUR(cRequired);
+            monthsVal.textContent = `${cMonths} Monate`;
           };
 
-          card.querySelector('.edit-loan-total').oninput = (e) => { loan.totalAmount = parseFloat(e.target.value) || 0; updateLoanLive(); };
-          card.querySelector('.edit-loan-paid').oninput = (e) => { loan.paidAmount = parseFloat(e.target.value) || 0; updateLoanLive(); };
-          card.querySelector('.edit-loan-rate').oninput = (e) => { loan.monthlyRate = parseFloat(e.target.value) || 0; updateLoanLive(); };
-          card.querySelector('.edit-loan-months').oninput = (e) => { loan.totalMonths = parseInt(e.target.value, 10) || 12; persistState(); };
-          card.querySelector('.del-loan-btn').onclick = () => { state.liabilities.loans.splice(idx, 1); persistState(); renderApp(); };
+          inpTitle.oninput = () => { g.title = inpTitle.value; updateThisGoalLive(); };
+          inpTarget.oninput = () => { g.target = parseFloat(inpTarget.value) || 0; updateThisGoalLive(); };
+          inpStart.oninput = () => { g.startCapital = parseFloat(inpStart.value) || 0; updateThisGoalLive(); };
+          inpDate.onchange = () => { g.targetDate = inpDate.value; updateThisGoalLive(); };
+          inpRate.oninput = () => { g.interestRate = parseFloat(inpRate.value) || 0; updateThisGoalLive(); };
+          colorPicker.oninput = () => { g.color = colorPicker.value; updateThisGoalLive(); };
+
+          card.querySelector('.del-goal-btn').onclick = () => {
+            state.savingsGoals.splice(idx, 1);
+            persistState();
+            renderApp();
+          };
         }
 
         container.appendChild(card);
       });
     }
 
-    function renderRecurringList() {
-      const container = document.getElementById('recurringList');
-      container.innerHTML = '';
-      const mult = getMultiplier();
-      const totalRecurring = calcMonthlyRecurringCosts();
-      document.getElementById('totalRecurringHeader').textContent = `${formatEUR(totalRecurring * mult)} / ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}`;
-      const recs = (isArchiveViewing && currentArchiveSnapshot?.recurringBills) ? currentArchiveSnapshot.recurringBills : state.liabilities.recurringBills;
-
-      recs.forEach((bill, idx) => {
-        const row = document.createElement('div');
-        row.className = 'item-row';
-        const displayedCost = (bill.monthlyCost * mult).toFixed(2);
-
-        let formattedDate = '';
-        if (bill.endDate) {
-          const parts = bill.endDate.split('-');
-          if (parts.length === 3) formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
-        }
-
-        row.innerHTML = `
-          <div class="item-info">
-            <div style="display:flex; flex-direction:column; gap:2px; flex:1; min-width:0;">
-              <input type="text" class="item-name-input rec-name" value="${bill.name}" ${!isEditorActive || isArchiveViewing ? 'readonly' : ''}>
-              <div class="item-meta-row">
-                <span>📅 Abbuchung: ${!isEditorActive || isArchiveViewing ? `Tag ${bill.dueDay || 1}` : ''}</span>
-                <div class="editor-only hide-in-archive">${createDueDaySelectHTML(bill.dueDay || 1, 'rec-due-day')}</div>
-                ${formattedDate ? `<span>• Bis ${formattedDate}</span>` : ''}
-              </div>
-            </div>
-            <div class="item-inputs">
-              <div class="number-input-wrapper">
-                <input type="number" step="any" class="rec-cost" value="${displayedCost}" ${isArchiveViewing ? 'readonly' : ''}>
-                <span class="currency-symbol">€</span>
-              </div>
-              <button type="button" class="btn-danger editor-only hide-in-archive del-rec-btn">🗑️</button>
-            </div>
-          </div>
-          <div class="editor-only hide-in-archive" style="display:flex; align-items:center; gap:8px; margin-top:6px;">
-            <label style="font-size:0.75rem; color:var(--text-muted); display:flex; align-items:center; gap:6px;">
-              Vertragsende: 
-              <input type="date" class="rec-date" value="${bill.endDate || ''}" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; border-radius:4px; padding:3px 6px;">
-            </label>
-          </div>
-        `;
-
-        if (!isArchiveViewing) {
-          row.querySelector('.rec-name').onchange = (e) => { bill.name = e.target.value; persistState(); };
-          row.querySelector('.rec-cost').oninput = (e) => {
-            const raw = parseFloat(e.target.value) || 0;
-            bill.monthlyCost = currentViewMode === 'year' ? (raw / 12) : raw;
-            persistState();
-            renderKPIs();
-          };
-          row.querySelector('.rec-date').onchange = (e) => { bill.endDate = e.target.value; persistState(); renderRecurringList(); };
-          row.querySelector('.rec-due-day').onchange = (e) => { bill.dueDay = parseInt(e.target.value, 10) || 1; persistState(); };
-          row.querySelector('.del-rec-btn').onclick = () => { state.liabilities.recurringBills.splice(idx, 1); persistState(); renderApp(); };
-        }
-
-        container.appendChild(row);
-      });
-    }
-
     /* ==========================================================================
-       10. Chart & Timeline
+       9. Chart & SVG
        ========================================================================== */
     function renderInteractiveChart() {
       const titleEl = document.getElementById('chartTitle');
@@ -2325,7 +2151,7 @@
     }
 
     /* ==========================================================================
-       11. Timeline & Snapshot-System
+       10. Timeline & Snapshots
        ========================================================================== */
     function renderTimelinePage() {
       const giroInp = document.getElementById('inputStartGiro');
@@ -2490,7 +2316,8 @@
         categories: JSON.parse(JSON.stringify(state.categories)),
         loans: JSON.parse(JSON.stringify(state.liabilities.loans)),
         recurringBills: JSON.parse(JSON.stringify(state.liabilities.recurringBills)),
-        emergencyFund: JSON.parse(JSON.stringify(state.emergencyFund))
+        emergencyFund: JSON.parse(JSON.stringify(state.emergencyFund)),
+        savingsGoals: JSON.parse(JSON.stringify(state.savingsGoals || []))
       };
 
       const existingIdx = state.history.findIndex(h => h.period === periodKey);
@@ -2545,13 +2372,12 @@
     }
 
     /* ==========================================================================
-       12. NEU: Eigene Themes Logik
+       11. Eigene Themes & Presets
        ========================================================================== */
     function renderThemePresets() {
       const grid = document.getElementById('themePresetsGrid');
       grid.innerHTML = '';
 
-      // Standard-Themes
       Object.keys(BUILTIN_THEMES).forEach(key => {
         const th = BUILTIN_THEMES[key];
         const chip = document.createElement('button');
@@ -2574,7 +2400,6 @@
         grid.appendChild(chip);
       });
 
-      // Eigene Themes
       (state.customThemes || []).forEach((ct, idx) => {
         const chip = document.createElement('div');
         chip.className = `theme-chip ${state.settings.theme.name === ct.name ? 'active' : ''}`;
@@ -2617,7 +2442,7 @@
     }
 
     /* ==========================================================================
-       13. Systemuhr & Lifecycle
+       12. Systemuhr & Lifecycle
        ========================================================================== */
     function updateClock() {
       const now = new Date();
@@ -2647,7 +2472,7 @@
     }
 
     /* ==========================================================================
-       14. Navigation & Initialisierung
+       13. Navigation & Initialisierung
        ========================================================================== */
     const tabBudget = document.getElementById('tabBudget');
     const tabFinance = document.getElementById('tabFinance');
@@ -2716,6 +2541,21 @@
     document.getElementById('btnAddLoan').onclick = () => { state.liabilities.loans.push({ id: `loan_${Date.now()}`, name: 'Neuer Kredit / Rate', totalAmount: 1000, paidAmount: 0, monthlyRate: 50, totalMonths: 20, dueDay: 15 }); persistState(); renderApp(); };
     document.getElementById('btnAddRecurring').onclick = () => { state.liabilities.recurringBills.push({ id: `rec_${Date.now()}`, name: 'Neue Dauerrechnung', monthlyCost: 20, endDate: '', dueDay: 1 }); persistState(); renderApp(); };
 
+    // Button: Neues Sparziel hinzufügen
+    document.getElementById('btnAddSavingsGoal').onclick = () => {
+      state.savingsGoals.push({
+        id: `goal_${Date.now()}`,
+        title: 'Neues Sparziel',
+        target: 5000,
+        startCapital: 0,
+        targetDate: '2028-12-31',
+        interestRate: 3.0,
+        color: '#3b82f6'
+      });
+      persistState();
+      renderApp();
+    };
+
     // Settings Modal
     const modal = document.getElementById('settingsModal');
     const btnOpenSettings = document.getElementById('btnOpenSettings');
@@ -2777,7 +2617,7 @@
       persistState();
     };
 
-    // NEU: Eigenes Theme anlegen & speichern
+    // Eigenes Theme speichern
     document.getElementById('btnSaveCustomTheme').onclick = () => {
       const nameInput = document.getElementById('inputCustomThemeName');
       const label = nameInput.value.trim();
@@ -2821,7 +2661,6 @@
     switchTab(state.uiState.activeTab || 'budget');
     setInterval(updateClock, 1000);
     updateClock();
-    initSavingsGoalEditor();
     renderApp();
   </script>
 </body>
