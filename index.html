@@ -86,7 +86,7 @@
       gap: 6px;
     }
 
-    /* Hauptseiten Navigation (Tabs) */
+    /* Haupt-Navigation (Tabs) */
     .main-nav {
       display: flex;
       background: var(--bg-card);
@@ -101,8 +101,8 @@
       background: transparent;
       border: none;
       color: var(--text-muted);
-      padding: 10px 0;
-      font-size: 0.95rem;
+      padding: 10px 4px;
+      font-size: 0.85rem;
       font-weight: 700;
       border-radius: 8px;
       cursor: pointer;
@@ -110,7 +110,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      text-align: center;
+      gap: 4px;
     }
 
     .nav-btn.active {
@@ -265,10 +266,29 @@
       font-weight: 600;
       flex: 1;
       outline: none;
+      min-width: 0;
     }
 
     .item-name-input:focus {
       border-bottom: 1px solid var(--accent);
+    }
+
+    .item-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .due-day-select {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      outline: none;
     }
 
     .item-inputs {
@@ -309,7 +329,7 @@
       pointer-events: none;
     }
 
-    /* Variables Einkommen Detail-Box */
+    /* Variables Einkommen */
     .variable-inputs-grid {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
@@ -421,9 +441,7 @@
       font-weight: 700;
     }
 
-    /* ==========================================================================
-       Finanzen-Page: Schulden, Kredite & Raten Styling
-       ========================================================================== */
+    /* Finanzen & Kredite */
     .loan-card {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--border);
@@ -451,16 +469,10 @@
 
     .loan-title-group {
       display: flex;
-      align-items: center;
-      gap: 6px;
+      flex-direction: column;
+      gap: 2px;
       flex: 1 1 auto;
       min-width: 0;
-    }
-
-    .loan-title-group .loan-name {
-      min-width: 0;
-      flex: 1;
-      word-break: break-word;
     }
 
     .loan-progress-container {
@@ -561,6 +573,81 @@
       min-width: 0;
     }
 
+    /* ==========================================================================
+       NEU IN PHASE 3: Liquiditäts-Timeline & Kalender Styling
+       ========================================================================== */
+    .timeline-summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .timeline-alert {
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    .timeline-alert.danger {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+
+    .timeline-alert.success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #6ee7b7;
+    }
+
+    .timeline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .timeline-day-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .timeline-day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 4px;
+    }
+
+    .timeline-entry {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      padding: 2px 0;
+    }
+
+    .timeline-entry-income {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .timeline-entry-expense {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
     /* Buttons & Utilities */
     .btn {
       background: var(--accent);
@@ -622,7 +709,6 @@
       margin-top: 8px;
     }
 
-    /* Seiten-Steuerung */
     .page-view {
       display: flex;
       flex-direction: column;
@@ -718,10 +804,11 @@
       </button>
     </header>
 
-    <!-- 2. Haupt-Navigation (Tabs) -->
+    <!-- 2. Haupt-Navigation: 3 Tabs -->
     <nav class="main-nav">
-      <button type="button" class="nav-btn active" id="tabBudget">📊 Budget & Planer</button>
-      <button type="button" class="nav-btn" id="tabFinance">💳 Finanzen & Kredite</button>
+      <button type="button" class="nav-btn active" id="tabBudget">📊 Budget</button>
+      <button type="button" class="nav-btn" id="tabFinance">💳 Finanzen</button>
+      <button type="button" class="nav-btn" id="tabTimeline">📅 Timeline</button>
     </nav>
 
     <!-- 3. Globaler Zeitraum-Umschalter: Monat / Jahr -->
@@ -816,7 +903,6 @@
          ==================================================================== -->
     <div class="page-view hidden" id="pageFinance">
       
-      <!-- Info-Banner -->
       <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); padding: 12px; border-radius: var(--radius); font-size: 0.8rem; color: #c4b5fd;">
         💡 <strong>Fixkosten-Automatik:</strong> Aktive Monatsraten und Dauerrechnungen werden automatisch als feste Fixkosten in dein Dashboard und in die Sparquote eingerechnet.
       </div>
@@ -839,6 +925,48 @@
         </div>
         <div class="item-list" id="recurringList"></div>
         <button type="button" class="btn btn-secondary editor-only" id="btnAddRecurring">+ Dauerrechnung hinzufügen</button>
+      </section>
+
+    </div>
+
+    <!-- ====================================================================
+         SEITE 3: KALENDER & TAGESGENAUE LIQUIDITÄT (NEU)
+         ==================================================================== -->
+    <div class="page-view hidden" id="pageTimeline">
+      
+      <!-- Konten-Status & Startbestand -->
+      <section class="card">
+        <div class="card-header">
+          <h2 class="card-title">🏦 Girokonto & Liquidität</h2>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Monats-Cashflow</span>
+        </div>
+
+        <div class="timeline-summary">
+          <div class="kpi-card" style="text-align: left; padding: 10px;">
+            <span class="kpi-title">Startbestand Giro (Tag 1)</span>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
+              <input type="number" id="inputStartGiro" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:6px; border-radius:6px; font-size:1rem; font-weight:700; width:100%;">
+            </div>
+          </div>
+          <div class="kpi-card" style="text-align: left; padding: 10px;">
+            <span class="kpi-title">Tagesgeld / Notfallpuffer</span>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
+              <input type="number" id="inputTagesgeld" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:6px; border-radius:6px; font-size:1rem; font-weight:700; width:100%;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Engpass-Warnung / Statusanzeige -->
+        <div id="timelineAlertContainer"></div>
+      </section>
+
+      <!-- Monats-Timeline Tag für Tag -->
+      <section class="card">
+        <div class="card-header">
+          <h2 class="card-title">📅 Chronologischer Monatsverlauf</h2>
+          <span id="timelineMonthStatus" style="font-size: 0.85rem; font-weight: 700;">Tag 1 – 31</span>
+        </div>
+        <div class="timeline-list" id="timelineList"></div>
       </section>
 
     </div>
@@ -902,7 +1030,7 @@
        ========================================================================== */
     const STORAGE_KEY = 'budget_app_blank_v10';
     let currentViewMode = 'month'; // 'month' | 'year'
-    let currentTab = 'budget';     // 'budget' | 'finance'
+    let currentTab = 'budget';     // 'budget' | 'finance' | 'timeline'
     let isEditorActive = false;
 
     function getDefaultData() {
@@ -912,9 +1040,13 @@
           sliderStep: 10,
           incomeCalculationMode: 'min'
         },
+        cashflow: {
+          startGiro: 1200,
+          tagesgeld: 4500
+        },
         incomes: [
-          { id: 'inc_1', name: 'Hauptgehalt', type: 'fixed', value: 2500 },
-          { id: 'inc_2', name: 'Zuschläge / Nebenjob', type: 'variable', minValue: 300, avgValue: 500, maxValue: 800 }
+          { id: 'inc_1', name: 'Hauptgehalt', type: 'fixed', value: 2500, dueDay: 28 },
+          { id: 'inc_2', name: 'Zuschläge / Nebenjob', type: 'variable', minValue: 300, avgValue: 500, maxValue: 800, dueDay: 15 }
         ],
         categories: [
           {
@@ -922,9 +1054,9 @@
             name: 'Wohnen & Fixkosten',
             color: '#3b82f6',
             items: [
-              { id: 'item_miete', name: 'Warmmiete', value: 950, max: 2000 },
-              { id: 'item_strom', name: 'Strom & Gas', value: 120, max: 500 },
-              { id: 'item_internet', name: 'Internet & GEZ', value: 65, max: 200 }
+              { id: 'item_miete', name: 'Warmmiete', value: 950, max: 2000, dueDay: 1 },
+              { id: 'item_strom', name: 'Strom & Gas', value: 120, max: 500, dueDay: 15 },
+              { id: 'item_internet', name: 'Internet & GEZ', value: 65, max: 200, dueDay: 10 }
             ]
           },
           {
@@ -932,8 +1064,8 @@
             name: 'Lebenshaltung & Alltag',
             color: '#10b981',
             items: [
-              { id: 'item_lebensmittel', name: 'Lebensmittel', value: 450, max: 1000 },
-              { id: 'item_drogerie', name: 'Drogerie & Haushalt', value: 80, max: 300 }
+              { id: 'item_lebensmittel', name: 'Lebensmittel', value: 450, max: 1000, dueDay: 5 },
+              { id: 'item_drogerie', name: 'Drogerie & Haushalt', value: 80, max: 300, dueDay: 20 }
             ]
           },
           {
@@ -941,8 +1073,8 @@
             name: 'Mobilität & Kfz',
             color: '#f59e0b',
             items: [
-              { id: 'item_kfz', name: 'Versicherung & Steuer', value: 85, max: 300 },
-              { id: 'item_sprit', name: 'Tanken / Fahrkarte', value: 140, max: 400 }
+              { id: 'item_kfz', name: 'Versicherung & Steuer', value: 85, max: 300, dueDay: 1 },
+              { id: 'item_sprit', name: 'Tanken / Fahrkarte', value: 140, max: 400, dueDay: 12 }
             ]
           }
         ],
@@ -954,7 +1086,8 @@
               totalAmount: 12000,
               paidAmount: 4800,
               monthlyRate: 300,
-              totalMonths: 40
+              totalMonths: 40,
+              dueDay: 15
             },
             {
               id: 'loan_2',
@@ -962,12 +1095,13 @@
               totalAmount: 1200,
               paidAmount: 800,
               monthlyRate: 100,
-              totalMonths: 12
+              totalMonths: 12,
+              dueDay: 10
             }
           ],
           recurringBills: [
-            { id: 'rec_1', name: 'Mobilfunkvertrag', monthlyCost: 45, endDate: '2027-06-30' },
-            { id: 'rec_2', name: 'Fitnessstudio', monthlyCost: 35, endDate: '' }
+            { id: 'rec_1', name: 'Mobilfunkvertrag', monthlyCost: 45, endDate: '2027-06-30', dueDay: 5 },
+            { id: 'rec_2', name: 'Fitnessstudio', monthlyCost: 35, endDate: '', dueDay: 1 }
           ]
         },
         savingsGoal: {
@@ -1002,14 +1136,21 @@
           if (!stored.settings.incomeCalculationMode) stored.settings.incomeCalculationMode = 'min';
         }
 
-        // 2. Incomes
+        // 2. Cashflow (NEU)
+        if (!stored.cashflow) {
+          stored.cashflow = defaults.cashflow;
+        } else {
+          if (stored.cashflow.startGiro === undefined) stored.cashflow.startGiro = 1200;
+          if (stored.cashflow.tagesgeld === undefined) stored.cashflow.tagesgeld = 4500;
+        }
+
+        // 3. Incomes & DueDay
         if (!Array.isArray(stored.incomes)) {
-          stored.incomes = stored.totalIncome 
-            ? [{ id: 'inc_legacy', name: 'Haupteinkommen', type: 'fixed', value: stored.totalIncome }]
-            : defaults.incomes;
+          stored.incomes = defaults.incomes;
         } else {
           stored.incomes.forEach(inc => {
             if (!inc.type) inc.type = 'fixed';
+            if (inc.dueDay === undefined) inc.dueDay = 28;
             if (inc.type === 'variable') {
               if (inc.minValue === undefined) inc.minValue = inc.value || 0;
               if (inc.avgValue === undefined) inc.avgValue = inc.value || 0;
@@ -1018,7 +1159,7 @@
           });
         }
 
-        // 3. Kategorien
+        // 4. Kategorien & DueDay
         if (!Array.isArray(stored.categories)) {
           stored.categories = defaults.categories;
         } else {
@@ -1028,20 +1169,24 @@
               cat.items.forEach(it => {
                 if (typeof it.value !== 'number') it.value = 0;
                 if (!it.max || it.max < it.value) it.max = Math.max(1000, it.value * 1.5);
+                if (it.dueDay === undefined) it.dueDay = 1;
               });
             }
           });
         }
 
-        // 4. Liabilities
+        // 5. Liabilities & DueDay
         if (!stored.liabilities) {
           stored.liabilities = defaults.liabilities;
         } else {
           if (!Array.isArray(stored.liabilities.loans)) stored.liabilities.loans = defaults.liabilities.loans;
+          else stored.liabilities.loans.forEach(l => { if (l.dueDay === undefined) l.dueDay = 15; });
+
           if (!Array.isArray(stored.liabilities.recurringBills)) stored.liabilities.recurringBills = defaults.liabilities.recurringBills;
+          else stored.liabilities.recurringBills.forEach(b => { if (b.dueDay === undefined) b.dueDay = 1; });
         }
 
-        // 5. Sparziel
+        // 6. Sparziel
         if (!stored.savingsGoal) stored.savingsGoal = defaults.savingsGoal;
 
         return stored;
@@ -1106,6 +1251,16 @@
 
     function calcMonthlyTotalExpenses() {
       return calcMonthlyCategoryExpenses() + calcMonthlyLoanCosts() + calcMonthlyRecurringCosts();
+    }
+
+    // Erzeugt ein Dropdown für Fälligkeitstage (1 bis 31)
+    function createDueDaySelectHTML(selectedDay, className = 'due-day-select') {
+      let html = `<select class="${className}">`;
+      for (let d = 1; d <= 31; d++) {
+        html += `<option value="${d}" ${Number(selectedDay) === d ? 'selected' : ''}>Tag ${d}</option>`;
+      }
+      html += `</select>`;
+      return html;
     }
 
     /* ==========================================================================
@@ -1179,7 +1334,7 @@
     }
 
     /* ==========================================================================
-       5. Render: Budget-Seite
+       5. Render: Budget-Seite (mit Fälligkeitstagen)
        ========================================================================== */
     function renderIncomes() {
       const container = document.getElementById('incomesList');
@@ -1198,9 +1353,15 @@
 
           row.innerHTML = `
             <div class="item-info">
-              <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:0;">
-                <span class="tag-variable">VARIABEL</span>
-                <input type="text" class="item-name-input" value="${inc.name}" ${!isEditorActive ? 'readonly' : ''}>
+              <div style="display:flex; flex-direction:column; gap:2px; flex:1; min-width:0;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="tag-variable">VARIABEL</span>
+                  <input type="text" class="item-name-input" value="${inc.name}" ${!isEditorActive ? 'readonly' : ''}>
+                </div>
+                <div class="item-meta-row">
+                  <span>📅 Eingang: ${!isEditorActive ? `Tag ${inc.dueDay || 28}` : ''}</span>
+                  <div class="editor-only">${createDueDaySelectHTML(inc.dueDay || 28, 'inc-due-day')}</div>
+                </div>
               </div>
               <div class="item-inputs">
                 <span style="font-weight:700; font-size:0.95rem; color:var(--warning);">${formatEUR(effVal)}</span>
@@ -1228,6 +1389,7 @@
           const minInp = row.querySelector('.var-min');
           const avgInp = row.querySelector('.var-avg');
           const maxInp = row.querySelector('.var-max');
+          const dueDaySel = row.querySelector('.inc-due-day');
           const delBtn = row.querySelector('.del-inc-btn');
 
           nameInp.addEventListener('change', (e) => { inc.name = e.target.value; persistState(); });
@@ -1243,6 +1405,11 @@
           avgInp.addEventListener('input', () => handleVarChange(avgInp, 'avgValue'));
           maxInp.addEventListener('input', () => handleVarChange(maxInp, 'maxValue'));
 
+          dueDaySel.addEventListener('change', (e) => {
+            inc.dueDay = parseInt(e.target.value, 10) || 28;
+            persistState();
+          });
+
           delBtn.addEventListener('click', () => {
             state.incomes.splice(idx, 1);
             persistState();
@@ -1254,7 +1421,13 @@
 
           row.innerHTML = `
             <div class="item-info">
-              <input type="text" class="item-name-input" value="${inc.name}" ${!isEditorActive ? 'readonly' : ''}>
+              <div style="display:flex; flex-direction:column; gap:2px; flex:1; min-width:0;">
+                <input type="text" class="item-name-input" value="${inc.name}" ${!isEditorActive ? 'readonly' : ''}>
+                <div class="item-meta-row">
+                  <span>📅 Eingang: ${!isEditorActive ? `Tag ${inc.dueDay || 28}` : ''}</span>
+                  <div class="editor-only">${createDueDaySelectHTML(inc.dueDay || 28, 'inc-due-day')}</div>
+                </div>
+              </div>
               <div class="item-inputs">
                 <div class="number-input-wrapper">
                   <input type="number" step="any" value="${displayedValue}">
@@ -1267,6 +1440,7 @@
 
           const nameInput = row.querySelector('.item-name-input');
           const numInput = row.querySelector('input[type="number"]');
+          const dueDaySel = row.querySelector('.inc-due-day');
           const delBtn = row.querySelector('.del-inc-btn');
 
           nameInput.addEventListener('change', (e) => { inc.name = e.target.value; persistState(); });
@@ -1276,6 +1450,11 @@
             inc.value = currentViewMode === 'year' ? (raw / 12) : raw;
             persistState();
             renderKPIs();
+          });
+
+          dueDaySel.addEventListener('change', (e) => {
+            inc.dueDay = parseInt(e.target.value, 10) || 28;
+            persistState();
           });
 
           delBtn.addEventListener('click', () => {
@@ -1339,7 +1518,7 @@
         });
 
         addItemBtn.addEventListener('click', () => {
-          cat.items.push({ id: `item_${Date.now()}`, name: 'Neuer Posten', value: 0, max: 500 });
+          cat.items.push({ id: `item_${Date.now()}`, name: 'Neuer Posten', value: 0, max: 500, dueDay: 1 });
           persistState();
           renderApp();
         });
@@ -1353,7 +1532,13 @@
 
           itemRow.innerHTML = `
             <div class="item-info">
-              <input type="text" class="item-name-input" value="${item.name}" ${!isEditorActive ? 'readonly' : ''}>
+              <div style="display:flex; flex-direction:column; gap:2px; flex:1; min-width:0;">
+                <input type="text" class="item-name-input" value="${item.name}" ${!isEditorActive ? 'readonly' : ''}>
+                <div class="item-meta-row">
+                  <span>📅 Abbuchung: ${!isEditorActive ? `Tag ${item.dueDay || 1}` : ''}</span>
+                  <div class="editor-only">${createDueDaySelectHTML(item.dueDay || 1, 'item-due-day')}</div>
+                </div>
+              </div>
               <div class="item-inputs">
                 <div class="number-input-wrapper">
                   <input type="number" step="any" value="${displayedVal}">
@@ -1368,6 +1553,7 @@
           const nameInp = itemRow.querySelector('.item-name-input');
           const numInp = itemRow.querySelector('input[type="number"]');
           const slider = itemRow.querySelector('input[type="range"]');
+          const dueDaySel = itemRow.querySelector('.item-due-day');
           const delItemBtn = itemRow.querySelector('.del-item-btn');
 
           slider.style.accentColor = cat.color || 'var(--accent)';
@@ -1394,6 +1580,11 @@
 
           slider.addEventListener('input', (e) => syncValues(e.target.value));
           numInp.addEventListener('input', (e) => syncValues(e.target.value));
+
+          dueDaySel.addEventListener('change', (e) => {
+            item.dueDay = parseInt(e.target.value, 10) || 1;
+            persistState();
+          });
 
           nameInp.addEventListener('change', (e) => { item.name = e.target.value; persistState(); });
 
@@ -1441,8 +1632,14 @@
         card.innerHTML = `
           <div class="loan-header-row">
             <div class="loan-title-group">
-              <input type="text" class="item-name-input loan-name" value="${loan.name}" ${!isEditorActive ? 'readonly' : ''} style="font-weight:700;">
-              ${isPaidOff ? '<span class="badge loan-badge-paid" style="background:rgba(16,185,129,0.2); color:var(--success); font-size:0.65rem; white-space:nowrap;">ABBEZAHLT ✔️</span>' : ''}
+              <div style="display:flex; align-items:center; gap:6px;">
+                <input type="text" class="item-name-input loan-name" value="${loan.name}" ${!isEditorActive ? 'readonly' : ''} style="font-weight:700;">
+                ${isPaidOff ? '<span class="badge loan-badge-paid" style="background:rgba(16,185,129,0.2); color:var(--success); font-size:0.65rem; white-space:nowrap;">ABBEZAHLT ✔️</span>' : ''}
+              </div>
+              <div class="item-meta-row">
+                <span>📅 Rate fällig: ${!isEditorActive ? `Tag ${loan.dueDay || 15}` : ''}</span>
+                <div class="editor-only">${createDueDaySelectHTML(loan.dueDay || 15, 'loan-due-day')}</div>
+              </div>
             </div>
             <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
               <span class="loan-rate-header-display" style="font-weight:700; font-size:0.95rem; color:${isPaidOff ? 'var(--success)' : 'var(--debt-color)'}; white-space:nowrap;">
@@ -1499,6 +1696,12 @@
           persistState();
         });
 
+        const dueDaySel = card.querySelector('.loan-due-day');
+        dueDaySel.addEventListener('change', (e) => {
+          loan.dueDay = parseInt(e.target.value, 10) || 15;
+          persistState();
+        });
+
         const quickPayBtn = card.querySelector('.quick-pay-btn');
         if (quickPayBtn) {
           quickPayBtn.addEventListener('click', () => {
@@ -1508,7 +1711,6 @@
           });
         }
 
-        // Live-Update Funktion OHNE Neuaufbau des DOM (behält Tastatur & Fokus)
         const updateLoanLive = () => {
           persistState();
 
@@ -1604,11 +1806,11 @@
           <div class="item-info">
             <div style="display:flex; flex-direction:column; gap:2px; flex:1; min-width:0;">
               <input type="text" class="item-name-input rec-name" value="${bill.name}" ${!isEditorActive ? 'readonly' : ''}>
-              ${formattedDate ? `
-                <span style="font-size:0.75rem; color:var(--text-muted); display:flex; align-items:center; gap:4px; margin-top:2px;">
-                  📅 Bis ${formattedDate}
-                </span>
-              ` : ''}
+              <div class="item-meta-row">
+                <span>📅 Abbuchung: ${!isEditorActive ? `Tag ${bill.dueDay || 1}` : ''}</span>
+                <div class="editor-only">${createDueDaySelectHTML(bill.dueDay || 1, 'rec-due-day')}</div>
+                ${formattedDate ? `<span>• Bis ${formattedDate}</span>` : ''}
+              </div>
             </div>
             <div class="item-inputs">
               <div class="number-input-wrapper">
@@ -1629,6 +1831,7 @@
         const nameInp = row.querySelector('.rec-name');
         const costInp = row.querySelector('.rec-cost');
         const dateInp = row.querySelector('.rec-date');
+        const dueDaySel = row.querySelector('.rec-due-day');
         const delBtn = row.querySelector('.del-rec-btn');
 
         nameInp.addEventListener('change', (e) => { bill.name = e.target.value; persistState(); });
@@ -1647,6 +1850,11 @@
           renderRecurringList();
         });
 
+        dueDaySel.addEventListener('change', (e) => {
+          bill.dueDay = parseInt(e.target.value, 10) || 1;
+          persistState();
+        });
+
         delBtn.addEventListener('click', () => {
           state.liabilities.recurringBills.splice(idx, 1);
           persistState();
@@ -1658,7 +1866,152 @@
     }
 
     /* ==========================================================================
-       7. Sparziel-Berechnung
+       7. Render: NEU - Kalender & Liquiditäts-Timeline (Phase 3)
+       ========================================================================== */
+    function renderTimelinePage() {
+      // Inputs initialisieren
+      const giroInp = document.getElementById('inputStartGiro');
+      const tagesInp = document.getElementById('inputTagesgeld');
+
+      giroInp.value = state.cashflow.startGiro;
+      tagesInp.value = state.cashflow.tagesgeld;
+
+      giroInp.oninput = (e) => {
+        state.cashflow.startGiro = parseFloat(e.target.value) || 0;
+        persistState();
+        buildTimelineSchedule();
+      };
+
+      tagesInp.oninput = (e) => {
+        state.cashflow.tagesgeld = parseFloat(e.target.value) || 0;
+        persistState();
+        buildTimelineSchedule();
+      };
+
+      buildTimelineSchedule();
+    }
+
+    function buildTimelineSchedule() {
+      const container = document.getElementById('timelineList');
+      const alertContainer = document.getElementById('timelineAlertContainer');
+      container.innerHTML = '';
+      alertContainer.innerHTML = '';
+
+      let runningBalance = Number(state.cashflow.startGiro) || 0;
+      let lowestBalance = runningBalance;
+      let lowestDay = 1;
+
+      // Alle 31 Tage simulieren
+      const dailyEvents = {};
+      for (let day = 1; day <= 31; day++) dailyEvents[day] = [];
+
+      // 1. Einnahmen zuweisen
+      (state.incomes || []).forEach(inc => {
+        const amount = getEffectiveIncome(inc);
+        const day = Math.min(31, Math.max(1, inc.dueDay || 28));
+        if (amount > 0) {
+          dailyEvents[day].push({ name: inc.name, amount: amount, type: 'income' });
+        }
+      });
+
+      // 2. Budget-Kategorien zuweisen
+      (state.categories || []).forEach(cat => {
+        (cat.items || []).forEach(item => {
+          const val = Number(item.value) || 0;
+          const day = Math.min(31, Math.max(1, item.dueDay || 1));
+          if (val > 0) {
+            dailyEvents[day].push({ name: item.name, amount: val, type: 'expense' });
+          }
+        });
+      });
+
+      // 3. Kredite zuweisen
+      (state.liabilities?.loans || []).forEach(loan => {
+        const remaining = Math.max(0, (Number(loan.totalAmount) || 0) - (Number(loan.paidAmount) || 0));
+        const rate = Number(loan.monthlyRate) || 0;
+        const day = Math.min(31, Math.max(1, loan.dueDay || 15));
+        if (remaining > 0 && rate > 0) {
+          dailyEvents[day].push({ name: `Rate: ${loan.name}`, amount: rate, type: 'expense' });
+        }
+      });
+
+      // 4. Dauerrechnungen zuweisen
+      (state.liabilities?.recurringBills || []).forEach(bill => {
+        const cost = Number(bill.monthlyCost) || 0;
+        const day = Math.min(31, Math.max(1, bill.dueDay || 1));
+        if (cost > 0) {
+          dailyEvents[day].push({ name: bill.name, amount: cost, type: 'expense' });
+        }
+      });
+
+      // Tag für Tag berechnen und Rendern
+      for (let day = 1; day <= 31; day++) {
+        const events = dailyEvents[day];
+        let dayDelta = 0;
+
+        events.forEach(ev => {
+          if (ev.type === 'income') dayDelta += ev.amount;
+          else dayDelta -= ev.amount;
+        });
+
+        runningBalance += dayDelta;
+
+        if (runningBalance < lowestBalance) {
+          lowestBalance = runningBalance;
+          lowestDay = day;
+        }
+
+        // Tag nur rendern, wenn Buchungen anfallen
+        if (events.length > 0) {
+          const dayCard = document.createElement('div');
+          dayCard.className = 'timeline-day-card';
+
+          let entriesHTML = '';
+          events.forEach(ev => {
+            entriesHTML += `
+              <div class="timeline-entry">
+                <span>${ev.name}</span>
+                <span class="${ev.type === 'income' ? 'timeline-entry-income' : 'timeline-entry-expense'}">
+                  ${ev.type === 'income' ? '+' : '-'} ${formatEUR(ev.amount)}
+                </span>
+              </div>
+            `;
+          });
+
+          const isNegative = runningBalance < 0;
+
+          dayCard.innerHTML = `
+            <div class="timeline-day-header">
+              <span>Tag ${day}. des Monats</span>
+              <span style="color: ${isNegative ? 'var(--danger)' : 'var(--text-main)'}; font-weight:700;">
+                Saldo: ${formatEUR(runningBalance)}
+              </span>
+            </div>
+            ${entriesHTML}
+          `;
+
+          container.appendChild(dayCard);
+        }
+      }
+
+      // Engpass-Warnung erzeugen
+      const alertBox = document.createElement('div');
+      if (lowestBalance < 0) {
+        alertBox.className = 'timeline-alert danger';
+        alertBox.innerHTML = `
+          <span>⚠️ <strong>Liquiditäts-Engpass:</strong> Am <strong>${lowestDay}.</strong> fällt dein Girokonto voraussichtlich auf <strong>${formatEUR(lowestBalance)}</strong> ins Minus, bevor neues Geld eingeht!</span>
+        `;
+      } else {
+        alertBox.className = 'timeline-alert success';
+        alertBox.innerHTML = `
+          <span>✔️ <strong>Solide Liquidität:</strong> Dein Girokonto bleibt den gesamten Monat im Plus (Tiefstand: <strong>${formatEUR(lowestBalance)}</strong> am ${lowestDay}.).</span>
+        `;
+      }
+      alertContainer.appendChild(alertBox);
+    }
+
+    /* ==========================================================================
+       8. Sparziel-Berechnung
        ========================================================================== */
     function renderSavingsGoal(monthlySurplus) {
       const g = state.savingsGoal;
@@ -1726,7 +2079,7 @@
     }
 
     /* ==========================================================================
-       8. Systemuhr & View Lifecycle
+       9. Systemuhr & View Lifecycle
        ========================================================================== */
     function updateClock() {
       const now = new Date();
@@ -1748,36 +2101,40 @@
       if (currentTab === 'budget') {
         renderIncomes();
         renderCategories();
-      } else {
+      } else if (currentTab === 'finance') {
         renderFinancePage();
+      } else if (currentTab === 'timeline') {
+        renderTimelinePage();
       }
     }
 
     /* ==========================================================================
-       9. Event-Listener & Navigation
+       10. Event-Listener & 3-Tab-Navigation
        ========================================================================== */
     const tabBudget = document.getElementById('tabBudget');
     const tabFinance = document.getElementById('tabFinance');
+    const tabTimeline = document.getElementById('tabTimeline');
+
     const pageBudget = document.getElementById('pageBudget');
     const pageFinance = document.getElementById('pageFinance');
+    const pageTimeline = document.getElementById('pageTimeline');
 
-    tabBudget.addEventListener('click', () => {
-      currentTab = 'budget';
-      tabBudget.classList.add('active');
-      tabFinance.classList.remove('active');
-      pageBudget.classList.remove('hidden');
-      pageFinance.classList.add('hidden');
-      renderApp();
-    });
+    function switchTab(targetTab) {
+      currentTab = targetTab;
+      tabBudget.classList.toggle('active', targetTab === 'budget');
+      tabFinance.classList.toggle('active', targetTab === 'finance');
+      tabTimeline.classList.toggle('active', targetTab === 'timeline');
 
-    tabFinance.addEventListener('click', () => {
-      currentTab = 'finance';
-      tabFinance.classList.add('active');
-      tabBudget.classList.remove('active');
-      pageFinance.classList.remove('hidden');
-      pageBudget.classList.add('hidden');
+      pageBudget.classList.toggle('hidden', targetTab !== 'budget');
+      pageFinance.classList.toggle('hidden', targetTab !== 'finance');
+      pageTimeline.classList.toggle('hidden', targetTab !== 'timeline');
+
       renderApp();
-    });
+    }
+
+    tabBudget.addEventListener('click', () => switchTab('budget'));
+    tabFinance.addEventListener('click', () => switchTab('finance'));
+    tabTimeline.addEventListener('click', () => switchTab('timeline'));
 
     const btnMonth = document.getElementById('btnMonth');
     const btnYear = document.getElementById('btnYear');
@@ -1805,7 +2162,7 @@
     });
 
     document.getElementById('btnAddIncomeFix').addEventListener('click', () => {
-      state.incomes.push({ id: `inc_${Date.now()}`, name: 'Festes Gehalt', type: 'fixed', value: 0 });
+      state.incomes.push({ id: `inc_${Date.now()}`, name: 'Festes Gehalt', type: 'fixed', value: 0, dueDay: 28 });
       persistState();
       renderApp();
     });
@@ -1817,7 +2174,8 @@
         type: 'variable',
         minValue: 0,
         avgValue: 0,
-        maxValue: 0
+        maxValue: 0,
+        dueDay: 15
       });
       persistState();
       renderApp();
@@ -1836,7 +2194,8 @@
         totalAmount: 1000,
         paidAmount: 0,
         monthlyRate: 50,
-        totalMonths: 20
+        totalMonths: 20,
+        dueDay: 15
       });
       persistState();
       renderApp();
@@ -1847,7 +2206,8 @@
         id: `rec_${Date.now()}`,
         name: 'Neue Dauerrechnung',
         monthlyCost: 20,
-        endDate: ''
+        endDate: '',
+        dueDay: 1
       });
       persistState();
       renderApp();
