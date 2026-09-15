@@ -422,7 +422,7 @@
     }
 
     /* ==========================================================================
-       Finanzen-Page: Schulden, Kredite & Raten Styling (Mobil Optimiert)
+       Finanzen-Page: Schulden, Kredite & Raten Styling
        ========================================================================== */
     .loan-card {
       background: rgba(255, 255, 255, 0.02);
@@ -1442,10 +1442,10 @@
           <div class="loan-header-row">
             <div class="loan-title-group">
               <input type="text" class="item-name-input loan-name" value="${loan.name}" ${!isEditorActive ? 'readonly' : ''} style="font-weight:700;">
-              ${isPaidOff ? '<span class="badge" style="background:rgba(16,185,129,0.2); color:var(--success); font-size:0.65rem; white-space:nowrap;">ABBEZAHLT ✔️</span>' : ''}
+              ${isPaidOff ? '<span class="badge loan-badge-paid" style="background:rgba(16,185,129,0.2); color:var(--success); font-size:0.65rem; white-space:nowrap;">ABBEZAHLT ✔️</span>' : ''}
             </div>
             <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
-              <span style="font-weight:700; font-size:0.95rem; color:${isPaidOff ? 'var(--success)' : 'var(--debt-color)'}; white-space:nowrap;">
+              <span class="loan-rate-header-display" style="font-weight:700; font-size:0.95rem; color:${isPaidOff ? 'var(--success)' : 'var(--debt-color)'}; white-space:nowrap;">
                 ${formatEUR(rate * mult)} <span style="font-size:0.75rem; color:var(--text-muted);">/ ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}</span>
               </span>
               <button type="button" class="btn-danger editor-only del-loan-btn">🗑️</button>
@@ -1454,15 +1454,15 @@
 
           <div class="loan-progress-container">
             <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:600;">
-              <span>Getilgt: ${formatEUR(paid)} (${percent} %)</span>
-              <span>Gesamt: ${formatEUR(total)}</span>
+              <span class="loan-paid-text">Getilgt: ${formatEUR(paid)} (${percent} %)</span>
+              <span class="loan-total-text">Gesamt: ${formatEUR(total)}</span>
             </div>
             <div class="loan-progress-bar">
               <div class="loan-progress-fill" style="width:${percent}%; background:${isPaidOff ? 'var(--success)' : 'var(--debt-color)'};"></div>
             </div>
             <div class="loan-metrics-row">
-              <span>Restschuld: <strong>${formatEUR(remaining)}</strong></span>
-              <span>${isPaidOff ? 'Abgeschlossen' : `Noch ca. <strong>${remainingMonths} Monate</strong>`}</span>
+              <span class="loan-remaining-text">Restschuld: <strong>${formatEUR(remaining)}</strong></span>
+              <span class="loan-months-text">${isPaidOff ? 'Abgeschlossen' : `Noch ca. <strong>${remainingMonths} Monate</strong>`}</span>
             </div>
           </div>
 
@@ -1508,6 +1508,41 @@
           });
         }
 
+        // Live-Update Funktion OHNE Neuaufbau des DOM (behält Tastatur & Fokus)
+        const updateLoanLive = () => {
+          persistState();
+
+          const curTotal = Number(loan.totalAmount) || 0;
+          const curPaid = Number(loan.paidAmount) || 0;
+          const curRate = Number(loan.monthlyRate) || 0;
+          const curRemaining = Math.max(0, curTotal - curPaid);
+          const curPercent = curTotal > 0 ? Math.min(100, Math.round((curPaid / curTotal) * 100)) : 100;
+          const curMonths = curRate > 0 ? Math.ceil(curRemaining / curRate) : 0;
+          const curPaidOff = curRemaining <= 0;
+
+          card.classList.toggle('paid-off', curPaidOff);
+          card.querySelector('.loan-paid-text').textContent = `Getilgt: ${formatEUR(curPaid)} (${curPercent} %)`;
+          card.querySelector('.loan-total-text').textContent = `Gesamt: ${formatEUR(curTotal)}`;
+          
+          const fill = card.querySelector('.loan-progress-fill');
+          fill.style.width = `${curPercent}%`;
+          fill.style.background = curPaidOff ? 'var(--success)' : 'var(--debt-color)';
+
+          card.querySelector('.loan-remaining-text').innerHTML = `Restschuld: <strong>${formatEUR(curRemaining)}</strong>`;
+          card.querySelector('.loan-months-text').innerHTML = curPaidOff ? 'Abgeschlossen' : `Noch ca. <strong>${curMonths} Monate</strong>`;
+
+          const rateDisplay = card.querySelector('.loan-rate-header-display');
+          rateDisplay.style.color = curPaidOff ? 'var(--success)' : 'var(--debt-color)';
+          rateDisplay.innerHTML = `${formatEUR(curRate * mult)} <span style="font-size:0.75rem; color:var(--text-muted);">/ ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}</span>`;
+
+          const qBtn = card.querySelector('.quick-pay-btn');
+          if (qBtn) qBtn.textContent = `⚡ +1 Rate (${formatEUR(curRate)}) tilgen`;
+
+          const totalRate = calcMonthlyLoanCosts();
+          document.getElementById('totalLoansRateHeader').textContent = `${formatEUR(totalRate * mult)} / ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}`;
+          renderKPIs();
+        };
+
         const inpTotal = card.querySelector('.edit-loan-total');
         const inpPaid = card.querySelector('.edit-loan-paid');
         const inpRate = card.querySelector('.edit-loan-rate');
@@ -1515,26 +1550,22 @@
 
         inpTotal.addEventListener('input', () => {
           loan.totalAmount = parseFloat(inpTotal.value) || 0;
-          persistState();
-          renderApp();
+          updateLoanLive();
         });
 
         inpPaid.addEventListener('input', () => {
           loan.paidAmount = parseFloat(inpPaid.value) || 0;
-          persistState();
-          renderApp();
+          updateLoanLive();
         });
 
         inpRate.addEventListener('input', () => {
           loan.monthlyRate = parseFloat(inpRate.value) || 0;
-          persistState();
-          renderApp();
+          updateLoanLive();
         });
 
         inpMonths.addEventListener('input', () => {
           loan.totalMonths = parseInt(inpMonths.value, 10) || 12;
           persistState();
-          renderApp();
         });
 
         card.querySelector('.del-loan-btn').addEventListener('click', () => {
@@ -1561,7 +1592,6 @@
 
         const displayedCost = (bill.monthlyCost * mult).toFixed(2);
 
-        // Formatiertes Datum für den Ansichtsmodus
         let formattedDate = '';
         if (bill.endDate) {
           const parts = bill.endDate.split('-');
