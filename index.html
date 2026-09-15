@@ -709,21 +709,61 @@
       padding: 2px 0;
     }
 
-    .history-card {
+    /* NEU: Archiv-Bibliothek Detail-Karten Styling */
+    .library-item-card {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 12px;
+      border-radius: var(--radius);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .library-item-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
     }
 
-    .history-card:hover {
-      background: rgba(255, 255, 255, 0.05);
+    .library-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      text-align: center;
+    }
+
+    .library-action-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .library-action-btn {
+      flex: 1;
+      min-width: 100px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .library-action-btn:hover {
       border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.15);
     }
 
     /* Buttons & Utilities */
@@ -831,7 +871,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       width: 100%;
-      max-width: 460px;
+      max-width: 480px;
       max-height: 88vh;
       overflow-y: auto;
       padding: 20px;
@@ -1065,7 +1105,7 @@
          ==================================================================== -->
     <div class="page-view hidden" id="pageFinance">
       
-      <!-- NEU: Voll editierbarer Notgroschen & Rücklagen -->
+      <!-- Notgroschen & Rücklagen -->
       <section class="card" id="emergencyFundCard">
         <div class="card-header">
           <h2 class="card-title">🛡️ Notgroschen & Rücklagen</h2>
@@ -1101,7 +1141,6 @@
             <button type="button" class="btn-quick-emergency" id="btnEmergencyAddSurplus">⚡ Überschuss zuweisen</button>
           </div>
 
-          <!-- Vollständiger In-Place Editor -->
           <div class="loan-editor-grid editor-only hide-in-archive">
             <div class="loan-field">
               <label>Zielbetrag (€)</label>
@@ -1183,9 +1222,11 @@
       <section class="card">
         <div class="card-header">
           <h2 class="card-title">🏦 Girokonto & Liquidität</h2>
-          <button type="button" class="btn hide-in-archive" id="btnArchiveMonth" style="padding: 5px 10px; font-size: 0.75rem;">
-            💾 Diesen Monat archivieren
-          </button>
+          <div style="display:flex; gap:6px;">
+            <button type="button" class="btn hide-in-archive" id="btnArchiveMonth" style="padding: 5px 10px; font-size: 0.75rem;">
+              💾 Monat archivieren
+            </button>
+          </div>
         </div>
 
         <div class="timeline-summary">
@@ -1210,7 +1251,9 @@
       <section class="card">
         <div class="card-header">
           <h2 class="card-title">📜 Monats-Historie & Archiv</h2>
-          <span id="historyCountBadge" style="font-size: 0.8rem; color: var(--text-muted);">0 Monate archiviert</span>
+          <button type="button" class="btn btn-secondary" id="btnOpenLibraryModal" style="padding: 4px 8px; font-size: 0.75rem;">
+            📚 Bibliothek verwalten
+          </button>
         </div>
         <div class="item-list" id="historyListContainer"></div>
       </section>
@@ -1244,77 +1287,38 @@
 
       <div class="setting-section-title">Theme Presets</div>
       <div class="theme-preset-grid">
-        <button type="button" class="theme-chip" data-theme="midnight">
-          <span class="theme-color-preview" style="background: #3b82f6;"></span>
-          Midnight Slate
-        </button>
-        <button type="button" class="theme-chip" data-theme="oled">
-          <span class="theme-color-preview" style="background: #ffffff; border: 1px solid #333;"></span>
-          OLED Black
-        </button>
-        <button type="button" class="theme-chip" data-theme="cyber">
-          <span class="theme-color-preview" style="background: #06b6d4;"></span>
-          Cyber Neon
-        </button>
-        <button type="button" class="theme-chip" data-theme="emerald">
-          <span class="theme-color-preview" style="background: #10b981;"></span>
-          Emerald Wealth
-        </button>
-        <button type="button" class="theme-chip" data-theme="light" style="grid-column: span 2;">
-          <span class="theme-color-preview" style="background: #2563eb;"></span>
-          Clean Light
-        </button>
+        <button type="button" class="theme-chip" data-theme="midnight"><span class="theme-color-preview" style="background: #3b82f6;"></span>Midnight Slate</button>
+        <button type="button" class="theme-chip" data-theme="oled"><span class="theme-color-preview" style="background: #ffffff; border: 1px solid #333;"></span>OLED Black</button>
+        <button type="button" class="theme-chip" data-theme="cyber"><span class="theme-color-preview" style="background: #06b6d4;"></span>Cyber Neon</button>
+        <button type="button" class="theme-chip" data-theme="emerald"><span class="theme-color-preview" style="background: #10b981;"></span>Emerald Wealth</button>
+        <button type="button" class="theme-chip" data-theme="light" style="grid-column: span 2;"><span class="theme-color-preview" style="background: #2563eb;"></span>Clean Light</button>
       </div>
 
       <div class="setting-section-title">Design-Editor (Farben & Stil)</div>
-      
       <div class="setting-row">
-        <div>
-          <div class="setting-label">Akzentfarbe</div>
-          <div class="setting-desc">Farbe für Buttons, Tabs und Highlights.</div>
-        </div>
+        <div><div class="setting-label">Akzentfarbe</div><div class="setting-desc">Farbe für Buttons, Tabs und Highlights.</div></div>
         <input type="color" id="themeColorAccent" class="color-input-styled">
       </div>
-
       <div class="setting-row">
-        <div>
-          <div class="setting-label">Hintergrundfarbe</div>
-          <div class="setting-desc">Haupt-App-Hintergrund.</div>
-        </div>
+        <div><div class="setting-label">Hintergrundfarbe</div><div class="setting-desc">Haupt-App-Hintergrund.</div></div>
         <input type="color" id="themeColorBg" class="color-input-styled">
       </div>
-
       <div class="setting-row">
-        <div>
-          <div class="setting-label">Karten-Hintergrund</div>
-          <div class="setting-desc">Farbe der Dashboard- und Inhaltsboxen.</div>
-        </div>
+        <div><div class="setting-label">Karten-Hintergrund</div><div class="setting-desc">Farbe der Dashboard- und Inhaltsboxen.</div></div>
         <input type="color" id="themeColorCard" class="color-input-styled">
       </div>
-
       <div class="setting-row">
-        <div>
-          <div class="setting-label">Ecken-Abrundung</div>
-          <div class="setting-desc">Eckig (2px) bis Pillenförmig (24px).</div>
-        </div>
+        <div><div class="setting-label">Ecken-Abrundung</div><div class="setting-desc">Eckig (2px) bis Pillenförmig (24px).</div></div>
         <input type="range" id="themeRadiusSlider" min="2" max="24" step="2" style="width: 110px;">
       </div>
 
       <div class="setting-section-title">Funktionen & Steuerung</div>
-
       <div class="setting-row">
-        <div>
-          <div class="setting-label">Schieberegler anzeigen</div>
-          <div class="setting-desc">Regler ausblenden für ein kompaktes Nummern-Layout.</div>
-        </div>
+        <div><div class="setting-label">Schieberegler anzeigen</div><div class="setting-desc">Regler ausblenden für ein kompaktes Nummern-Layout.</div></div>
         <input type="checkbox" id="setSliderEnabled" style="transform: scale(1.3); cursor: pointer;">
       </div>
-
       <div class="setting-row">
-        <div>
-          <div class="setting-label">Slider-Dämpfung</div>
-          <div class="setting-desc">Gröbere Stufen verhindern zu schnelles Verrutschen auf Touchscreens.</div>
-        </div>
+        <div><div class="setting-label">Slider-Dämpfung</div><div class="setting-desc">Gröbere Stufen verhindern zu schnelles Verrutschen.</div></div>
         <select id="setSliderStep" class="custom-select">
           <option value="1">1 € (Fein)</option>
           <option value="5">5 € (Sanft)</option>
@@ -1323,12 +1327,8 @@
           <option value="50">50 € (Stark)</option>
         </select>
       </div>
-
       <div class="setting-row">
-        <div>
-          <div class="setting-label">Variables Einkommen</div>
-          <div class="setting-desc">Berechnungs-Basis für schwankende Gehälter & Boni.</div>
-        </div>
+        <div><div class="setting-label">Variables Einkommen</div><div class="setting-desc">Berechnungs-Basis für schwankende Gehälter.</div></div>
         <select id="setIncomeMode" class="custom-select">
           <option value="min">Minimalst (Puffer)</option>
           <option value="avg">Mittelwert (Ø Real)</option>
@@ -1336,6 +1336,58 @@
       </div>
 
       <button type="button" class="btn" id="btnSaveSettings" style="width: 100%; margin-top: 8px;">Fertig & Schließen</button>
+    </div>
+  </div>
+
+  <!-- 9. NEU: Archiv-Bibliothek Management Modal -->
+  <div class="modal-overlay" id="libraryModal">
+    <div class="modal-card">
+      <div class="modal-title">
+        <span>📚 Archiv-Bibliothek</span>
+        <button type="button" class="btn-danger" id="btnCloseLibraryModal" style="font-size: 1.2rem;">✕</button>
+      </div>
+
+      <div style="font-size:0.8rem; color:var(--text-muted);">
+        Verwalte archivierte Monate, bearbeite Summen nachträglich oder lade einen vergangenen Monat als Basis-Vorlage in deine aktuelle Planung.
+      </div>
+
+      <div class="item-list" id="libraryItemsContainer" style="margin-top: 4px;"></div>
+
+      <button type="button" class="btn btn-secondary" id="btnCloseLibraryBottom" style="width: 100%; margin-top: 8px;">Schließen</button>
+    </div>
+  </div>
+
+  <!-- 10. NEU: Snapshot-Bearbeitungs-Modal (Nachträgliche Korrektur) -->
+  <div class="modal-overlay" id="editSnapshotModal">
+    <div class="modal-card">
+      <div class="modal-title">
+        <span id="editSnapshotTitle">✏️ Archivierten Monat bearbeiten</span>
+        <button type="button" class="btn-danger" id="btnCloseEditSnapshotModal" style="font-size: 1.2rem;">✕</button>
+      </div>
+
+      <div class="loan-editor-grid" style="display: flex; flex-direction: column; gap: 8px; background: none; padding: 0;">
+        <div class="loan-field">
+          <label>Monats-Name / Bezeichnung</label>
+          <input type="text" id="editSnapLabel">
+        </div>
+        <div class="loan-field">
+          <label>Gesamteinnahmen (€)</label>
+          <input type="number" step="any" id="editSnapIncome">
+        </div>
+        <div class="loan-field">
+          <label>Gesamtausgaben (€)</label>
+          <input type="number" step="any" id="editSnapExpenses">
+        </div>
+        <div class="loan-field">
+          <label>Startbestand Girokonto (€)</label>
+          <input type="number" step="any" id="editSnapStartGiro">
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-top: 8px;">
+        <button type="button" class="btn" id="btnSaveSnapshotEdit" style="flex: 1;">Speichern</button>
+        <button type="button" class="btn btn-secondary" id="btnCancelSnapshotEdit">Abbrechen</button>
+      </div>
     </div>
   </div>
 
@@ -1362,10 +1414,10 @@
     let viewedDate = new Date(SYSTEM_NOW.getFullYear(), SYSTEM_NOW.getMonth(), 1);
     let isArchiveViewing = false;
     let currentArchiveSnapshot = null;
+    let editingSnapshotRef = null;
 
     function getDefaultData() {
       return {
-        // UI & App-Präferenzen
         uiState: {
           activeTab: 'budget',
           chartViewMode: 'daily'
@@ -1380,7 +1432,6 @@
           startGiro: 1200,
           tagesgeld: 4500
         },
-        // NEU: Vollständig editierbare Notgroschen- & Rücklagen-Planung
         emergencyFund: {
           title: 'Notgroschen (3 Monatsgehälter)',
           targetAmount: 7500,
@@ -1457,14 +1508,12 @@
         const stored = JSON.parse(raw);
         const defaults = getDefaultData();
 
-        // 1. UI-Status migrieren
         if (!stored.uiState) stored.uiState = defaults.uiState;
         else {
           if (!stored.uiState.activeTab) stored.uiState.activeTab = 'budget';
           if (!stored.uiState.chartViewMode) stored.uiState.chartViewMode = 'daily';
         }
 
-        // 2. Settings & Theme
         if (!stored.settings) stored.settings = defaults.settings;
         else {
           if (stored.settings.showSliders === undefined) stored.settings.showSliders = true;
@@ -1473,14 +1522,12 @@
           if (!stored.settings.theme) stored.settings.theme = { ...THEME_PRESETS.midnight };
         }
 
-        // 3. Cashflow
         if (!stored.cashflow) stored.cashflow = defaults.cashflow;
         else {
           if (stored.cashflow.startGiro === undefined) stored.cashflow.startGiro = 1200;
           if (stored.cashflow.tagesgeld === undefined) stored.cashflow.tagesgeld = 4500;
         }
 
-        // 4. NEU: EmergencyFund migrieren
         if (!stored.emergencyFund) stored.emergencyFund = defaults.emergencyFund;
         else {
           if (!stored.emergencyFund.title) stored.emergencyFund.title = 'Notgroschen-Puffer';
@@ -1491,7 +1538,6 @@
           if (stored.emergencyFund.dueDay === undefined) stored.emergencyFund.dueDay = 1;
         }
 
-        // 5. Incomes & DueDay
         if (!Array.isArray(stored.incomes)) stored.incomes = defaults.incomes;
         else {
           stored.incomes.forEach(inc => {
@@ -1505,7 +1551,6 @@
           });
         }
 
-        // 6. Kategorien & DueDay
         if (!Array.isArray(stored.categories)) stored.categories = defaults.categories;
         else {
           stored.categories.forEach(cat => {
@@ -1520,7 +1565,6 @@
           });
         }
 
-        // 7. Liabilities
         if (!stored.liabilities) stored.liabilities = defaults.liabilities;
         else {
           if (!Array.isArray(stored.liabilities.loans)) stored.liabilities.loans = defaults.liabilities.loans;
@@ -1530,7 +1574,6 @@
           else stored.liabilities.recurringBills.forEach(b => { if (b.dueDay === undefined) b.dueDay = 1; });
         }
 
-        // 8. Sparziel & Historie
         if (!stored.savingsGoal) stored.savingsGoal = defaults.savingsGoal;
         if (!Array.isArray(stored.history)) stored.history = [];
 
@@ -1549,7 +1592,7 @@
 
     /* ==========================================================================
        4. Theme Engine
-       ========================================================================== */
+       ========================================================================= */
     function applyTheme(theme) {
       const root = document.documentElement;
       root.style.setProperty('--bg-main', theme.bgMain);
@@ -1684,7 +1727,6 @@
 
       const base = Math.max(mIncome, mTotalExpenses);
 
-      // 1. Kategorien
       const cats = (isArchiveViewing && currentArchiveSnapshot?.categories) ? currentArchiveSnapshot.categories : state.categories;
       cats.forEach(cat => {
         const catSum = (cat.items || []).reduce((s, it) => s + (Number(it.value) || 0), 0);
@@ -1698,7 +1740,6 @@
         }
       });
 
-      // 2. Notgroschen Segment (Türkis)
       const emerg = calcMonthlyEmergencyContribution();
       if (emerg > 0) {
         const pct = (emerg / base) * 100;
@@ -1710,7 +1751,6 @@
         track.appendChild(seg);
       }
 
-      // 3. Kredite Segment (Lila)
       const loanSum = calcMonthlyLoanCosts();
       if (loanSum > 0) {
         const pct = (loanSum / base) * 100;
@@ -1722,7 +1762,6 @@
         track.appendChild(seg);
       }
 
-      // 4. Dauerrechnungen Segment
       const recurringSum = calcMonthlyRecurringCosts();
       if (recurringSum > 0) {
         const pct = (recurringSum / base) * 100;
@@ -2014,7 +2053,6 @@
       renderRecurringList();
     }
 
-    // NEU: Vollständig editierbarer Notgroschen & Rücklagen
     function renderEmergencyFund() {
       const ef = isArchiveViewing && currentArchiveSnapshot?.emergencyFund ? currentArchiveSnapshot.emergencyFund : state.emergencyFund;
       const mult = getMultiplier();
@@ -2027,7 +2065,6 @@
       const monthsLeft = monthly > 0 ? Math.ceil(remaining / monthly) : 0;
       const isGoalReached = remaining <= 0;
 
-      // Header & Badges
       document.getElementById('emergencyTitleInput').value = ef.title;
       document.getElementById('emergencyTotalHeader').textContent = `${formatEUR(target * mult)}`;
       document.getElementById('emergencyMonthlyRateDisplay').textContent = `${formatEUR((ef.includeInMonthlyBudget ? monthly : 0) * mult)} / ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}`;
@@ -2035,7 +2072,6 @@
       const badge = document.getElementById('emergencyBadge');
       badge.style.display = isGoalReached ? 'inline-block' : 'none';
 
-      // Box Status & Progress
       const box = document.getElementById('emergencyBox');
       box.classList.toggle('goal-reached', isGoalReached);
 
@@ -2049,7 +2085,6 @@
       document.getElementById('emergencyRemainingLabel').innerHTML = `Noch offen: <strong>${formatEUR(remaining)}</strong>`;
       document.getElementById('emergencyMonthsLabel').innerHTML = isGoalReached ? 'Vollständig aufgebaut' : `Noch ca. <strong>${monthsLeft} Monate</strong>`;
 
-      // Inputs im Editor synchronisieren
       const inpTarget = document.getElementById('editEmergencyTarget');
       const inpCurrent = document.getElementById('editEmergencyCurrent');
       const inpMonthly = document.getElementById('editEmergencyMonthly');
@@ -2061,7 +2096,6 @@
       selInclude.value = ef.includeInMonthlyBudget ? 'true' : 'false';
 
       if (!isArchiveViewing) {
-        // Quick-Action Buttons
         document.getElementById('btnEmergencyAdd50').onclick = () => {
           ef.currentAmount = Math.min(ef.targetAmount, ef.currentAmount + 50);
           persistState();
@@ -2085,13 +2119,11 @@
           }
         };
 
-        // Titel Input
         document.getElementById('emergencyTitleInput').onchange = (e) => {
           ef.title = e.target.value;
           persistState();
         };
 
-        // Live Editor In-Place Updates
         const updateEmergencyLive = () => {
           persistState();
           renderKPIs();
@@ -2388,7 +2420,6 @@
         });
         (recurring || []).forEach(b => { if ((b.dueDay || 1) === day) delta -= (Number(b.monthlyCost) || 0); });
 
-        // Notgroschen Abbuchung
         if (emergency && emergency.includeInMonthlyBudget && (emergency.dueDay || 1) === day) {
           const remEmerg = Math.max(0, (Number(emergency.targetAmount) || 0) - (Number(emergency.currentAmount) || 0));
           if (remEmerg > 0) delta -= (Number(emergency.monthlyContribution) || 0);
@@ -2565,7 +2596,7 @@
     }
 
     /* ==========================================================================
-       10. Snapshot-System & Historie
+       10. Snapshot-System & Archiv-Bibliothek Management (NEU AUSGEBAUT)
        ========================================================================== */
     function archiveCurrentMonth() {
       const periodKey = getPeriodKey(viewedDate);
@@ -2629,6 +2660,24 @@
       renderApp();
     }
 
+    // NEU: Archivierten Monat als Vorlage in die Live-Planung laden
+    function loadSnapshotAsLiveTemplate(snapshot) {
+      if (!confirm(`Möchtest du den archivierten Stand aus "${snapshot.label}" als Vorlage in dein aktuelles Budget laden? Deine aktuellen Schieberegler und Posten werden dadurch mit diesen Werten überschrieben.`)) {
+        return;
+      }
+
+      if (snapshot.incomes) state.incomes = JSON.parse(JSON.stringify(snapshot.incomes));
+      if (snapshot.categories) state.categories = JSON.parse(JSON.stringify(snapshot.categories));
+      if (snapshot.loans) state.liabilities.loans = JSON.parse(JSON.stringify(snapshot.loans));
+      if (snapshot.recurringBills) state.liabilities.recurringBills = JSON.parse(JSON.stringify(snapshot.recurringBills));
+      if (snapshot.emergencyFund) state.emergencyFund = JSON.parse(JSON.stringify(snapshot.emergencyFund));
+
+      persistState();
+      closeLibraryModal();
+      switchToLiveView();
+      alert(`✔️ Der Monat "${snapshot.label}" wurde erfolgreich als Vorlage in die Live-Planung übernommen!`);
+    }
+
     function updateMonthNavigatorUI() {
       const labelEl = document.getElementById('currentMonthLabel');
       const badgeEl = document.getElementById('monthStatusBadge');
@@ -2652,7 +2701,7 @@
     }
 
     /* ==========================================================================
-       11. Timeline & Schedule
+       11. Timeline & Bibliotheks-Rendering
        ========================================================================== */
     function renderTimelinePage() {
       const giroInp = document.getElementById('inputStartGiro');
@@ -2690,16 +2739,14 @@
 
     function renderHistoryList() {
       const container = document.getElementById('historyListContainer');
-      const countBadge = document.getElementById('historyCountBadge');
       container.innerHTML = '';
 
       const history = state.history || [];
-      countBadge.textContent = `${history.length} Monate archiviert`;
 
       if (history.length === 0) {
         container.innerHTML = `
           <div style="font-size:0.8rem; color:var(--text-muted); text-align:center; padding:12px;">
-            Noch keine Monate archiviert. Klicke oben auf <strong>„💾 Diesen Monat archivieren“</strong>.
+            Noch keine Monate archiviert. Klicke oben auf <strong>„💾 Monat archivieren“</strong>.
           </div>
         `;
         return;
@@ -2709,7 +2756,8 @@
 
       sorted.forEach(snap => {
         const card = document.createElement('div');
-        card.className = 'history-card';
+        card.className = 'item-row';
+        card.style.cursor = 'pointer';
 
         const isCurrentlySelected = isArchiveViewing && currentArchiveSnapshot?.period === snap.period;
         if (isCurrentlySelected) {
@@ -2718,39 +2766,107 @@
         }
 
         card.innerHTML = `
-          <div style="display:flex; flex-direction:column; gap:2px;">
-            <div style="font-weight:700; font-size:0.9rem; display:flex; align-items:center; gap:6px;">
-              <span>${snap.label}</span>
-              ${isCurrentlySelected ? '<span class="archive-badge">AUSGEWÄHLT</span>' : ''}
+          <div class="item-info">
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              <div style="font-weight:700; font-size:0.9rem; display:flex; align-items:center; gap:6px;">
+                <span>${snap.label}</span>
+                ${isCurrentlySelected ? '<span class="archive-badge">AUSGEWÄHLT</span>' : ''}
+              </div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">
+                Ausgaben: ${formatEUR(snap.expenses)} • Sparquote: ${snap.savingsRate.toFixed(1)} %
+              </div>
             </div>
-            <div style="font-size:0.75rem; color:var(--text-muted);">
-              Ausgaben: ${formatEUR(snap.expenses)} • Sparquote: ${snap.savingsRate.toFixed(1)} %
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-weight:700; font-size:0.9rem; color:${snap.surplus >= 0 ? 'var(--success)' : 'var(--danger)'};">
+                ${snap.surplus >= 0 ? '+' : ''}${formatEUR(snap.surplus)}
+              </span>
+              <button type="button" class="btn btn-secondary" style="padding: 3px 8px; font-size:0.75rem;">Öffnen</button>
             </div>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span style="font-weight:700; font-size:0.9rem; color:${snap.surplus >= 0 ? 'var(--success)' : 'var(--danger)'};">
-              ${snap.surplus >= 0 ? '+' : ''}${formatEUR(snap.surplus)}
-            </span>
-            <button type="button" class="btn-danger del-snap-btn" title="Snapshot löschen" style="font-size:0.8rem;">🗑️</button>
           </div>
         `;
 
-        card.addEventListener('click', (e) => {
-          if (e.target.closest('.del-snap-btn')) return;
+        card.addEventListener('click', () => {
           loadSnapshotIntoView(snap);
         });
 
-        card.querySelector('.del-snap-btn').addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (confirm(`Archiv für ${snap.label} wirklich löschen?`)) {
+        container.appendChild(card);
+      });
+    }
+
+    // NEU: Ausführliche Verwaltung in der Archiv-Bibliothek
+    function renderLibraryItems() {
+      const container = document.getElementById('libraryItemsContainer');
+      container.innerHTML = '';
+
+      const history = state.history || [];
+
+      if (history.length === 0) {
+        container.innerHTML = `
+          <div style="font-size:0.85rem; color:var(--text-muted); text-align:center; padding:20px;">
+            Deine Bibliothek ist noch leer.<br>Archiviere Monate, um sie hier nachträglich anzupassen oder als Vorlagen zu nutzen.
+          </div>
+        `;
+        return;
+      }
+
+      const sorted = [...history].sort((a, b) => b.period.localeCompare(a.period));
+
+      sorted.forEach(snap => {
+        const itemCard = document.createElement('div');
+        itemCard.className = 'library-item-card';
+
+        itemCard.innerHTML = `
+          <div class="library-item-header">
+            <div>
+              <strong style="font-size:1rem;">${snap.label}</strong>
+              <div style="font-size:0.7rem; color:var(--text-muted);">Schlüssel: ${snap.period}</div>
+            </div>
+            <span style="font-weight:700; color:${snap.surplus >= 0 ? 'var(--success)' : 'var(--danger)'};">
+              ${snap.surplus >= 0 ? '+' : ''}${formatEUR(snap.surplus)}
+            </span>
+          </div>
+
+          <div class="library-metrics-grid">
+            <div>Einnahmen<br><strong>${formatEUR(snap.income)}</strong></div>
+            <div>Ausgaben<br><strong>${formatEUR(snap.expenses)}</strong></div>
+            <div>Sparquote<br><strong>${snap.savingsRate.toFixed(1)} %</strong></div>
+          </div>
+
+          <div class="library-action-row">
+            <button type="button" class="library-action-btn btn-lib-view">👁️ Ansehen</button>
+            <button type="button" class="library-action-btn btn-lib-template">📋 Als Vorlage</button>
+            <button type="button" class="library-action-btn btn-lib-edit">✏️ Bearbeiten</button>
+            <button type="button" class="library-action-btn btn-lib-delete" style="color:var(--danger); border-color:rgba(239,68,68,0.3);">🗑️ Löschen</button>
+          </div>
+        `;
+
+        // Action: Ansehen
+        itemCard.querySelector('.btn-lib-view').onclick = () => {
+          closeLibraryModal();
+          loadSnapshotIntoView(snap);
+        };
+
+        // Action: Als Vorlage
+        itemCard.querySelector('.btn-lib-template').onclick = () => {
+          loadSnapshotAsLiveTemplate(snap);
+        };
+
+        // Action: Bearbeiten (Nachträgliche Korrektur)
+        itemCard.querySelector('.btn-lib-edit').onclick = () => {
+          openEditSnapshotModal(snap);
+        };
+
+        // Action: Löschen
+        itemCard.querySelector('.btn-lib-delete').onclick = () => {
+          if (confirm(`Möchtest du "${snap.label}" wirklich dauerhaft aus der Bibliothek löschen?`)) {
             state.history = state.history.filter(h => h.period !== snap.period);
             persistState();
-            if (isArchiveViewing && currentArchiveSnapshot?.period === snap.period) switchToLiveView();
-            else renderApp();
+            renderLibraryItems();
+            renderApp();
           }
-        });
+        };
 
-        container.appendChild(card);
+        container.appendChild(itemCard);
       });
     }
 
@@ -3005,7 +3121,6 @@
     tabFinance.addEventListener('click', () => switchTab('finance'));
     tabTimeline.addEventListener('click', () => switchTab('timeline'));
 
-    // Chart-Mode Switcher
     document.getElementById('btnChartModeDaily').addEventListener('click', () => {
       state.uiState.chartViewMode = 'daily';
       persistState();
@@ -3018,7 +3133,6 @@
       renderInteractiveChart();
     });
 
-    // Monats-Navigator Blättern
     document.getElementById('btnPrevMonth').addEventListener('click', () => {
       viewedDate.setMonth(viewedDate.getMonth() - 1);
       const targetPeriod = getPeriodKey(viewedDate);
@@ -3226,6 +3340,75 @@
       persistState();
     });
 
+    /* ==========================================================================
+       16. NEU: Archiv-Bibliothek Modal Steuerung
+       ========================================================================== */
+    const libraryModal = document.getElementById('libraryModal');
+    const btnOpenLibraryModal = document.getElementById('btnOpenLibraryModal');
+    const btnCloseLibraryModal = document.getElementById('btnCloseLibraryModal');
+    const btnCloseLibraryBottom = document.getElementById('btnCloseLibraryBottom');
+
+    function openLibraryModal() {
+      renderLibraryItems();
+      libraryModal.classList.add('active');
+    }
+
+    function closeLibraryModal() {
+      libraryModal.classList.remove('active');
+    }
+
+    btnOpenLibraryModal.addEventListener('click', openLibraryModal);
+    btnCloseLibraryModal.addEventListener('click', closeLibraryModal);
+    btnCloseLibraryBottom.addEventListener('click', closeLibraryModal);
+
+    /* ==========================================================================
+       17. NEU: Snapshot-Bearbeitungs-Modal Steuerung
+       ========================================================================== */
+    const editSnapshotModal = document.getElementById('editSnapshotModal');
+    const btnCloseEditSnapshotModal = document.getElementById('btnCloseEditSnapshotModal');
+    const btnCancelSnapshotEdit = document.getElementById('btnCancelSnapshotEdit');
+    const btnSaveSnapshotEdit = document.getElementById('btnSaveSnapshotEdit');
+
+    const editSnapLabel = document.getElementById('editSnapLabel');
+    const editSnapIncome = document.getElementById('editSnapIncome');
+    const editSnapExpenses = document.getElementById('editSnapExpenses');
+    const editSnapStartGiro = document.getElementById('editSnapStartGiro');
+
+    function openEditSnapshotModal(snapshot) {
+      editingSnapshotRef = snapshot;
+      editSnapLabel.value = snapshot.label;
+      editSnapIncome.value = snapshot.income;
+      editSnapExpenses.value = snapshot.expenses;
+      editSnapStartGiro.value = snapshot.startGiro;
+      editSnapshotModal.classList.add('active');
+    }
+
+    function closeEditSnapshotModal() {
+      editingSnapshotRef = null;
+      editSnapshotModal.classList.remove('active');
+    }
+
+    btnCloseEditSnapshotModal.addEventListener('click', closeEditSnapshotModal);
+    btnCancelSnapshotEdit.addEventListener('click', closeEditSnapshotModal);
+
+    btnSaveSnapshotEdit.addEventListener('click', () => {
+      if (!editingSnapshotRef) return;
+
+      editingSnapshotRef.label = editSnapLabel.value.trim() || editingSnapshotRef.label;
+      editingSnapshotRef.income = parseFloat(editSnapIncome.value) || 0;
+      editingSnapshotRef.expenses = parseFloat(editSnapExpenses.value) || 0;
+      editingSnapshotRef.startGiro = parseFloat(editSnapStartGiro.value) || 0;
+      editingSnapshotRef.surplus = editingSnapshotRef.income - editingSnapshotRef.expenses;
+      editingSnapshotRef.savingsRate = editingSnapshotRef.income > 0 
+        ? (editingSnapshotRef.surplus / editingSnapshotRef.income) * 100 
+        : 0;
+
+      persistState();
+      closeEditSnapshotModal();
+      renderLibraryItems();
+      renderApp();
+    });
+
     document.getElementById('btnResetDemo').addEventListener('click', () => {
       if (confirm('Möchtest du alle Werte wirklich auf 0 € zurücksetzen?')) {
         state = getDefaultData();
@@ -3243,7 +3426,7 @@
       }
     });
 
-    // Start-Initialisierung: Gespeicherten Tab aktivieren
+    // Start-Initialisierung
     switchTab(state.uiState.activeTab || 'budget');
     setInterval(updateClock, 1000);
     updateClock();
