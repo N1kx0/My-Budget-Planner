@@ -51,7 +51,7 @@
       min-width: 0;
     }
 
-    /* Systemuhr & Header-Bar */
+    /* Systemuhr & Header */
     .header-bar {
       display: flex;
       justify-content: space-between;
@@ -145,7 +145,7 @@
       border: 1px solid rgba(245, 158, 11, 0.4);
     }
 
-    /* Haupt-Navigation */
+    /* Tabs Navigation */
     .main-nav {
       display: flex;
       background: var(--bg-card);
@@ -268,7 +268,7 @@
       transition: width 0.3s ease;
     }
 
-    /* Basis Card Layout */
+    /* Card Layout */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -293,7 +293,7 @@
       gap: 8px;
     }
 
-    /* Listen-Elemente: Einkommen & Ausgaben */
+    /* Listen */
     .item-list {
       display: flex;
       flex-direction: column;
@@ -492,7 +492,7 @@
       flex-wrap: wrap;
     }
 
-    .btn-quick-pay {
+    .btn-quick-pay, .btn-quick-emergency {
       background: rgba(139, 92, 246, 0.2);
       color: #c4b5fd;
       border: 1px solid var(--debt-color);
@@ -507,27 +507,10 @@
       transition: all 0.2s ease;
     }
 
-    .btn-quick-pay:active {
-      transform: scale(0.96);
-    }
-
     .btn-quick-emergency {
       background: rgba(6, 182, 212, 0.15);
       color: #67e8f9;
       border: 1px solid var(--emergency-color);
-      padding: 5px 10px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      transition: all 0.2s ease;
-    }
-
-    .btn-quick-emergency:active {
-      transform: scale(0.96);
     }
 
     .loan-editor-grid {
@@ -709,63 +692,6 @@
       padding: 2px 0;
     }
 
-    /* NEU: Archiv-Bibliothek Detail-Karten Styling */
-    .library-item-card {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .library-item-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .library-metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      background: rgba(0, 0, 0, 0.2);
-      padding: 8px;
-      border-radius: 8px;
-      font-size: 0.75rem;
-      text-align: center;
-    }
-
-    .library-action-row {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .library-action-btn {
-      flex: 1;
-      min-width: 100px;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      padding: 6px 8px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      transition: all 0.2s;
-    }
-
-    .library-action-btn:hover {
-      border-color: var(--accent);
-      background: rgba(59, 130, 246, 0.15);
-    }
-
     /* Buttons & Utilities */
     .btn {
       background: var(--accent);
@@ -945,7 +871,8 @@
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: space-between;
+      gap: 6px;
       transition: all 0.2s ease;
     }
 
@@ -1007,7 +934,7 @@
       <button type="button" class="btn" id="btnExitArchive" style="padding: 4px 8px; font-size: 0.75rem;">Zurück zu Live</button>
     </div>
 
-    <!-- 3. Haupt-Navigation: 3 Tabs -->
+    <!-- 3. Haupt-Navigation -->
     <nav class="main-nav">
       <button type="button" class="nav-btn active" id="tabBudget">📊 Budget</button>
       <button type="button" class="nav-btn" id="tabFinance">💳 Finanzen</button>
@@ -1067,11 +994,17 @@
 
       <button type="button" class="btn btn-secondary editor-only hide-in-archive" id="btnAddCategory">+ Neue Ausgabenkategorie</button>
 
-      <!-- Sparziel -->
+      <!-- Sparziel (Vollständig editierbar wie auf dem Screenshot) -->
       <section class="card" id="savingsGoalCard">
         <div class="card-header">
-          <h2 class="card-title" id="goalTitleDisplay">🎯 Sparziel</h2>
-          <span id="goalTargetDisplay" style="font-size: 0.95rem; font-weight: 700; color: var(--accent);">0,00 €</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <input type="color" class="color-picker-dot editor-only hide-in-archive" id="goalColorPicker">
+            <h2 class="card-title" id="goalTitleDisplay">🎯 Vermögensaufbau</h2>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span id="goalTargetDisplay" style="font-size: 0.95rem; font-weight: 700; color: var(--accent);">0,00 €</span>
+            <button type="button" class="btn-danger editor-only hide-in-archive" id="btnToggleGoalVisibility" title="Sparziel ausblenden">🗑️</button>
+          </div>
         </div>
 
         <div class="goal-stats">
@@ -1089,12 +1022,28 @@
           </div>
         </div>
 
-        <div class="editor-only hide-in-archive" style="flex-direction: column; gap: 8px;">
-          <label style="font-size: 0.75rem; color: var(--text-muted);">Titel: <input type="text" id="goalTitleInput" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:4px; border-radius:4px; width:100%;"></label>
-          <label style="font-size: 0.75rem; color: var(--text-muted);">Zielbetrag (€): <input type="number" id="goalTargetInput" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:4px; border-radius:4px; width:100%;"></label>
-          <label style="font-size: 0.75rem; color: var(--text-muted);">Startkapital (€): <input type="number" id="goalStartInput" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:4px; border-radius:4px; width:100%;"></label>
-          <label style="font-size: 0.75rem; color: var(--text-muted);">Zieldatum: <input type="date" id="goalDateInput" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:4px; border-radius:4px; width:100%;"></label>
-          <label style="font-size: 0.75rem; color: var(--text-muted);">Tagesgeldzins (% p.a.): <input type="number" step="0.1" id="goalRateInput" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:4px; border-radius:4px; width:100%;"></label>
+        <!-- Editor-Felder: Direkt synchronisiert ohne Fokus-Verlust -->
+        <div class="editor-only hide-in-archive" style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">
+          <div class="loan-field">
+            <label>Titel:</label>
+            <input type="text" id="goalTitleInput">
+          </div>
+          <div class="loan-field">
+            <label>Zielbetrag (€):</label>
+            <input type="number" step="any" id="goalTargetInput">
+          </div>
+          <div class="loan-field">
+            <label>Startkapital (€):</label>
+            <input type="number" step="any" id="goalStartInput">
+          </div>
+          <div class="loan-field">
+            <label>Zieldatum:</label>
+            <input type="date" id="goalDateInput">
+          </div>
+          <div class="loan-field">
+            <label>Tagesgeldzins (% p.a.):</label>
+            <input type="number" step="0.1" id="goalRateInput">
+          </div>
         </div>
       </section>
 
@@ -1222,11 +1171,9 @@
       <section class="card">
         <div class="card-header">
           <h2 class="card-title">🏦 Girokonto & Liquidität</h2>
-          <div style="display:flex; gap:6px;">
-            <button type="button" class="btn hide-in-archive" id="btnArchiveMonth" style="padding: 5px 10px; font-size: 0.75rem;">
-              💾 Monat archivieren
-            </button>
-          </div>
+          <button type="button" class="btn hide-in-archive" id="btnArchiveMonth" style="padding: 5px 10px; font-size: 0.75rem;">
+            💾 Monat archivieren
+          </button>
         </div>
 
         <div class="timeline-summary">
@@ -1247,17 +1194,6 @@
         <div id="timelineAlertContainer"></div>
       </section>
 
-      <!-- Monats-Historie & Snapshot-Archiv -->
-      <section class="card">
-        <div class="card-header">
-          <h2 class="card-title">📜 Monats-Historie & Archiv</h2>
-          <button type="button" class="btn btn-secondary" id="btnOpenLibraryModal" style="padding: 4px 8px; font-size: 0.75rem;">
-            📚 Bibliothek verwalten
-          </button>
-        </div>
-        <div class="item-list" id="historyListContainer"></div>
-      </section>
-
       <!-- Monats-Timeline Tag für Tag -->
       <section class="card">
         <div class="card-header">
@@ -1269,7 +1205,7 @@
 
     </div>
 
-    <!-- 7. Footer: Editor-Modus & Reset -->
+    <!-- 7. Footer -->
     <footer class="footer-actions">
       <button type="button" class="btn hide-in-archive" id="btnToggleMode">✏️ Editor-Modus</button>
       <button type="button" class="btn btn-secondary editor-only hide-in-archive" id="btnResetDemo" style="color: var(--danger); border-color: var(--danger);">Reset auf 0 €</button>
@@ -1277,7 +1213,7 @@
 
   </main>
 
-  <!-- 8. Settings & Design-Editor Modal -->
+  <!-- 8. Settings & Eigene Themes Modal -->
   <div class="modal-overlay" id="settingsModal">
     <div class="modal-card">
       <div class="modal-title">
@@ -1285,40 +1221,50 @@
         <button type="button" class="btn-danger" id="btnCloseSettings" style="font-size: 1.2rem;">✕</button>
       </div>
 
-      <div class="setting-section-title">Theme Presets</div>
-      <div class="theme-preset-grid">
-        <button type="button" class="theme-chip" data-theme="midnight"><span class="theme-color-preview" style="background: #3b82f6;"></span>Midnight Slate</button>
-        <button type="button" class="theme-chip" data-theme="oled"><span class="theme-color-preview" style="background: #ffffff; border: 1px solid #333;"></span>OLED Black</button>
-        <button type="button" class="theme-chip" data-theme="cyber"><span class="theme-color-preview" style="background: #06b6d4;"></span>Cyber Neon</button>
-        <button type="button" class="theme-chip" data-theme="emerald"><span class="theme-color-preview" style="background: #10b981;"></span>Emerald Wealth</button>
-        <button type="button" class="theme-chip" data-theme="light" style="grid-column: span 2;"><span class="theme-color-preview" style="background: #2563eb;"></span>Clean Light</button>
-      </div>
+      <!-- Presets & Eigene Themes -->
+      <div class="setting-section-title">Theme Presets & Eigene Themes</div>
+      <div class="theme-preset-grid" id="themePresetsGrid"></div>
 
-      <div class="setting-section-title">Design-Editor (Farben & Stil)</div>
+      <!-- Design-Editor -->
+      <div class="setting-section-title">Design-Editor</div>
+      
       <div class="setting-row">
-        <div><div class="setting-label">Akzentfarbe</div><div class="setting-desc">Farbe für Buttons, Tabs und Highlights.</div></div>
+        <div><div class="setting-label">Akzentfarbe</div><div class="setting-desc">Buttons, Tabs und Highlights.</div></div>
         <input type="color" id="themeColorAccent" class="color-input-styled">
       </div>
+
       <div class="setting-row">
         <div><div class="setting-label">Hintergrundfarbe</div><div class="setting-desc">Haupt-App-Hintergrund.</div></div>
         <input type="color" id="themeColorBg" class="color-input-styled">
       </div>
+
       <div class="setting-row">
-        <div><div class="setting-label">Karten-Hintergrund</div><div class="setting-desc">Farbe der Dashboard- und Inhaltsboxen.</div></div>
+        <div><div class="setting-label">Karten-Hintergrund</div><div class="setting-desc">Boxen- und Kachelfarbe.</div></div>
         <input type="color" id="themeColorCard" class="color-input-styled">
       </div>
+
       <div class="setting-row">
         <div><div class="setting-label">Ecken-Abrundung</div><div class="setting-desc">Eckig (2px) bis Pillenförmig (24px).</div></div>
         <input type="range" id="themeRadiusSlider" min="2" max="24" step="2" style="width: 110px;">
       </div>
 
+      <!-- NEU: Eigenes Theme speichern -->
+      <div class="setting-section-title">Eigenes Theme speichern</div>
+      <div style="display:flex; gap:8px;">
+        <input type="text" id="inputCustomThemeName" placeholder="Theme-Name (z.B. Mein Dark Mode)" style="flex:1; background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:6px 10px; border-radius:6px; font-size:0.85rem; outline:none;">
+        <button type="button" class="btn" id="btnSaveCustomTheme" style="padding:6px 12px; font-size:0.85rem;">💾 Speichern</button>
+      </div>
+
+      <!-- Funktionen & Steuerung -->
       <div class="setting-section-title">Funktionen & Steuerung</div>
+
       <div class="setting-row">
-        <div><div class="setting-label">Schieberegler anzeigen</div><div class="setting-desc">Regler ausblenden für ein kompaktes Nummern-Layout.</div></div>
+        <div><div class="setting-label">Schieberegler anzeigen</div><div class="setting-desc">Kompaktes Nummern-Layout ohne Regler.</div></div>
         <input type="checkbox" id="setSliderEnabled" style="transform: scale(1.3); cursor: pointer;">
       </div>
+
       <div class="setting-row">
-        <div><div class="setting-label">Slider-Dämpfung</div><div class="setting-desc">Gröbere Stufen verhindern zu schnelles Verrutschen.</div></div>
+        <div><div class="setting-label">Slider-Dämpfung</div><div class="setting-desc">Rasterung für ruhiges Einstellen.</div></div>
         <select id="setSliderStep" class="custom-select">
           <option value="1">1 € (Fein)</option>
           <option value="5">5 € (Sanft)</option>
@@ -1327,6 +1273,7 @@
           <option value="50">50 € (Stark)</option>
         </select>
       </div>
+
       <div class="setting-row">
         <div><div class="setting-label">Variables Einkommen</div><div class="setting-desc">Berechnungs-Basis für schwankende Gehälter.</div></div>
         <select id="setIncomeMode" class="custom-select">
@@ -1339,68 +1286,16 @@
     </div>
   </div>
 
-  <!-- 9. NEU: Archiv-Bibliothek Management Modal -->
-  <div class="modal-overlay" id="libraryModal">
-    <div class="modal-card">
-      <div class="modal-title">
-        <span>📚 Archiv-Bibliothek</span>
-        <button type="button" class="btn-danger" id="btnCloseLibraryModal" style="font-size: 1.2rem;">✕</button>
-      </div>
-
-      <div style="font-size:0.8rem; color:var(--text-muted);">
-        Verwalte archivierte Monate, bearbeite Summen nachträglich oder lade einen vergangenen Monat als Basis-Vorlage in deine aktuelle Planung.
-      </div>
-
-      <div class="item-list" id="libraryItemsContainer" style="margin-top: 4px;"></div>
-
-      <button type="button" class="btn btn-secondary" id="btnCloseLibraryBottom" style="width: 100%; margin-top: 8px;">Schließen</button>
-    </div>
-  </div>
-
-  <!-- 10. NEU: Snapshot-Bearbeitungs-Modal (Nachträgliche Korrektur) -->
-  <div class="modal-overlay" id="editSnapshotModal">
-    <div class="modal-card">
-      <div class="modal-title">
-        <span id="editSnapshotTitle">✏️ Archivierten Monat bearbeiten</span>
-        <button type="button" class="btn-danger" id="btnCloseEditSnapshotModal" style="font-size: 1.2rem;">✕</button>
-      </div>
-
-      <div class="loan-editor-grid" style="display: flex; flex-direction: column; gap: 8px; background: none; padding: 0;">
-        <div class="loan-field">
-          <label>Monats-Name / Bezeichnung</label>
-          <input type="text" id="editSnapLabel">
-        </div>
-        <div class="loan-field">
-          <label>Gesamteinnahmen (€)</label>
-          <input type="number" step="any" id="editSnapIncome">
-        </div>
-        <div class="loan-field">
-          <label>Gesamtausgaben (€)</label>
-          <input type="number" step="any" id="editSnapExpenses">
-        </div>
-        <div class="loan-field">
-          <label>Startbestand Girokonto (€)</label>
-          <input type="number" step="any" id="editSnapStartGiro">
-        </div>
-      </div>
-
-      <div style="display: flex; gap: 8px; margin-top: 8px;">
-        <button type="button" class="btn" id="btnSaveSnapshotEdit" style="flex: 1;">Speichern</button>
-        <button type="button" class="btn btn-secondary" id="btnCancelSnapshotEdit">Abbrechen</button>
-      </div>
-    </div>
-  </div>
-
   <script>
     /* ==========================================================================
-       1. Theme Presets Definition
+       1. Standard-Themes
        ========================================================================== */
-    const THEME_PRESETS = {
-      midnight: { name: 'midnight', bgMain: '#0f172a', bgCard: '#1e293b', bgInput: '#0b1329', border: '#334155', textMain: '#f8fafc', textMuted: '#94a3b8', accent: '#3b82f6', radius: 12 },
-      oled: { name: 'oled', bgMain: '#000000', bgCard: '#121212', bgInput: '#1a1a1a', border: '#2a2a2a', textMain: '#ffffff', textMuted: '#a0a0a0', accent: '#3b82f6', radius: 10 },
-      cyber: { name: 'cyber', bgMain: '#0d0b18', bgCard: '#1b162f', bgInput: '#120d24', border: '#3a2e63', textMain: '#ffffff', textMuted: '#a79bc7', accent: '#06b6d4', radius: 14 },
-      emerald: { name: 'emerald', bgMain: '#061a14', bgCard: '#0d2b22', bgInput: '#081f18', border: '#174738', textMain: '#f0fdf4', textMuted: '#86efac', accent: '#10b981', radius: 12 },
-      light: { name: 'light', bgMain: '#f1f5f9', bgCard: '#ffffff', bgInput: '#e2e8f0', border: '#cbd5e1', textMain: '#0f172a', textMuted: '#64748b', accent: '#2563eb', radius: 12 }
+    const BUILTIN_THEMES = {
+      midnight: { name: 'midnight', label: 'Midnight Slate', bgMain: '#0f172a', bgCard: '#1e293b', bgInput: '#0b1329', border: '#334155', textMain: '#f8fafc', textMuted: '#94a3b8', accent: '#3b82f6', radius: 12 },
+      oled: { name: 'oled', label: 'OLED Black', bgMain: '#000000', bgCard: '#121212', bgInput: '#1a1a1a', border: '#2a2a2a', textMain: '#ffffff', textMuted: '#a0a0a0', accent: '#3b82f6', radius: 10 },
+      cyber: { name: 'cyber', label: 'Cyber Neon', bgMain: '#0d0b18', bgCard: '#1b162f', bgInput: '#120d24', border: '#3a2e63', textMain: '#ffffff', textMuted: '#a79bc7', accent: '#06b6d4', radius: 14 },
+      emerald: { name: 'emerald', label: 'Emerald Wealth', bgMain: '#061a14', bgCard: '#0d2b22', bgInput: '#081f18', border: '#174738', textMain: '#f0fdf4', textMuted: '#86efac', accent: '#10b981', radius: 12 },
+      light: { name: 'light', label: 'Clean Light', bgMain: '#f1f5f9', bgCard: '#ffffff', bgInput: '#e2e8f0', border: '#cbd5e1', textMain: '#0f172a', textMuted: '#64748b', accent: '#2563eb', radius: 12 }
     };
 
     /* ==========================================================================
@@ -1414,7 +1309,6 @@
     let viewedDate = new Date(SYSTEM_NOW.getFullYear(), SYSTEM_NOW.getMonth(), 1);
     let isArchiveViewing = false;
     let currentArchiveSnapshot = null;
-    let editingSnapshotRef = null;
 
     function getDefaultData() {
       return {
@@ -1426,8 +1320,9 @@
           showSliders: true,
           sliderStep: 10,
           incomeCalculationMode: 'min',
-          theme: { ...THEME_PRESETS.midnight }
+          theme: { ...BUILTIN_THEMES.midnight }
         },
+        customThemes: [], // NEU: Benutzerdefinierte Themes
         cashflow: {
           startGiro: 1200,
           tagesgeld: 4500
@@ -1484,6 +1379,7 @@
             { id: 'rec_2', name: 'Fitnessstudio', monthlyCost: 35, endDate: '', dueDay: 1 }
           ]
         },
+        // VOLL EDITIERBARES SPARZIEL (Screenshot-Anforderung)
         savingsGoal: {
           visible: true,
           title: 'Vermögensaufbau',
@@ -1491,14 +1387,14 @@
           startCapital: 3000,
           targetDate: '2028-12-31',
           interestRate: 3.5,
-          color: '#8b5cf6'
+          color: '#3b82f6'
         },
         history: []
       };
     }
 
     /* ==========================================================================
-       3. Update-sicheres Laden & Schema-Migration
+       3. Update-sicheres Schema-Laden
        ========================================================================== */
     function loadAndMigrateData() {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -1509,71 +1405,13 @@
         const defaults = getDefaultData();
 
         if (!stored.uiState) stored.uiState = defaults.uiState;
-        else {
-          if (!stored.uiState.activeTab) stored.uiState.activeTab = 'budget';
-          if (!stored.uiState.chartViewMode) stored.uiState.chartViewMode = 'daily';
-        }
-
         if (!stored.settings) stored.settings = defaults.settings;
-        else {
-          if (stored.settings.showSliders === undefined) stored.settings.showSliders = true;
-          if (!stored.settings.sliderStep) stored.settings.sliderStep = 10;
-          if (!stored.settings.incomeCalculationMode) stored.settings.incomeCalculationMode = 'min';
-          if (!stored.settings.theme) stored.settings.theme = { ...THEME_PRESETS.midnight };
-        }
-
+        if (!Array.isArray(stored.customThemes)) stored.customThemes = [];
         if (!stored.cashflow) stored.cashflow = defaults.cashflow;
-        else {
-          if (stored.cashflow.startGiro === undefined) stored.cashflow.startGiro = 1200;
-          if (stored.cashflow.tagesgeld === undefined) stored.cashflow.tagesgeld = 4500;
-        }
-
         if (!stored.emergencyFund) stored.emergencyFund = defaults.emergencyFund;
-        else {
-          if (!stored.emergencyFund.title) stored.emergencyFund.title = 'Notgroschen-Puffer';
-          if (stored.emergencyFund.targetAmount === undefined) stored.emergencyFund.targetAmount = 7500;
-          if (stored.emergencyFund.currentAmount === undefined) stored.emergencyFund.currentAmount = 2500;
-          if (stored.emergencyFund.monthlyContribution === undefined) stored.emergencyFund.monthlyContribution = 200;
-          if (stored.emergencyFund.includeInMonthlyBudget === undefined) stored.emergencyFund.includeInMonthlyBudget = true;
-          if (stored.emergencyFund.dueDay === undefined) stored.emergencyFund.dueDay = 1;
-        }
-
         if (!Array.isArray(stored.incomes)) stored.incomes = defaults.incomes;
-        else {
-          stored.incomes.forEach(inc => {
-            if (!inc.type) inc.type = 'fixed';
-            if (inc.dueDay === undefined) inc.dueDay = 28;
-            if (inc.type === 'variable') {
-              if (inc.minValue === undefined) inc.minValue = inc.value || 0;
-              if (inc.avgValue === undefined) inc.avgValue = inc.value || 0;
-              if (inc.maxValue === undefined) inc.maxValue = (inc.value || 0) * 1.5;
-            }
-          });
-        }
-
         if (!Array.isArray(stored.categories)) stored.categories = defaults.categories;
-        else {
-          stored.categories.forEach(cat => {
-            if (!cat.color) cat.color = '#3b82f6';
-            if (Array.isArray(cat.items)) {
-              cat.items.forEach(it => {
-                if (typeof it.value !== 'number') it.value = 0;
-                if (!it.max || it.max < it.value) it.max = Math.max(1000, it.value * 1.5);
-                if (it.dueDay === undefined) it.dueDay = 1;
-              });
-            }
-          });
-        }
-
         if (!stored.liabilities) stored.liabilities = defaults.liabilities;
-        else {
-          if (!Array.isArray(stored.liabilities.loans)) stored.liabilities.loans = defaults.liabilities.loans;
-          else stored.liabilities.loans.forEach(l => { if (l.dueDay === undefined) l.dueDay = 15; });
-
-          if (!Array.isArray(stored.liabilities.recurringBills)) stored.liabilities.recurringBills = defaults.liabilities.recurringBills;
-          else stored.liabilities.recurringBills.forEach(b => { if (b.dueDay === undefined) b.dueDay = 1; });
-        }
-
         if (!stored.savingsGoal) stored.savingsGoal = defaults.savingsGoal;
         if (!Array.isArray(stored.history)) stored.history = [];
 
@@ -1591,8 +1429,8 @@
     }
 
     /* ==========================================================================
-       4. Theme Engine
-       ========================================================================= */
+       4. Theme Engine (mit Custom Themes)
+       ========================================================================== */
     function applyTheme(theme) {
       const root = document.documentElement;
       root.style.setProperty('--bg-main', theme.bgMain);
@@ -1683,9 +1521,7 @@
     }
 
     function getPeriodKey(date) {
-      const y = date.getFullYear();
-      const m = String(date.getMonth() + 1).padStart(2, '0');
-      return `${y}-${m}`;
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     }
 
     function getPeriodLabel(date) {
@@ -1693,7 +1529,7 @@
     }
 
     /* ==========================================================================
-       6. Render-Pipeline: Globales Dashboard & Progress-Bar
+       6. Render-Pipeline: Dashboard & Balken
        ========================================================================== */
     function renderKPIs() {
       const mult = getMultiplier();
@@ -1747,7 +1583,7 @@
         seg.className = 'progress-segment';
         seg.style.width = `${pct}%`;
         seg.style.backgroundColor = 'var(--emergency-color)';
-        seg.title = 'Notgroschen-Rücklage';
+        seg.title = 'Notgroschen';
         track.appendChild(seg);
       }
 
@@ -1775,13 +1611,12 @@
     }
 
     /* ==========================================================================
-       7. Render: Budget-Seite
+       7. Render: Budget-Seite & Incomes
        ========================================================================== */
     function renderIncomes() {
       const container = document.getElementById('incomesList');
       container.innerHTML = '';
       const mult = getMultiplier();
-
       const incomes = (isArchiveViewing && currentArchiveSnapshot?.incomes) ? currentArchiveSnapshot.incomes : state.incomes;
 
       incomes.forEach((inc, idx) => {
@@ -1790,10 +1625,6 @@
 
         if (inc.type === 'variable') {
           const effVal = (getEffectiveIncome(inc) * mult).toFixed(2);
-          const minVal = (inc.minValue * mult).toFixed(2);
-          const avgVal = (inc.avgValue * mult).toFixed(2);
-          const maxVal = (inc.maxValue * mult).toFixed(2);
-
           row.innerHTML = `
             <div class="item-info">
               <div style="display:flex; flex-direction:column; gap:2px; flex:1; min-width:0;">
@@ -1811,59 +1642,28 @@
                 <button type="button" class="btn-danger editor-only hide-in-archive del-inc-btn">🗑️</button>
               </div>
             </div>
-            
-            <div class="variable-inputs-grid editor-only hide-in-archive">
-              <div class="var-field">
-                <label>Min (Worst-Case)</label>
-                <input type="number" step="any" class="var-min" value="${minVal}">
-              </div>
-              <div class="var-field">
-                <label>Mittelwert (Ø)</label>
-                <input type="number" step="any" class="var-avg" value="${avgVal}">
-              </div>
-              <div class="var-field">
-                <label>Max (Best-Case)</label>
-                <input type="number" step="any" class="var-max" value="${maxVal}">
-              </div>
+            <div class="loan-editor-grid editor-only hide-in-archive">
+              <div class="loan-field"><label>Min (€)</label><input type="number" step="any" class="var-min" value="${(inc.minValue * mult).toFixed(2)}"></div>
+              <div class="loan-field"><label>Mittelwert Ø (€)</label><input type="number" step="any" class="var-avg" value="${(inc.avgValue * mult).toFixed(2)}"></div>
+              <div class="loan-field"><label>Max (€)</label><input type="number" step="any" class="var-max" value="${(inc.maxValue * mult).toFixed(2)}"></div>
             </div>
           `;
 
           if (!isArchiveViewing) {
-            const nameInp = row.querySelector('.item-name-input');
-            const minInp = row.querySelector('.var-min');
-            const avgInp = row.querySelector('.var-avg');
-            const maxInp = row.querySelector('.var-max');
-            const dueDaySel = row.querySelector('.inc-due-day');
-            const delBtn = row.querySelector('.del-inc-btn');
-
-            nameInp.addEventListener('change', (e) => { inc.name = e.target.value; persistState(); });
-
-            const handleVarChange = (inputEl, field) => {
+            row.querySelector('.item-name-input').onchange = (e) => { inc.name = e.target.value; persistState(); };
+            const syncVar = (inputEl, field) => {
               const raw = parseFloat(inputEl.value) || 0;
               inc[field] = currentViewMode === 'year' ? (raw / 12) : raw;
               persistState();
               renderKPIs();
             };
-
-            minInp.addEventListener('input', () => handleVarChange(minInp, 'minValue'));
-            avgInp.addEventListener('input', () => handleVarChange(avgInp, 'avgValue'));
-            maxInp.addEventListener('input', () => handleVarChange(maxInp, 'maxValue'));
-
-            dueDaySel.addEventListener('change', (e) => {
-              inc.dueDay = parseInt(e.target.value, 10) || 28;
-              persistState();
-            });
-
-            delBtn.addEventListener('click', () => {
-              state.incomes.splice(idx, 1);
-              persistState();
-              renderApp();
-            });
+            row.querySelector('.var-min').oninput = (e) => syncVar(e.target, 'minValue');
+            row.querySelector('.var-avg').oninput = (e) => syncVar(e.target, 'avgValue');
+            row.querySelector('.var-max').oninput = (e) => syncVar(e.target, 'maxValue');
+            row.querySelector('.inc-due-day').onchange = (e) => { inc.dueDay = parseInt(e.target.value, 10) || 28; persistState(); };
+            row.querySelector('.del-inc-btn').onclick = () => { state.incomes.splice(idx, 1); persistState(); renderApp(); };
           }
-
         } else {
-          const displayedValue = (inc.value * mult).toFixed(2);
-
           row.innerHTML = `
             <div class="item-info">
               <div style="display:flex; flex-direction:column; gap:2px; flex:1; min-width:0;">
@@ -1875,7 +1675,7 @@
               </div>
               <div class="item-inputs">
                 <div class="number-input-wrapper">
-                  <input type="number" step="any" value="${displayedValue}" ${isArchiveViewing ? 'readonly' : ''}>
+                  <input type="number" step="any" value="${(inc.value * mult).toFixed(2)}" ${isArchiveViewing ? 'readonly' : ''}>
                   <span class="currency-symbol">€</span>
                 </div>
                 <button type="button" class="btn-danger editor-only hide-in-archive del-inc-btn">🗑️</button>
@@ -1884,33 +1684,17 @@
           `;
 
           if (!isArchiveViewing) {
-            const nameInput = row.querySelector('.item-name-input');
-            const numInput = row.querySelector('input[type="number"]');
-            const dueDaySel = row.querySelector('.inc-due-day');
-            const delBtn = row.querySelector('.del-inc-btn');
-
-            nameInput.addEventListener('change', (e) => { inc.name = e.target.value; persistState(); });
-
-            numInput.addEventListener('input', (e) => {
+            row.querySelector('.item-name-input').onchange = (e) => { inc.name = e.target.value; persistState(); };
+            row.querySelector('input[type="number"]').oninput = (e) => {
               const raw = parseFloat(e.target.value) || 0;
               inc.value = currentViewMode === 'year' ? (raw / 12) : raw;
               persistState();
               renderKPIs();
-            });
-
-            dueDaySel.addEventListener('change', (e) => {
-              inc.dueDay = parseInt(e.target.value, 10) || 28;
-              persistState();
-            });
-
-            delBtn.addEventListener('click', () => {
-              state.incomes.splice(idx, 1);
-              persistState();
-              renderApp();
-            });
+            };
+            row.querySelector('.inc-due-day').onchange = (e) => { inc.dueDay = parseInt(e.target.value, 10) || 28; persistState(); };
+            row.querySelector('.del-inc-btn').onclick = () => { state.incomes.splice(idx, 1); persistState(); renderApp(); };
           }
         }
-
         container.appendChild(row);
       });
     }
@@ -1920,13 +1704,11 @@
       container.innerHTML = '';
       const mult = getMultiplier();
       const stepVal = (state.settings.sliderStep || 10) * mult;
-
       const cats = (isArchiveViewing && currentArchiveSnapshot?.categories) ? currentArchiveSnapshot.categories : state.categories;
 
       cats.forEach((cat, cIdx) => {
         const card = document.createElement('section');
         card.className = 'card';
-
         const catSum = (cat.items || []).reduce((s, it) => s + (Number(it.value) || 0), 0) * mult;
 
         card.innerHTML = `
@@ -1947,27 +1729,20 @@
         `;
 
         if (!isArchiveViewing) {
-          const colorPicker = card.querySelector('input[type="color"]');
-          const titleInput = card.querySelector('.item-name-input');
-          const delCatBtn = card.querySelector('.del-cat-btn');
-          const addItemBtn = card.querySelector('.add-item-btn');
-
-          colorPicker.addEventListener('input', (e) => { cat.color = e.target.value; persistState(); renderApp(); });
-          titleInput.addEventListener('change', (e) => { cat.name = e.target.value; persistState(); });
-          delCatBtn.addEventListener('click', () => { state.categories.splice(cIdx, 1); persistState(); renderApp(); });
-          addItemBtn.addEventListener('click', () => {
+          card.querySelector('input[type="color"]').oninput = (e) => { cat.color = e.target.value; persistState(); renderApp(); };
+          card.querySelector('.item-name-input').onchange = (e) => { cat.name = e.target.value; persistState(); };
+          card.querySelector('.del-cat-btn').onclick = () => { state.categories.splice(cIdx, 1); persistState(); renderApp(); };
+          card.querySelector('.add-item-btn').onclick = () => {
             cat.items.push({ id: `item_${Date.now()}`, name: 'Neuer Posten', value: 0, max: 500, dueDay: 1 });
             persistState();
             renderApp();
-          });
+          };
         }
 
         const list = card.querySelector('.item-list');
-
         cat.items.forEach((item, iIdx) => {
           const itemRow = document.createElement('div');
           itemRow.className = 'item-row';
-
           const displayedVal = (item.value * mult).toFixed(2);
           const currentMax = (item.max * mult);
 
@@ -1992,49 +1767,29 @@
           `;
 
           if (!isArchiveViewing) {
-            const nameInp = itemRow.querySelector('.item-name-input');
             const numInp = itemRow.querySelector('input[type="number"]');
             const slider = itemRow.querySelector('input[type="range"]');
-            const dueDaySel = itemRow.querySelector('.item-due-day');
-            const delItemBtn = itemRow.querySelector('.del-item-btn');
-
             slider.style.accentColor = cat.color || 'var(--accent)';
 
             const syncValues = (newVal) => {
               let numeric = parseFloat(newVal) || 0;
-
               if (numeric > (item.max * mult)) {
                 item.max = Math.ceil(currentViewMode === 'year' ? (numeric / 12) * 1.25 : numeric * 1.25);
                 slider.max = (item.max * mult);
               }
-
               item.value = currentViewMode === 'year' ? (numeric / 12) : numeric;
               persistState();
-
               numInp.value = numeric;
               slider.value = numeric;
-
               renderKPIs();
-              card.querySelector('.cat-sum-badge').textContent = formatEUR(
-                cat.items.reduce((s, it) => s + (Number(it.value) || 0), 0) * mult
-              );
+              card.querySelector('.cat-sum-badge').textContent = formatEUR(cat.items.reduce((s, it) => s + (Number(it.value) || 0), 0) * mult);
             };
 
-            slider.addEventListener('input', (e) => syncValues(e.target.value));
-            numInp.addEventListener('input', (e) => syncValues(e.target.value));
-
-            dueDaySel.addEventListener('change', (e) => {
-              item.dueDay = parseInt(e.target.value, 10) || 1;
-              persistState();
-            });
-
-            nameInp.addEventListener('change', (e) => { item.name = e.target.value; persistState(); });
-
-            delItemBtn.addEventListener('click', () => {
-              cat.items.splice(iIdx, 1);
-              persistState();
-              renderApp();
-            });
+            slider.oninput = (e) => syncValues(e.target.value);
+            numInp.oninput = (e) => syncValues(e.target.value);
+            itemRow.querySelector('.item-due-day').onchange = (e) => { item.dueDay = parseInt(e.target.value, 10) || 1; persistState(); };
+            itemRow.querySelector('.item-name-input').onchange = (e) => { item.name = e.target.value; persistState(); };
+            itemRow.querySelector('.del-item-btn').onclick = () => { cat.items.splice(iIdx, 1); persistState(); renderApp(); };
           }
 
           list.appendChild(itemRow);
@@ -2045,7 +1800,92 @@
     }
 
     /* ==========================================================================
-       8. Render: Finanzen-Page (Notgroschen, Kredite & Dauerrechnungen)
+       8. Sparziel-Logik (Voll editierbar & Tastatur-sicher)
+       ========================================================================== */
+    function renderSavingsGoal(monthlySurplus) {
+      const g = state.savingsGoal;
+      const card = document.getElementById('savingsGoalCard');
+      if (!g || !g.visible) {
+        card.style.display = isEditorActive ? 'flex' : 'none';
+        if (!isEditorActive) return;
+      } else {
+        card.style.display = 'flex';
+      }
+
+      document.getElementById('goalTitleDisplay').textContent = `🎯 ${g.title || 'Vermögensaufbau'}`;
+      document.getElementById('goalTargetDisplay').textContent = formatEUR(g.target || 0);
+      document.getElementById('goalTargetDisplay').style.color = g.color || 'var(--accent)';
+      document.getElementById('goalColorPicker').value = g.color || '#3b82f6';
+
+      const today = new Date();
+      const targetDate = new Date(g.targetDate || '2028-12-31');
+      let diffMonths = (targetDate.getFullYear() - today.getFullYear()) * 12 + (targetDate.getMonth() - today.getMonth());
+      diffMonths = Math.max(1, diffMonths);
+
+      document.getElementById('goalRemainingMonths').textContent = `${diffMonths} Monate`;
+
+      const monthlyRate = (g.interestRate || 0) / 100 / 12;
+      let balanceForecast = Number(g.startCapital) || 0;
+      const safeSurplus = Math.max(0, monthlySurplus);
+
+      for (let m = 0; m < diffMonths; m++) {
+        balanceForecast = (balanceForecast + safeSurplus) * (1 + monthlyRate);
+      }
+
+      document.getElementById('goalForecastVal').textContent = formatEUR(balanceForecast);
+
+      let requiredMonthlyRate = 0;
+      if (monthlyRate === 0) {
+        requiredMonthlyRate = Math.max(0, (g.target - g.startCapital) / diffMonths);
+      } else {
+        const factor = Math.pow(1 + monthlyRate, diffMonths);
+        const numerator = g.target - (g.startCapital * factor);
+        const denominator = ((factor - 1) / monthlyRate) * (1 + monthlyRate);
+        requiredMonthlyRate = Math.max(0, numerator / denominator);
+      }
+
+      document.getElementById('goalRequiredRate').textContent = formatEUR(requiredMonthlyRate);
+    }
+
+    // In-Place Editor für das Sparziel (behält Tastatur-Fokus)
+    function initSavingsGoalEditor() {
+      const g = state.savingsGoal;
+      const titleInp = document.getElementById('goalTitleInput');
+      const targetInp = document.getElementById('goalTargetInput');
+      const startInp = document.getElementById('goalStartInput');
+      const dateInp = document.getElementById('goalDateInput');
+      const rateInp = document.getElementById('goalRateInput');
+      const colorPicker = document.getElementById('goalColorPicker');
+      const toggleVisBtn = document.getElementById('btnToggleGoalVisibility');
+
+      titleInp.value = g.title || '';
+      targetInp.value = g.target || 0;
+      startInp.value = g.startCapital || 0;
+      dateInp.value = g.targetDate || '2028-12-31';
+      rateInp.value = g.interestRate || 3.5;
+      colorPicker.value = g.color || '#3b82f6';
+
+      const updateGoalLive = () => {
+        persistState();
+        renderKPIs();
+      };
+
+      titleInp.oninput = () => { g.title = titleInp.value; updateGoalLive(); };
+      targetInp.oninput = () => { g.target = parseFloat(targetInp.value) || 0; updateGoalLive(); };
+      startInp.oninput = () => { g.startCapital = parseFloat(startInp.value) || 0; updateGoalLive(); };
+      dateInp.onchange = () => { g.targetDate = dateInp.value; updateGoalLive(); };
+      rateInp.oninput = () => { g.interestRate = parseFloat(rateInp.value) || 0; updateGoalLive(); };
+      colorPicker.oninput = () => { g.color = colorPicker.value; updateGoalLive(); };
+
+      toggleVisBtn.onclick = () => {
+        g.visible = !g.visible;
+        persistState();
+        renderApp();
+      };
+    }
+
+    /* ==========================================================================
+       9. Finanzen & Notgroschen
        ========================================================================== */
     function renderFinancePage() {
       renderEmergencyFund();
@@ -2119,10 +1959,7 @@
           }
         };
 
-        document.getElementById('emergencyTitleInput').onchange = (e) => {
-          ef.title = e.target.value;
-          persistState();
-        };
+        document.getElementById('emergencyTitleInput').onchange = (e) => { ef.title = e.target.value; persistState(); };
 
         const updateEmergencyLive = () => {
           persistState();
@@ -2141,10 +1978,8 @@
       const container = document.getElementById('loansList');
       container.innerHTML = '';
       const mult = getMultiplier();
-
       const totalMonthlyRate = calcMonthlyLoanCosts();
       document.getElementById('totalLoansRateHeader').textContent = `${formatEUR(totalMonthlyRate * mult)} / ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}`;
-
       const loans = (isArchiveViewing && currentArchiveSnapshot?.loans) ? currentArchiveSnapshot.loans : state.liabilities.loans;
 
       loans.forEach((loan, idx) => {
@@ -2164,7 +1999,7 @@
             <div class="loan-title-group">
               <div style="display:flex; align-items:center; gap:6px;">
                 <input type="text" class="item-name-input loan-name" value="${loan.name}" ${!isEditorActive || isArchiveViewing ? 'readonly' : ''} style="font-weight:700;">
-                ${isPaidOff ? '<span class="badge loan-badge-paid" style="background:rgba(16,185,129,0.2); color:var(--success); font-size:0.65rem; white-space:nowrap;">ABBEZAHLT ✔️</span>' : ''}
+                ${isPaidOff ? '<span class="badge" style="background:rgba(16,185,129,0.2); color:var(--success); font-size:0.65rem;">ABBEZAHLT ✔️</span>' : ''}
               </div>
               <div class="item-meta-row">
                 <span>📅 Rate fällig: ${!isEditorActive || isArchiveViewing ? `Tag ${loan.dueDay || 15}` : ''}</span>
@@ -2172,7 +2007,7 @@
               </div>
             </div>
             <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
-              <span class="loan-rate-header-display" style="font-weight:700; font-size:0.95rem; color:${isPaidOff ? 'var(--success)' : 'var(--debt-color)'}; white-space:nowrap;">
+              <span class="loan-rate-header-display" style="font-weight:700; font-size:0.95rem; color:${isPaidOff ? 'var(--success)' : 'var(--debt-color)'};">
                 ${formatEUR(rate * mult)} <span style="font-size:0.75rem; color:var(--text-muted);">/ ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}</span>
               </span>
               <button type="button" class="btn-danger editor-only hide-in-archive del-loan-btn">🗑️</button>
@@ -2194,95 +2029,41 @@
           </div>
 
           <div class="loan-actions-row hide-in-archive">
-            ${!isPaidOff ? `
-              <button type="button" class="btn-quick-pay quick-pay-btn">
-                ⚡ +1 Rate (${formatEUR(rate)}) tilgen
-              </button>
-            ` : '<span style="font-size:0.75rem; color:var(--success);">Dieser Kredit belastet nicht mehr deine Fixkosten.</span>'}
+            ${!isPaidOff ? `<button type="button" class="btn-quick-pay quick-pay-btn">⚡ +1 Rate (${formatEUR(rate)}) tilgen</button>` : '<span style="font-size:0.75rem; color:var(--success);">Abbezahlt.</span>'}
           </div>
 
           <div class="loan-editor-grid editor-only hide-in-archive">
-            <div class="loan-field">
-              <label>Gesamtschuld (€)</label>
-              <input type="number" step="any" class="edit-loan-total" value="${total}">
-            </div>
-            <div class="loan-field">
-              <label>Bereits gezahlt (€)</label>
-              <input type="number" step="any" class="edit-loan-paid" value="${paid}">
-            </div>
-            <div class="loan-field">
-              <label>Monatsrate (€)</label>
-              <input type="number" step="any" class="edit-loan-rate" value="${rate}">
-            </div>
-            <div class="loan-field">
-              <label>Gesamtlaufzeit (Monate)</label>
-              <input type="number" class="edit-loan-months" value="${loan.totalMonths || 12}">
-            </div>
+            <div class="loan-field"><label>Gesamtschuld (€)</label><input type="number" step="any" class="edit-loan-total" value="${total}"></div>
+            <div class="loan-field"><label>Bereits gezahlt (€)</label><input type="number" step="any" class="edit-loan-paid" value="${paid}"></div>
+            <div class="loan-field"><label>Monatsrate (€)</label><input type="number" step="any" class="edit-loan-rate" value="${rate}"></div>
+            <div class="loan-field"><label>Laufzeit (Monate)</label><input type="number" class="edit-loan-months" value="${loan.totalMonths || 12}"></div>
           </div>
         `;
 
         if (!isArchiveViewing) {
-          card.querySelector('.loan-name').addEventListener('change', (e) => { loan.name = e.target.value; persistState(); });
-          const dueDaySel = card.querySelector('.loan-due-day');
-          dueDaySel.addEventListener('change', (e) => { loan.dueDay = parseInt(e.target.value, 10) || 15; persistState(); });
+          card.querySelector('.loan-name').onchange = (e) => { loan.name = e.target.value; persistState(); };
+          card.querySelector('.loan-due-day').onchange = (e) => { loan.dueDay = parseInt(e.target.value, 10) || 15; persistState(); };
 
-          const quickPayBtn = card.querySelector('.quick-pay-btn');
-          if (quickPayBtn) {
-            quickPayBtn.addEventListener('click', () => {
+          const qBtn = card.querySelector('.quick-pay-btn');
+          if (qBtn) {
+            qBtn.onclick = () => {
               loan.paidAmount = Math.min(loan.totalAmount, loan.paidAmount + loan.monthlyRate);
               persistState();
               renderApp();
-            });
+            };
           }
 
           const updateLoanLive = () => {
             persistState();
-            const curTotal = Number(loan.totalAmount) || 0;
-            const curPaid = Number(loan.paidAmount) || 0;
-            const curRate = Number(loan.monthlyRate) || 0;
-            const curRemaining = Math.max(0, curTotal - curPaid);
-            const curPercent = curTotal > 0 ? Math.min(100, Math.round((curPaid / curTotal) * 100)) : 100;
-            const curMonths = curRate > 0 ? Math.ceil(curRemaining / curRate) : 0;
-            const curPaidOff = curRemaining <= 0;
-
-            card.classList.toggle('paid-off', curPaidOff);
-            card.querySelector('.loan-paid-text').textContent = `Getilgt: ${formatEUR(curPaid)} (${curPercent} %)`;
-            card.querySelector('.loan-total-text').textContent = `Gesamt: ${formatEUR(curTotal)}`;
-            
-            const fill = card.querySelector('.loan-progress-fill');
-            fill.style.width = `${curPercent}%`;
-            fill.style.background = curPaidOff ? 'var(--success)' : 'var(--debt-color)';
-
-            card.querySelector('.loan-remaining-text').innerHTML = `Restschuld: <strong>${formatEUR(curRemaining)}</strong>`;
-            card.querySelector('.loan-months-text').innerHTML = curPaidOff ? 'Abgeschlossen' : `Noch ca. <strong>${curMonths} Monate</strong>`;
-
-            const rateDisplay = card.querySelector('.loan-rate-header-display');
-            rateDisplay.style.color = curPaidOff ? 'var(--success)' : 'var(--debt-color)';
-            rateDisplay.innerHTML = `${formatEUR(curRate * mult)} <span style="font-size:0.75rem; color:var(--text-muted);">/ ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}</span>`;
-
-            const qBtn = card.querySelector('.quick-pay-btn');
-            if (qBtn) qBtn.textContent = `⚡ +1 Rate (${formatEUR(curRate)}) tilgen`;
-
-            const totalRate = calcMonthlyLoanCosts();
-            document.getElementById('totalLoansRateHeader').textContent = `${formatEUR(totalRate * mult)} / ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}`;
             renderKPIs();
+            renderLoansList();
           };
 
-          const inpTotal = card.querySelector('.edit-loan-total');
-          const inpPaid = card.querySelector('.edit-loan-paid');
-          const inpRate = card.querySelector('.edit-loan-rate');
-          const inpMonths = card.querySelector('.edit-loan-months');
-
-          inpTotal.addEventListener('input', () => { loan.totalAmount = parseFloat(inpTotal.value) || 0; updateLoanLive(); });
-          inpPaid.addEventListener('input', () => { loan.paidAmount = parseFloat(inpPaid.value) || 0; updateLoanLive(); });
-          inpRate.addEventListener('input', () => { loan.monthlyRate = parseFloat(inpRate.value) || 0; updateLoanLive(); });
-          inpMonths.addEventListener('input', () => { loan.totalMonths = parseInt(inpMonths.value, 10) || 12; persistState(); });
-
-          card.querySelector('.del-loan-btn').addEventListener('click', () => {
-            state.liabilities.loans.splice(idx, 1);
-            persistState();
-            renderApp();
-          });
+          card.querySelector('.edit-loan-total').oninput = (e) => { loan.totalAmount = parseFloat(e.target.value) || 0; updateLoanLive(); };
+          card.querySelector('.edit-loan-paid').oninput = (e) => { loan.paidAmount = parseFloat(e.target.value) || 0; updateLoanLive(); };
+          card.querySelector('.edit-loan-rate').oninput = (e) => { loan.monthlyRate = parseFloat(e.target.value) || 0; updateLoanLive(); };
+          card.querySelector('.edit-loan-months').oninput = (e) => { loan.totalMonths = parseInt(e.target.value, 10) || 12; persistState(); };
+          card.querySelector('.del-loan-btn').onclick = () => { state.liabilities.loans.splice(idx, 1); persistState(); renderApp(); };
         }
 
         container.appendChild(card);
@@ -2293,16 +2074,13 @@
       const container = document.getElementById('recurringList');
       container.innerHTML = '';
       const mult = getMultiplier();
-
       const totalRecurring = calcMonthlyRecurringCosts();
       document.getElementById('totalRecurringHeader').textContent = `${formatEUR(totalRecurring * mult)} / ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}`;
-
       const recs = (isArchiveViewing && currentArchiveSnapshot?.recurringBills) ? currentArchiveSnapshot.recurringBills : state.liabilities.recurringBills;
 
       recs.forEach((bill, idx) => {
         const row = document.createElement('div');
         row.className = 'item-row';
-
         const displayedCost = (bill.monthlyCost * mult).toFixed(2);
 
         let formattedDate = '';
@@ -2338,30 +2116,16 @@
         `;
 
         if (!isArchiveViewing) {
-          const nameInp = row.querySelector('.rec-name');
-          const costInp = row.querySelector('.rec-cost');
-          const dateInp = row.querySelector('.rec-date');
-          const dueDaySel = row.querySelector('.rec-due-day');
-          const delBtn = row.querySelector('.del-rec-btn');
-
-          nameInp.addEventListener('change', (e) => { bill.name = e.target.value; persistState(); });
-
-          costInp.addEventListener('input', (e) => {
+          row.querySelector('.rec-name').onchange = (e) => { bill.name = e.target.value; persistState(); };
+          row.querySelector('.rec-cost').oninput = (e) => {
             const raw = parseFloat(e.target.value) || 0;
             bill.monthlyCost = currentViewMode === 'year' ? (raw / 12) : raw;
             persistState();
             renderKPIs();
-            document.getElementById('totalRecurringHeader').textContent = `${formatEUR(calcMonthlyRecurringCosts() * mult)} / ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}`;
-          });
-
-          dateInp.addEventListener('change', (e) => { bill.endDate = e.target.value; persistState(); renderRecurringList(); });
-          dueDaySel.addEventListener('change', (e) => { bill.dueDay = parseInt(e.target.value, 10) || 1; persistState(); });
-
-          delBtn.addEventListener('click', () => {
-            state.liabilities.recurringBills.splice(idx, 1);
-            persistState();
-            renderApp();
-          });
+          };
+          row.querySelector('.rec-date').onchange = (e) => { bill.endDate = e.target.value; persistState(); renderRecurringList(); };
+          row.querySelector('.rec-due-day').onchange = (e) => { bill.dueDay = parseInt(e.target.value, 10) || 1; persistState(); };
+          row.querySelector('.del-rec-btn').onclick = () => { state.liabilities.recurringBills.splice(idx, 1); persistState(); renderApp(); };
         }
 
         container.appendChild(row);
@@ -2369,7 +2133,7 @@
     }
 
     /* ==========================================================================
-       9. Render: Interaktiver SVG Graph
+       10. Chart & Timeline
        ========================================================================== */
     function renderInteractiveChart() {
       const titleEl = document.getElementById('chartTitle');
@@ -2468,7 +2232,7 @@
       const cLine = document.getElementById('svgCrossLine');
       const cDot = document.getElementById('svgCrossDot');
 
-      const handlePointer = (evt) => {
+      svgEl.onpointermove = (evt) => {
         const rect = svgEl.getBoundingClientRect();
         const clientX = evt.clientX || (evt.touches && evt.touches[0].clientX);
         if (!clientX) return;
@@ -2477,7 +2241,6 @@
         const normX = Math.max(0, Math.min(1, (relX - 25 * (rect.width / W)) / ((W - 40) * (rect.width / W))));
         const targetDay = Math.round(normX * 30) + 1;
         const pt = balances[targetDay - 1];
-
         if (!pt) return;
 
         const x = pX(pt.day);
@@ -2496,7 +2259,6 @@
         tooltip.innerHTML = `Tag ${pt.day}: <span style="color:${pt.balance >= 0 ? 'var(--success)' : 'var(--danger)'}">${formatEUR(pt.balance)}</span>`;
       };
 
-      svgEl.onpointermove = handlePointer;
       svgEl.onpointerleave = () => {
         cLine.setAttribute('opacity', '0');
         cDot.setAttribute('opacity', '0');
@@ -2507,31 +2269,23 @@
     function renderHistoryTrendSvg() {
       const gridGroup = document.getElementById('svgGridGroup');
       const dataGroup = document.getElementById('svgDataGroup');
-      const crossGroup = document.getElementById('svgCrosshairGroup');
       const tooltip = document.getElementById('chartTooltip');
 
       gridGroup.innerHTML = '';
       dataGroup.innerHTML = '';
-      crossGroup.innerHTML = '';
       tooltip.style.display = 'none';
 
       const history = state.history || [];
       if (history.length === 0) {
-        gridGroup.innerHTML = `
-          <text x="250" y="95" text-anchor="middle" fill="var(--text-muted)" font-size="12">
-            Noch keine Monate archiviert. Speichere Snapshots ab, um den Verlauf zu sehen!
-          </text>
-        `;
+        gridGroup.innerHTML = `<text x="250" y="95" text-anchor="middle" fill="var(--text-muted)" font-size="12">Noch keine Monate archiviert.</text>`;
         return;
       }
 
       const sorted = [...history].sort((a, b) => a.period.localeCompare(b.period));
-
       const W = 500;
       const H = 190;
       const maxVal = Math.max(...sorted.map(s => Math.max(s.income, s.expenses))) * 1.15 || 1000;
       const pY = (v) => (H - 30) - (v / maxVal) * (H - 50);
-
       const colWidth = (W - 60) / sorted.length;
 
       let barsHTML = '';
@@ -2542,16 +2296,12 @@
         const bW = Math.min(22, colWidth * 0.35);
 
         const yInc = pY(item.income);
-        const hInc = (H - 30) - yInc;
-
         const yExp = pY(item.expenses);
-        const hExp = (H - 30) - yExp;
-
         const ySurplus = pY(Math.max(0, item.surplus));
 
         barsHTML += `
-          <rect x="${xCenter - bW - 2}" y="${yInc}" width="${bW}" height="${hInc}" fill="var(--success)" opacity="0.8" rx="3"/>
-          <rect x="${xCenter + 2}" y="${yExp}" width="${bW}" height="${hExp}" fill="var(--danger)" opacity="0.8" rx="3"/>
+          <rect x="${xCenter - bW - 2}" y="${yInc}" width="${bW}" height="${(H - 30) - yInc}" fill="var(--success)" opacity="0.8" rx="3"/>
+          <rect x="${xCenter + 2}" y="${yExp}" width="${bW}" height="${(H - 30) - yExp}" fill="var(--danger)" opacity="0.8" rx="3"/>
           <text x="${xCenter}" y="${H - 12}" text-anchor="middle" fill="var(--text-muted)" font-size="10">${item.period.slice(2)}</text>
         `;
 
@@ -2561,10 +2311,7 @@
         barsHTML += `<circle cx="${xCenter}" cy="${ySurplus}" r="3.5" fill="var(--accent)" stroke="#fff" stroke-width="1"/>`;
       });
 
-      dataGroup.innerHTML = `
-        ${barsHTML}
-        <path d="${trendLine}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="3,3"/>
-      `;
+      dataGroup.innerHTML = `${barsHTML}<path d="${trendLine}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="3,3"/>`;
 
       gridGroup.innerHTML = `
         <line x1="20" y1="${H - 30}" x2="${W - 10}" y2="${H - 30}" stroke="var(--border)" stroke-width="1"/>
@@ -2575,133 +2322,10 @@
           <text x="87" y="8" fill="var(--text-muted)" font-size="9">Ausgaben</text>
         </g>
       `;
-
-      const svgEl = document.getElementById('interactiveChartSvg');
-      svgEl.onpointermove = (evt) => {
-        const rect = svgEl.getBoundingClientRect();
-        const clientX = evt.clientX || (evt.touches && evt.touches[0].clientX);
-        if (!clientX) return;
-
-        const relX = clientX - rect.left;
-        const normIdx = Math.floor((relX - 20 * (rect.width / W)) / (colWidth * (rect.width / W)));
-
-        if (normIdx >= 0 && normIdx < sorted.length) {
-          const s = sorted[normIdx];
-          tooltip.style.display = 'block';
-          tooltip.innerHTML = `${s.label}: <strong>+${formatEUR(s.surplus)}</strong> (Sparquote: ${s.savingsRate.toFixed(1)}%)`;
-        }
-      };
-
-      svgEl.onpointerleave = () => { tooltip.style.display = 'none'; };
     }
 
     /* ==========================================================================
-       10. Snapshot-System & Archiv-Bibliothek Management (NEU AUSGEBAUT)
-       ========================================================================== */
-    function archiveCurrentMonth() {
-      const periodKey = getPeriodKey(viewedDate);
-      const label = getPeriodLabel(viewedDate);
-
-      const mIncome = calcMonthlyIncome();
-      const mExpenses = calcMonthlyTotalExpenses();
-      const mSurplus = mIncome - mExpenses;
-      const savingsRate = mIncome > 0 ? (mSurplus / mIncome) * 100 : 0;
-
-      const snapshot = {
-        period: periodKey,
-        label: label,
-        timestamp: Date.now(),
-        income: mIncome,
-        expenses: mExpenses,
-        surplus: mSurplus,
-        savingsRate: savingsRate,
-        startGiro: Number(state.cashflow.startGiro) || 0,
-        tagesgeld: Number(state.cashflow.tagesgeld) || 0,
-        categoryExpenses: calcMonthlyCategoryExpenses(),
-        loanCosts: calcMonthlyLoanCosts(),
-        recurringCosts: calcMonthlyRecurringCosts(),
-        emergencyContribution: calcMonthlyEmergencyContribution(),
-        incomes: JSON.parse(JSON.stringify(state.incomes)),
-        categories: JSON.parse(JSON.stringify(state.categories)),
-        loans: JSON.parse(JSON.stringify(state.liabilities.loans)),
-        recurringBills: JSON.parse(JSON.stringify(state.liabilities.recurringBills)),
-        emergencyFund: JSON.parse(JSON.stringify(state.emergencyFund))
-      };
-
-      const existingIdx = state.history.findIndex(h => h.period === periodKey);
-      if (existingIdx >= 0) {
-        if (!confirm(`Es existiert bereits ein Archiv für ${label}. Überschreiben?`)) return;
-        state.history[existingIdx] = snapshot;
-      } else {
-        state.history.push(snapshot);
-      }
-
-      persistState();
-      alert(`✔️ Snapshot für ${label} wurde archiviert!`);
-      renderApp();
-    }
-
-    function loadSnapshotIntoView(snapshot) {
-      isArchiveViewing = true;
-      currentArchiveSnapshot = snapshot;
-
-      const [year, month] = snapshot.period.split('-').map(Number);
-      viewedDate = new Date(year, month - 1, 1);
-
-      updateMonthNavigatorUI();
-      renderApp();
-    }
-
-    function switchToLiveView() {
-      isArchiveViewing = false;
-      currentArchiveSnapshot = null;
-      viewedDate = new Date(SYSTEM_NOW.getFullYear(), SYSTEM_NOW.getMonth(), 1);
-      updateMonthNavigatorUI();
-      renderApp();
-    }
-
-    // NEU: Archivierten Monat als Vorlage in die Live-Planung laden
-    function loadSnapshotAsLiveTemplate(snapshot) {
-      if (!confirm(`Möchtest du den archivierten Stand aus "${snapshot.label}" als Vorlage in dein aktuelles Budget laden? Deine aktuellen Schieberegler und Posten werden dadurch mit diesen Werten überschrieben.`)) {
-        return;
-      }
-
-      if (snapshot.incomes) state.incomes = JSON.parse(JSON.stringify(snapshot.incomes));
-      if (snapshot.categories) state.categories = JSON.parse(JSON.stringify(snapshot.categories));
-      if (snapshot.loans) state.liabilities.loans = JSON.parse(JSON.stringify(snapshot.loans));
-      if (snapshot.recurringBills) state.liabilities.recurringBills = JSON.parse(JSON.stringify(snapshot.recurringBills));
-      if (snapshot.emergencyFund) state.emergencyFund = JSON.parse(JSON.stringify(snapshot.emergencyFund));
-
-      persistState();
-      closeLibraryModal();
-      switchToLiveView();
-      alert(`✔️ Der Monat "${snapshot.label}" wurde erfolgreich als Vorlage in die Live-Planung übernommen!`);
-    }
-
-    function updateMonthNavigatorUI() {
-      const labelEl = document.getElementById('currentMonthLabel');
-      const badgeEl = document.getElementById('monthStatusBadge');
-      const banner = document.getElementById('archiveNoticeBanner');
-
-      const isCurrentSystemMonth = viewedDate.getFullYear() === SYSTEM_NOW.getFullYear() && viewedDate.getMonth() === SYSTEM_NOW.getMonth();
-
-      labelEl.textContent = getPeriodLabel(viewedDate);
-
-      if (isArchiveViewing) {
-        badgeEl.textContent = 'ARCHIV (HISTORIE)';
-        badgeEl.className = 'archive-badge';
-        banner.classList.remove('hidden');
-        document.body.classList.add('archive-mode');
-      } else {
-        badgeEl.textContent = isCurrentSystemMonth ? 'AKTUELL (LIVE)' : 'PLANUNG (LIVE)';
-        badgeEl.className = 'live-badge';
-        banner.classList.add('hidden');
-        document.body.classList.remove('archive-mode');
-      }
-    }
-
-    /* ==========================================================================
-       11. Timeline & Bibliotheks-Rendering
+       11. Timeline & Snapshot-System
        ========================================================================== */
     function renderTimelinePage() {
       const giroInp = document.getElementById('inputStartGiro');
@@ -2732,142 +2356,8 @@
         };
       }
 
-      renderHistoryList();
       buildTimelineSchedule();
       renderInteractiveChart();
-    }
-
-    function renderHistoryList() {
-      const container = document.getElementById('historyListContainer');
-      container.innerHTML = '';
-
-      const history = state.history || [];
-
-      if (history.length === 0) {
-        container.innerHTML = `
-          <div style="font-size:0.8rem; color:var(--text-muted); text-align:center; padding:12px;">
-            Noch keine Monate archiviert. Klicke oben auf <strong>„💾 Monat archivieren“</strong>.
-          </div>
-        `;
-        return;
-      }
-
-      const sorted = [...history].sort((a, b) => b.period.localeCompare(a.period));
-
-      sorted.forEach(snap => {
-        const card = document.createElement('div');
-        card.className = 'item-row';
-        card.style.cursor = 'pointer';
-
-        const isCurrentlySelected = isArchiveViewing && currentArchiveSnapshot?.period === snap.period;
-        if (isCurrentlySelected) {
-          card.style.borderColor = 'var(--warning)';
-          card.style.background = 'rgba(245, 158, 11, 0.08)';
-        }
-
-        card.innerHTML = `
-          <div class="item-info">
-            <div style="display:flex; flex-direction:column; gap:2px;">
-              <div style="font-weight:700; font-size:0.9rem; display:flex; align-items:center; gap:6px;">
-                <span>${snap.label}</span>
-                ${isCurrentlySelected ? '<span class="archive-badge">AUSGEWÄHLT</span>' : ''}
-              </div>
-              <div style="font-size:0.75rem; color:var(--text-muted);">
-                Ausgaben: ${formatEUR(snap.expenses)} • Sparquote: ${snap.savingsRate.toFixed(1)} %
-              </div>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-weight:700; font-size:0.9rem; color:${snap.surplus >= 0 ? 'var(--success)' : 'var(--danger)'};">
-                ${snap.surplus >= 0 ? '+' : ''}${formatEUR(snap.surplus)}
-              </span>
-              <button type="button" class="btn btn-secondary" style="padding: 3px 8px; font-size:0.75rem;">Öffnen</button>
-            </div>
-          </div>
-        `;
-
-        card.addEventListener('click', () => {
-          loadSnapshotIntoView(snap);
-        });
-
-        container.appendChild(card);
-      });
-    }
-
-    // NEU: Ausführliche Verwaltung in der Archiv-Bibliothek
-    function renderLibraryItems() {
-      const container = document.getElementById('libraryItemsContainer');
-      container.innerHTML = '';
-
-      const history = state.history || [];
-
-      if (history.length === 0) {
-        container.innerHTML = `
-          <div style="font-size:0.85rem; color:var(--text-muted); text-align:center; padding:20px;">
-            Deine Bibliothek ist noch leer.<br>Archiviere Monate, um sie hier nachträglich anzupassen oder als Vorlagen zu nutzen.
-          </div>
-        `;
-        return;
-      }
-
-      const sorted = [...history].sort((a, b) => b.period.localeCompare(a.period));
-
-      sorted.forEach(snap => {
-        const itemCard = document.createElement('div');
-        itemCard.className = 'library-item-card';
-
-        itemCard.innerHTML = `
-          <div class="library-item-header">
-            <div>
-              <strong style="font-size:1rem;">${snap.label}</strong>
-              <div style="font-size:0.7rem; color:var(--text-muted);">Schlüssel: ${snap.period}</div>
-            </div>
-            <span style="font-weight:700; color:${snap.surplus >= 0 ? 'var(--success)' : 'var(--danger)'};">
-              ${snap.surplus >= 0 ? '+' : ''}${formatEUR(snap.surplus)}
-            </span>
-          </div>
-
-          <div class="library-metrics-grid">
-            <div>Einnahmen<br><strong>${formatEUR(snap.income)}</strong></div>
-            <div>Ausgaben<br><strong>${formatEUR(snap.expenses)}</strong></div>
-            <div>Sparquote<br><strong>${snap.savingsRate.toFixed(1)} %</strong></div>
-          </div>
-
-          <div class="library-action-row">
-            <button type="button" class="library-action-btn btn-lib-view">👁️ Ansehen</button>
-            <button type="button" class="library-action-btn btn-lib-template">📋 Als Vorlage</button>
-            <button type="button" class="library-action-btn btn-lib-edit">✏️ Bearbeiten</button>
-            <button type="button" class="library-action-btn btn-lib-delete" style="color:var(--danger); border-color:rgba(239,68,68,0.3);">🗑️ Löschen</button>
-          </div>
-        `;
-
-        // Action: Ansehen
-        itemCard.querySelector('.btn-lib-view').onclick = () => {
-          closeLibraryModal();
-          loadSnapshotIntoView(snap);
-        };
-
-        // Action: Als Vorlage
-        itemCard.querySelector('.btn-lib-template').onclick = () => {
-          loadSnapshotAsLiveTemplate(snap);
-        };
-
-        // Action: Bearbeiten (Nachträgliche Korrektur)
-        itemCard.querySelector('.btn-lib-edit').onclick = () => {
-          openEditSnapshotModal(snap);
-        };
-
-        // Action: Löschen
-        itemCard.querySelector('.btn-lib-delete').onclick = () => {
-          if (confirm(`Möchtest du "${snap.label}" wirklich dauerhaft aus der Bibliothek löschen?`)) {
-            state.history = state.history.filter(h => h.period !== snap.period);
-            persistState();
-            renderLibraryItems();
-            renderApp();
-          }
-        };
-
-        container.appendChild(itemCard);
-      });
     }
 
     function buildTimelineSchedule() {
@@ -2921,20 +2411,13 @@
         const remEmerg = Math.max(0, (Number(emergency.targetAmount) || 0) - (Number(emergency.currentAmount) || 0));
         const rate = Number(emergency.monthlyContribution) || 0;
         const day = Math.min(31, Math.max(1, emergency.dueDay || 1));
-        if (remEmerg > 0 && rate > 0) {
-          dailyEvents[day].push({ name: `Rücklage: ${emergency.title}`, amount: rate, type: 'expense' });
-        }
+        if (remEmerg > 0 && rate > 0) dailyEvents[day].push({ name: `Rücklage: ${emergency.title}`, amount: rate, type: 'expense' });
       }
 
       for (let day = 1; day <= 31; day++) {
         const events = dailyEvents[day];
         let dayDelta = 0;
-
-        events.forEach(ev => {
-          if (ev.type === 'income') dayDelta += ev.amount;
-          else dayDelta -= ev.amount;
-        });
-
+        events.forEach(ev => { if (ev.type === 'income') dayDelta += ev.amount; else dayDelta -= ev.amount; });
         runningBalance += dayDelta;
 
         if (runningBalance < lowestBalance) {
@@ -2958,18 +2441,13 @@
             `;
           });
 
-          const isNegative = runningBalance < 0;
-
           dayCard.innerHTML = `
             <div class="timeline-day-header">
               <span>Tag ${day}. des Monats</span>
-              <span style="color: ${isNegative ? 'var(--danger)' : 'var(--text-main)'}; font-weight:700;">
-                Saldo: ${formatEUR(runningBalance)}
-              </span>
+              <span style="color: ${runningBalance < 0 ? 'var(--danger)' : 'var(--text-main)'}; font-weight:700;">Saldo: ${formatEUR(runningBalance)}</span>
             </div>
             ${entriesHTML}
           `;
-
           container.appendChild(dayCard);
         }
       }
@@ -2977,97 +2455,174 @@
       const alertBox = document.createElement('div');
       if (lowestBalance < 0) {
         alertBox.className = 'timeline-alert danger';
-        alertBox.innerHTML = `
-          <span>⚠️ <strong>Liquiditäts-Engpass:</strong> Am <strong>${lowestDay}.</strong> fällt das Konto auf <strong>${formatEUR(lowestBalance)}</strong>!</span>
-        `;
+        alertBox.innerHTML = `<span>⚠️ <strong>Liquiditäts-Engpass:</strong> Am <strong>${lowestDay}.</strong> fällt das Konto auf <strong>${formatEUR(lowestBalance)}</strong>!</span>`;
       } else {
         alertBox.className = 'timeline-alert success';
-        alertBox.innerHTML = `
-          <span>✔️ <strong>Solide Liquidität:</strong> Konto bleibt im Plus (Tiefstand: <strong>${formatEUR(lowestBalance)}</strong> am ${lowestDay}.).</span>
-        `;
+        alertBox.innerHTML = `<span>✔️ <strong>Solide Liquidität:</strong> Konto bleibt im Plus (Tiefstand: <strong>${formatEUR(lowestBalance)}</strong> am ${lowestDay}.).</span>`;
       }
       alertContainer.appendChild(alertBox);
     }
 
-    /* ==========================================================================
-       12. Sparziel-Berechnung
-       ========================================================================== */
-    function renderSavingsGoal(monthlySurplus) {
-      const g = state.savingsGoal;
-      const card = document.getElementById('savingsGoalCard');
-      if (!g || !g.visible) {
-        card.style.display = 'none';
-        return;
-      }
-      card.style.display = 'flex';
+    function archiveCurrentMonth() {
+      const periodKey = getPeriodKey(viewedDate);
+      const label = getPeriodLabel(viewedDate);
 
-      document.getElementById('goalTitleDisplay').textContent = `🎯 ${g.title}`;
-      document.getElementById('goalTargetDisplay').textContent = formatEUR(g.target);
+      const mIncome = calcMonthlyIncome();
+      const mExpenses = calcMonthlyTotalExpenses();
+      const mSurplus = mIncome - mExpenses;
+      const savingsRate = mIncome > 0 ? (mSurplus / mIncome) * 100 : 0;
 
-      const today = new Date();
-      const targetDate = new Date(g.targetDate || '2028-12-31');
-      let diffMonths = (targetDate.getFullYear() - today.getFullYear()) * 12 + (targetDate.getMonth() - today.getMonth());
-      diffMonths = Math.max(1, diffMonths);
-
-      document.getElementById('goalRemainingMonths').textContent = `${diffMonths} Monate`;
-
-      const monthlyRate = (g.interestRate || 0) / 100 / 12;
-      let balanceForecast = Number(g.startCapital) || 0;
-      const safeSurplus = Math.max(0, monthlySurplus);
-
-      for (let m = 0; m < diffMonths; m++) {
-        balanceForecast = (balanceForecast + safeSurplus) * (1 + monthlyRate);
-      }
-
-      document.getElementById('goalForecastVal').textContent = formatEUR(balanceForecast);
-
-      let requiredMonthlyRate = 0;
-      if (monthlyRate === 0) {
-        requiredMonthlyRate = Math.max(0, (g.target - g.startCapital) / diffMonths);
-      } else {
-        const factor = Math.pow(1 + monthlyRate, diffMonths);
-        const numerator = g.target - (g.startCapital * factor);
-        const denominator = ((factor - 1) / monthlyRate) * (1 + monthlyRate);
-        requiredMonthlyRate = Math.max(0, numerator / denominator);
-      }
-
-      document.getElementById('goalRequiredRate').textContent = formatEUR(requiredMonthlyRate);
-    }
-
-    function initGoalEditorInputs() {
-      const g = state.savingsGoal;
-      document.getElementById('goalTitleInput').value = g.title;
-      document.getElementById('goalTargetInput').value = g.target;
-      document.getElementById('goalStartInput').value = g.startCapital;
-      document.getElementById('goalDateInput').value = g.targetDate;
-      document.getElementById('goalRateInput').value = g.interestRate;
-
-      const bind = (id, key, isNum) => {
-        document.getElementById(id).addEventListener('input', (e) => {
-          g[key] = isNum ? (parseFloat(e.target.value) || 0) : e.target.value;
-          persistState();
-          renderKPIs();
-        });
+      const snapshot = {
+        period: periodKey,
+        label: label,
+        timestamp: Date.now(),
+        income: mIncome,
+        expenses: mExpenses,
+        surplus: mSurplus,
+        savingsRate: savingsRate,
+        startGiro: Number(state.cashflow.startGiro) || 0,
+        tagesgeld: Number(state.cashflow.tagesgeld) || 0,
+        categoryExpenses: calcMonthlyCategoryExpenses(),
+        loanCosts: calcMonthlyLoanCosts(),
+        recurringCosts: calcMonthlyRecurringCosts(),
+        emergencyContribution: calcMonthlyEmergencyContribution(),
+        incomes: JSON.parse(JSON.stringify(state.incomes)),
+        categories: JSON.parse(JSON.stringify(state.categories)),
+        loans: JSON.parse(JSON.stringify(state.liabilities.loans)),
+        recurringBills: JSON.parse(JSON.stringify(state.liabilities.recurringBills)),
+        emergencyFund: JSON.parse(JSON.stringify(state.emergencyFund))
       };
 
-      bind('goalTitleInput', 'title', false);
-      bind('goalTargetInput', 'target', true);
-      bind('goalStartInput', 'startCapital', true);
-      bind('goalDateInput', 'targetDate', false);
-      bind('goalRateInput', 'interestRate', true);
+      const existingIdx = state.history.findIndex(h => h.period === periodKey);
+      if (existingIdx >= 0) {
+        if (!confirm(`Es existiert bereits ein Archiv für ${label}. Überschreiben?`)) return;
+        state.history[existingIdx] = snapshot;
+      } else {
+        state.history.push(snapshot);
+      }
+
+      persistState();
+      alert(`✔️ Snapshot für ${label} wurde archiviert!`);
+      renderApp();
+    }
+
+    function loadSnapshotIntoView(snapshot) {
+      isArchiveViewing = true;
+      currentArchiveSnapshot = snapshot;
+      const [year, month] = snapshot.period.split('-').map(Number);
+      viewedDate = new Date(year, month - 1, 1);
+      updateMonthNavigatorUI();
+      renderApp();
+    }
+
+    function switchToLiveView() {
+      isArchiveViewing = false;
+      currentArchiveSnapshot = null;
+      viewedDate = new Date(SYSTEM_NOW.getFullYear(), SYSTEM_NOW.getMonth(), 1);
+      updateMonthNavigatorUI();
+      renderApp();
+    }
+
+    function updateMonthNavigatorUI() {
+      const labelEl = document.getElementById('currentMonthLabel');
+      const badgeEl = document.getElementById('monthStatusBadge');
+      const banner = document.getElementById('archiveNoticeBanner');
+      const isCurrentSystemMonth = viewedDate.getFullYear() === SYSTEM_NOW.getFullYear() && viewedDate.getMonth() === SYSTEM_NOW.getMonth();
+
+      labelEl.textContent = getPeriodLabel(viewedDate);
+
+      if (isArchiveViewing) {
+        badgeEl.textContent = 'ARCHIV (HISTORIE)';
+        badgeEl.className = 'archive-badge';
+        banner.classList.remove('hidden');
+        document.body.classList.add('archive-mode');
+      } else {
+        badgeEl.textContent = isCurrentSystemMonth ? 'AKTUELL (LIVE)' : 'PLANUNG (LIVE)';
+        badgeEl.className = 'live-badge';
+        banner.classList.add('hidden');
+        document.body.classList.remove('archive-mode');
+      }
     }
 
     /* ==========================================================================
-       13. Systemuhr & App Lifecycle
+       12. NEU: Eigene Themes Logik
+       ========================================================================== */
+    function renderThemePresets() {
+      const grid = document.getElementById('themePresetsGrid');
+      grid.innerHTML = '';
+
+      // Standard-Themes
+      Object.keys(BUILTIN_THEMES).forEach(key => {
+        const th = BUILTIN_THEMES[key];
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = `theme-chip ${state.settings.theme.name === th.name ? 'active' : ''}`;
+        chip.innerHTML = `
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span class="theme-color-preview" style="background: ${th.accent};"></span>
+            <span>${th.label}</span>
+          </div>
+        `;
+        chip.onclick = () => {
+          state.settings.theme = { ...th };
+          syncThemeInputsWithState();
+          applyTheme(state.settings.theme);
+          persistState();
+          renderThemePresets();
+          renderInteractiveChart();
+        };
+        grid.appendChild(chip);
+      });
+
+      // Eigene Themes
+      (state.customThemes || []).forEach((ct, idx) => {
+        const chip = document.createElement('div');
+        chip.className = `theme-chip ${state.settings.theme.name === ct.name ? 'active' : ''}`;
+        chip.innerHTML = `
+          <div style="display:flex; align-items:center; gap:6px; cursor:pointer;" class="apply-custom-btn">
+            <span class="theme-color-preview" style="background: ${ct.accent};"></span>
+            <span>${ct.label}</span>
+          </div>
+          <span class="del-theme-btn" style="color:var(--danger); font-size:0.8rem; cursor:pointer; padding:2px 4px;" title="Löschen">✕</span>
+        `;
+
+        chip.querySelector('.apply-custom-btn').onclick = () => {
+          state.settings.theme = { ...ct };
+          syncThemeInputsWithState();
+          applyTheme(state.settings.theme);
+          persistState();
+          renderThemePresets();
+          renderInteractiveChart();
+        };
+
+        chip.querySelector('.del-theme-btn').onclick = (e) => {
+          e.stopPropagation();
+          if (confirm(`Theme "${ct.label}" wirklich löschen?`)) {
+            state.customThemes.splice(idx, 1);
+            persistState();
+            renderThemePresets();
+          }
+        };
+
+        grid.appendChild(chip);
+      });
+    }
+
+    function syncThemeInputsWithState() {
+      const curTheme = state.settings.theme || BUILTIN_THEMES.midnight;
+      document.getElementById('themeColorAccent').value = curTheme.accent;
+      document.getElementById('themeColorBg').value = curTheme.bgMain;
+      document.getElementById('themeColorCard').value = curTheme.bgCard;
+      document.getElementById('themeRadiusSlider').value = curTheme.radius || 12;
+    }
+
+    /* ==========================================================================
+       13. Systemuhr & Lifecycle
        ========================================================================== */
     function updateClock() {
       const now = new Date();
-      document.getElementById('dateBadge').textContent = now.toLocaleDateString('de-DE', {
-        day: '2-digit', month: '2-digit', year: 'numeric'
-      });
-      document.getElementById('timeBadge').textContent = now.toLocaleTimeString('de-DE', {
-        hour: '2-digit', minute: '2-digit', second: '2-digit'
-      });
+      document.getElementById('dateBadge').textContent = now.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      document.getElementById('timeBadge').textContent = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
 
     function applySettingsToUI() {
@@ -3092,7 +2647,7 @@
     }
 
     /* ==========================================================================
-       14. Event-Listener & Navigation
+       14. Navigation & Initialisierung
        ========================================================================== */
     const tabBudget = document.getElementById('tabBudget');
     const tabFinance = document.getElementById('tabFinance');
@@ -3117,320 +2672,156 @@
       renderApp();
     }
 
-    tabBudget.addEventListener('click', () => switchTab('budget'));
-    tabFinance.addEventListener('click', () => switchTab('finance'));
-    tabTimeline.addEventListener('click', () => switchTab('timeline'));
+    tabBudget.onclick = () => switchTab('budget');
+    tabFinance.onclick = () => switchTab('finance');
+    tabTimeline.onclick = () => switchTab('timeline');
 
-    document.getElementById('btnChartModeDaily').addEventListener('click', () => {
-      state.uiState.chartViewMode = 'daily';
-      persistState();
-      renderInteractiveChart();
-    });
+    document.getElementById('btnChartModeDaily').onclick = () => { state.uiState.chartViewMode = 'daily'; persistState(); renderInteractiveChart(); };
+    document.getElementById('btnChartModeHistory').onclick = () => { state.uiState.chartViewMode = 'history'; persistState(); renderInteractiveChart(); };
 
-    document.getElementById('btnChartModeHistory').addEventListener('click', () => {
-      state.uiState.chartViewMode = 'history';
-      persistState();
-      renderInteractiveChart();
-    });
-
-    document.getElementById('btnPrevMonth').addEventListener('click', () => {
+    document.getElementById('btnPrevMonth').onclick = () => {
       viewedDate.setMonth(viewedDate.getMonth() - 1);
-      const targetPeriod = getPeriodKey(viewedDate);
-      const snap = (state.history || []).find(h => h.period === targetPeriod);
+      const snap = (state.history || []).find(h => h.period === getPeriodKey(viewedDate));
       if (snap) loadSnapshotIntoView(snap);
-      else {
-        isArchiveViewing = false;
-        currentArchiveSnapshot = null;
-        renderApp();
-      }
-    });
+      else { isArchiveViewing = false; currentArchiveSnapshot = null; renderApp(); }
+    };
 
-    document.getElementById('btnNextMonth').addEventListener('click', () => {
+    document.getElementById('btnNextMonth').onclick = () => {
       viewedDate.setMonth(viewedDate.getMonth() + 1);
-      const targetPeriod = getPeriodKey(viewedDate);
-      const snap = (state.history || []).find(h => h.period === targetPeriod);
+      const snap = (state.history || []).find(h => h.period === getPeriodKey(viewedDate));
       if (snap) loadSnapshotIntoView(snap);
-      else {
-        isArchiveViewing = false;
-        currentArchiveSnapshot = null;
-        renderApp();
-      }
-    });
+      else { isArchiveViewing = false; currentArchiveSnapshot = null; renderApp(); }
+    };
 
-    document.getElementById('btnTodayMonth').addEventListener('click', switchToLiveView);
-    document.getElementById('btnExitArchive').addEventListener('click', switchToLiveView);
-    document.getElementById('btnArchiveMonth').addEventListener('click', archiveCurrentMonth);
+    document.getElementById('btnTodayMonth').onclick = switchToLiveView;
+    document.getElementById('btnExitArchive').onclick = switchToLiveView;
+    document.getElementById('btnArchiveMonth').onclick = archiveCurrentMonth;
 
     const btnMonth = document.getElementById('btnMonth');
     const btnYear = document.getElementById('btnYear');
-
-    btnMonth.addEventListener('click', () => {
-      currentViewMode = 'month';
-      btnMonth.classList.add('active');
-      btnYear.classList.remove('active');
-      renderApp();
-    });
-
-    btnYear.addEventListener('click', () => {
-      currentViewMode = 'year';
-      btnYear.classList.add('active');
-      btnMonth.classList.remove('active');
-      renderApp();
-    });
+    btnMonth.onclick = () => { currentViewMode = 'month'; btnMonth.classList.add('active'); btnYear.classList.remove('active'); renderApp(); };
+    btnYear.onclick = () => { currentViewMode = 'year'; btnYear.classList.add('active'); btnMonth.classList.remove('active'); renderApp(); };
 
     const btnToggleMode = document.getElementById('btnToggleMode');
-    btnToggleMode.addEventListener('click', () => {
+    btnToggleMode.onclick = () => {
       isEditorActive = !isEditorActive;
       document.body.classList.toggle('editor-active', isEditorActive);
       btnToggleMode.textContent = isEditorActive ? '✔️ Ansichtsmodus' : '✏️ Editor-Modus';
       renderApp();
-    });
+    };
 
-    document.getElementById('btnAddIncomeFix').addEventListener('click', () => {
-      state.incomes.push({ id: `inc_${Date.now()}`, name: 'Festes Gehalt', type: 'fixed', value: 0, dueDay: 28 });
-      persistState();
-      renderApp();
-    });
+    document.getElementById('btnAddIncomeFix').onclick = () => { state.incomes.push({ id: `inc_${Date.now()}`, name: 'Festes Gehalt', type: 'fixed', value: 0, dueDay: 28 }); persistState(); renderApp(); };
+    document.getElementById('btnAddIncomeVar').onclick = () => { state.incomes.push({ id: `inc_${Date.now()}`, name: 'Variables Gehalt', type: 'variable', minValue: 0, avgValue: 0, maxValue: 0, dueDay: 15 }); persistState(); renderApp(); };
+    document.getElementById('btnAddCategory').onclick = () => { state.categories.push({ id: `cat_${Date.now()}`, name: 'Neue Kategorie', color: '#3b82f6', items: [] }); persistState(); renderApp(); };
+    document.getElementById('btnAddLoan').onclick = () => { state.liabilities.loans.push({ id: `loan_${Date.now()}`, name: 'Neuer Kredit / Rate', totalAmount: 1000, paidAmount: 0, monthlyRate: 50, totalMonths: 20, dueDay: 15 }); persistState(); renderApp(); };
+    document.getElementById('btnAddRecurring').onclick = () => { state.liabilities.recurringBills.push({ id: `rec_${Date.now()}`, name: 'Neue Dauerrechnung', monthlyCost: 20, endDate: '', dueDay: 1 }); persistState(); renderApp(); };
 
-    document.getElementById('btnAddIncomeVar').addEventListener('click', () => {
-      state.incomes.push({
-        id: `inc_${Date.now()}`,
-        name: 'Variables Gehalt',
-        type: 'variable',
-        minValue: 0,
-        avgValue: 0,
-        maxValue: 0,
-        dueDay: 15
-      });
-      persistState();
-      renderApp();
-    });
-
-    document.getElementById('btnAddCategory').addEventListener('click', () => {
-      state.categories.push({ id: `cat_${Date.now()}`, name: 'Neue Kategorie', color: '#3b82f6', items: [] });
-      persistState();
-      renderApp();
-    });
-
-    document.getElementById('btnAddLoan').addEventListener('click', () => {
-      state.liabilities.loans.push({
-        id: `loan_${Date.now()}`,
-        name: 'Neuer Kredit / Rate',
-        totalAmount: 1000,
-        paidAmount: 0,
-        monthlyRate: 50,
-        totalMonths: 20,
-        dueDay: 15
-      });
-      persistState();
-      renderApp();
-    });
-
-    document.getElementById('btnAddRecurring').addEventListener('click', () => {
-      state.liabilities.recurringBills.push({
-        id: `rec_${Date.now()}`,
-        name: 'Neue Dauerrechnung',
-        monthlyCost: 20,
-        endDate: '',
-        dueDay: 1
-      });
-      persistState();
-      renderApp();
-    });
-
-    /* ==========================================================================
-       15. Settings & Design-Modal Steuerung
-       ========================================================================== */
+    // Settings Modal
     const modal = document.getElementById('settingsModal');
     const btnOpenSettings = document.getElementById('btnOpenSettings');
     const btnCloseSettings = document.getElementById('btnCloseSettings');
     const btnSaveSettings = document.getElementById('btnSaveSettings');
 
-    const setSliderEnabled = document.getElementById('setSliderEnabled');
-    const setSliderStep = document.getElementById('setSliderStep');
-    const setIncomeMode = document.getElementById('setIncomeMode');
-
-    const themeColorAccent = document.getElementById('themeColorAccent');
-    const themeColorBg = document.getElementById('themeColorBg');
-    const themeColorCard = document.getElementById('themeColorCard');
-    const themeRadiusSlider = document.getElementById('themeRadiusSlider');
-
-    function openSettingsModal() {
-      setSliderEnabled.checked = state.settings.showSliders;
-      setSliderStep.value = state.settings.sliderStep || 10;
-      setIncomeMode.value = state.settings.incomeCalculationMode || 'min';
-
-      const curTheme = state.settings.theme || THEME_PRESETS.midnight;
-      themeColorAccent.value = curTheme.accent || '#3b82f6';
-      themeColorBg.value = curTheme.bgMain || '#0f172a';
-      themeColorCard.value = curTheme.bgCard || '#1e293b';
-      themeRadiusSlider.value = curTheme.radius || 12;
-
-      updatePresetChipHighlight(curTheme.name);
+    btnOpenSettings.onclick = () => {
+      document.getElementById('setSliderEnabled').checked = state.settings.showSliders;
+      document.getElementById('setSliderStep').value = state.settings.sliderStep || 10;
+      document.getElementById('setIncomeMode').value = state.settings.incomeCalculationMode || 'min';
+      syncThemeInputsWithState();
+      renderThemePresets();
       modal.classList.add('active');
-    }
+    };
 
-    function updatePresetChipHighlight(presetName) {
-      document.querySelectorAll('.theme-chip').forEach(chip => {
-        chip.classList.toggle('active', chip.getAttribute('data-theme') === presetName);
-      });
-    }
-
-    function closeSettingsModal() {
-      state.settings.showSliders = setSliderEnabled.checked;
-      state.settings.sliderStep = parseInt(setSliderStep.value, 10) || 10;
-      state.settings.incomeCalculationMode = setIncomeMode.value;
+    function closeSettings() {
+      state.settings.showSliders = document.getElementById('setSliderEnabled').checked;
+      state.settings.sliderStep = parseInt(document.getElementById('setSliderStep').value, 10) || 10;
+      state.settings.incomeCalculationMode = document.getElementById('setIncomeMode').value;
       persistState();
       modal.classList.remove('active');
       renderApp();
     }
 
-    btnOpenSettings.addEventListener('click', openSettingsModal);
-    btnCloseSettings.addEventListener('click', closeSettingsModal);
-    btnSaveSettings.addEventListener('click', closeSettingsModal);
+    btnCloseSettings.onclick = closeSettings;
+    btnSaveSettings.onclick = closeSettings;
 
-    document.querySelectorAll('.theme-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        const themeKey = chip.getAttribute('data-theme');
-        if (THEME_PRESETS[themeKey]) {
-          state.settings.theme = { ...THEME_PRESETS[themeKey] };
-          themeColorAccent.value = state.settings.theme.accent;
-          themeColorBg.value = state.settings.theme.bgMain;
-          themeColorCard.value = state.settings.theme.bgCard;
-          themeRadiusSlider.value = state.settings.theme.radius;
-
-          updatePresetChipHighlight(themeKey);
-          applyTheme(state.settings.theme);
-          persistState();
-          renderInteractiveChart();
-        }
-      });
-    });
-
-    themeColorAccent.addEventListener('input', (e) => {
+    // Live Custom Colors
+    document.getElementById('themeColorAccent').oninput = (e) => {
       state.settings.theme.accent = e.target.value;
       state.settings.theme.name = 'custom';
-      updatePresetChipHighlight('custom');
       applyTheme(state.settings.theme);
       persistState();
+      renderThemePresets();
       renderInteractiveChart();
-    });
+    };
 
-    themeColorBg.addEventListener('input', (e) => {
+    document.getElementById('themeColorBg').oninput = (e) => {
       state.settings.theme.bgMain = e.target.value;
       state.settings.theme.name = 'custom';
-      updatePresetChipHighlight('custom');
       applyTheme(state.settings.theme);
       persistState();
+      renderThemePresets();
       renderInteractiveChart();
-    });
+    };
 
-    themeColorCard.addEventListener('input', (e) => {
+    document.getElementById('themeColorCard').oninput = (e) => {
       state.settings.theme.bgCard = e.target.value;
       state.settings.theme.name = 'custom';
-      updatePresetChipHighlight('custom');
       applyTheme(state.settings.theme);
       persistState();
+      renderThemePresets();
       renderInteractiveChart();
-    });
+    };
 
-    themeRadiusSlider.addEventListener('input', (e) => {
+    document.getElementById('themeRadiusSlider').oninput = (e) => {
       state.settings.theme.radius = parseInt(e.target.value, 10) || 12;
       applyTheme(state.settings.theme);
       persistState();
-    });
+    };
 
-    /* ==========================================================================
-       16. NEU: Archiv-Bibliothek Modal Steuerung
-       ========================================================================== */
-    const libraryModal = document.getElementById('libraryModal');
-    const btnOpenLibraryModal = document.getElementById('btnOpenLibraryModal');
-    const btnCloseLibraryModal = document.getElementById('btnCloseLibraryModal');
-    const btnCloseLibraryBottom = document.getElementById('btnCloseLibraryBottom');
+    // NEU: Eigenes Theme anlegen & speichern
+    document.getElementById('btnSaveCustomTheme').onclick = () => {
+      const nameInput = document.getElementById('inputCustomThemeName');
+      const label = nameInput.value.trim();
+      if (!label) {
+        alert('Bitte gib einen Namen für dein Theme ein.');
+        return;
+      }
 
-    function openLibraryModal() {
-      renderLibraryItems();
-      libraryModal.classList.add('active');
-    }
+      const customThemeObj = {
+        name: `custom_${Date.now()}`,
+        label: label,
+        bgMain: document.getElementById('themeColorBg').value,
+        bgCard: document.getElementById('themeColorCard').value,
+        bgInput: '#121622',
+        border: '#334155',
+        textMain: '#ffffff',
+        textMuted: '#94a3b8',
+        accent: document.getElementById('themeColorAccent').value,
+        radius: parseInt(document.getElementById('themeRadiusSlider').value, 10) || 12
+      };
 
-    function closeLibraryModal() {
-      libraryModal.classList.remove('active');
-    }
-
-    btnOpenLibraryModal.addEventListener('click', openLibraryModal);
-    btnCloseLibraryModal.addEventListener('click', closeLibraryModal);
-    btnCloseLibraryBottom.addEventListener('click', closeLibraryModal);
-
-    /* ==========================================================================
-       17. NEU: Snapshot-Bearbeitungs-Modal Steuerung
-       ========================================================================== */
-    const editSnapshotModal = document.getElementById('editSnapshotModal');
-    const btnCloseEditSnapshotModal = document.getElementById('btnCloseEditSnapshotModal');
-    const btnCancelSnapshotEdit = document.getElementById('btnCancelSnapshotEdit');
-    const btnSaveSnapshotEdit = document.getElementById('btnSaveSnapshotEdit');
-
-    const editSnapLabel = document.getElementById('editSnapLabel');
-    const editSnapIncome = document.getElementById('editSnapIncome');
-    const editSnapExpenses = document.getElementById('editSnapExpenses');
-    const editSnapStartGiro = document.getElementById('editSnapStartGiro');
-
-    function openEditSnapshotModal(snapshot) {
-      editingSnapshotRef = snapshot;
-      editSnapLabel.value = snapshot.label;
-      editSnapIncome.value = snapshot.income;
-      editSnapExpenses.value = snapshot.expenses;
-      editSnapStartGiro.value = snapshot.startGiro;
-      editSnapshotModal.classList.add('active');
-    }
-
-    function closeEditSnapshotModal() {
-      editingSnapshotRef = null;
-      editSnapshotModal.classList.remove('active');
-    }
-
-    btnCloseEditSnapshotModal.addEventListener('click', closeEditSnapshotModal);
-    btnCancelSnapshotEdit.addEventListener('click', closeEditSnapshotModal);
-
-    btnSaveSnapshotEdit.addEventListener('click', () => {
-      if (!editingSnapshotRef) return;
-
-      editingSnapshotRef.label = editSnapLabel.value.trim() || editingSnapshotRef.label;
-      editingSnapshotRef.income = parseFloat(editSnapIncome.value) || 0;
-      editingSnapshotRef.expenses = parseFloat(editSnapExpenses.value) || 0;
-      editingSnapshotRef.startGiro = parseFloat(editSnapStartGiro.value) || 0;
-      editingSnapshotRef.surplus = editingSnapshotRef.income - editingSnapshotRef.expenses;
-      editingSnapshotRef.savingsRate = editingSnapshotRef.income > 0 
-        ? (editingSnapshotRef.surplus / editingSnapshotRef.income) * 100 
-        : 0;
-
+      state.customThemes.push(customThemeObj);
+      state.settings.theme = { ...customThemeObj };
       persistState();
-      closeEditSnapshotModal();
-      renderLibraryItems();
-      renderApp();
-    });
 
-    document.getElementById('btnResetDemo').addEventListener('click', () => {
+      nameInput.value = '';
+      applyTheme(state.settings.theme);
+      renderThemePresets();
+      alert(`✔️ Theme "${label}" wurde erfolgreich gespeichert!`);
+    };
+
+    document.getElementById('btnResetDemo').onclick = () => {
       if (confirm('Möchtest du alle Werte wirklich auf 0 € zurücksetzen?')) {
         state = getDefaultData();
-        state.incomes.forEach(i => {
-          if (i.type === 'fixed') i.value = 0;
-          if (i.type === 'variable') { i.minValue = 0; i.avgValue = 0; i.maxValue = 0; }
-        });
-        state.categories.forEach(c => c.items.forEach(it => it.value = 0));
-        state.liabilities.loans = [];
-        state.liabilities.recurringBills = [];
-        state.emergencyFund.currentAmount = 0;
-        state.savingsGoal.startCapital = 0;
         persistState();
         renderApp();
       }
-    });
+    };
 
-    // Start-Initialisierung
+    // Initialisierung
     switchTab(state.uiState.activeTab || 'budget');
     setInterval(updateClock, 1000);
     updateClock();
-    initGoalEditorInputs();
+    initSavingsGoalEditor();
     renderApp();
   </script>
 </body>
