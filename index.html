@@ -87,7 +87,7 @@
       gap: 6px;
     }
 
-    /* Monats-Navigator / Picker (NEU) */
+    /* Monats-Navigator */
     .month-navigator {
       display: flex;
       align-items: center;
@@ -245,7 +245,7 @@
       margin-top: 2px;
     }
 
-    /* Segmentierte Progress Bar */
+    /* Progress Bar */
     .progress-bar-wrapper {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -704,7 +704,6 @@
       font-weight: 600;
     }
 
-    /* Historie Liste / Tabelle */
     .history-card {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--border);
@@ -720,6 +719,82 @@
     .history-card:hover {
       background: rgba(255, 255, 255, 0.05);
       border-color: var(--accent);
+    }
+
+    /* ==========================================================================
+       NEU: Interaktiver SVG-Graph Styling
+       ========================================================================== */
+    .chart-container {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 12px 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chart-toggle-group {
+      display: flex;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      padding: 2px;
+      border-radius: 8px;
+      gap: 2px;
+    }
+
+    .chart-mode-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .chart-mode-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .svg-wrapper {
+      position: relative;
+      width: 100%;
+      height: 190px;
+      touch-action: none; /* Verhindert Ruckeln beim Wischen über das Chart */
+    }
+
+    .chart-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .chart-tooltip {
+      position: absolute;
+      top: 6px;
+      right: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(4px);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-main);
+      pointer-events: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: none;
     }
 
     /* Buttons & Utilities */
@@ -770,7 +845,6 @@
       display: none !important;
     }
 
-    /* Archiv-Modus Sperre */
     body.archive-mode .hide-in-archive {
       display: none !important;
     }
@@ -945,7 +1019,7 @@
       </button>
     </header>
 
-    <!-- 2. Monats-Navigator / Picker (NEU) -->
+    <!-- 2. Monats-Navigator -->
     <div class="month-navigator">
       <button type="button" class="nav-arrow-btn" id="btnPrevMonth" title="Vorheriger Monat">◀</button>
       <div class="month-display-group">
@@ -968,7 +1042,7 @@
     <nav class="main-nav">
       <button type="button" class="nav-btn active" id="tabBudget">📊 Budget</button>
       <button type="button" class="nav-btn" id="tabFinance">💳 Finanzen</button>
-      <button type="button" class="nav-btn" id="tabTimeline">📅 Timeline & Archiv</button>
+      <button type="button" class="nav-btn" id="tabTimeline">📅 Timeline & Chart</button>
     </nav>
 
     <!-- 4. Globaler Zeitraum-Umschalter: Monat / Jahr -->
@@ -1046,7 +1120,6 @@
           </div>
         </div>
 
-        <!-- Editor-Felder für Sparziel -->
         <div class="editor-only hide-in-archive" style="flex-direction: column; gap: 8px;">
           <label style="font-size: 0.75rem; color: var(--text-muted);">Titel: <input type="text" id="goalTitleInput" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:4px; border-radius:4px; width:100%;"></label>
           <label style="font-size: 0.75rem; color: var(--text-muted);">Zielbetrag (€): <input type="number" id="goalTargetInput" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; padding:4px; border-radius:4px; width:100%;"></label>
@@ -1090,10 +1163,36 @@
     </div>
 
     <!-- ====================================================================
-         SEITE 3: KALENDER, LIQUIDITÄT & HISTORIE
+         SEITE 3: KALENDER, LIQUIDITÄT & CHART (NEU)
          ==================================================================== -->
     <div class="page-view hidden" id="pageTimeline">
       
+      <!-- NEU: Interaktiver SVG Graph Card -->
+      <section class="chart-container">
+        <div class="chart-header">
+          <h2 class="card-title" id="chartTitle">📈 Liquiditäts-Kurve</h2>
+          <div class="chart-toggle-group">
+            <button type="button" class="chart-mode-btn active" id="btnChartModeDaily">31 Tage</button>
+            <button type="button" class="chart-mode-btn" id="btnChartModeHistory">Monats-Trend</button>
+          </div>
+        </div>
+
+        <div class="svg-wrapper" id="svgChartWrapper">
+          <div class="chart-tooltip" id="chartTooltip">--</div>
+          <svg class="chart-svg" id="interactiveChartSvg" viewBox="0 0 500 190" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="var(--accent)" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <g id="svgGridGroup"></g>
+            <g id="svgDataGroup"></g>
+            <g id="svgCrosshairGroup"></g>
+          </svg>
+        </div>
+      </section>
+
       <!-- Konten-Status & Startbestand -->
       <section class="card">
         <div class="card-header">
@@ -1121,7 +1220,7 @@
         <div id="timelineAlertContainer"></div>
       </section>
 
-      <!-- NEU: Monats-Historie & Snapshot-Archiv -->
+      <!-- Monats-Historie & Snapshot-Archiv -->
       <section class="card">
         <div class="card-header">
           <h2 class="card-title">📜 Monats-Historie & Archiv</h2>
@@ -1273,8 +1372,8 @@
     let currentViewMode = 'month';
     let currentTab = 'budget';
     let isEditorActive = false;
+    let chartViewMode = 'daily'; // 'daily' (Tag 1-31) | 'history' (Monatstrend)
 
-    // Zeitrechnung & Navigation
     const SYSTEM_NOW = new Date();
     let viewedDate = new Date(SYSTEM_NOW.getFullYear(), SYSTEM_NOW.getMonth(), 1);
     let isArchiveViewing = false;
@@ -1345,7 +1444,6 @@
           interestRate: 3.5,
           color: '#8b5cf6'
         },
-        // NEU: Historie / Archivierte Monats-Snapshots
         history: []
       };
     }
@@ -1361,24 +1459,20 @@
         const stored = JSON.parse(raw);
         const defaults = getDefaultData();
 
-        // 1. Settings & Theme
-        if (!stored.settings) {
-          stored.settings = defaults.settings;
-        } else {
+        if (!stored.settings) stored.settings = defaults.settings;
+        else {
           if (stored.settings.showSliders === undefined) stored.settings.showSliders = true;
           if (!stored.settings.sliderStep) stored.settings.sliderStep = 10;
           if (!stored.settings.incomeCalculationMode) stored.settings.incomeCalculationMode = 'min';
           if (!stored.settings.theme) stored.settings.theme = { ...THEME_PRESETS.midnight };
         }
 
-        // 2. Cashflow
         if (!stored.cashflow) stored.cashflow = defaults.cashflow;
         else {
           if (stored.cashflow.startGiro === undefined) stored.cashflow.startGiro = 1200;
           if (stored.cashflow.tagesgeld === undefined) stored.cashflow.tagesgeld = 4500;
         }
 
-        // 3. Incomes & DueDay
         if (!Array.isArray(stored.incomes)) stored.incomes = defaults.incomes;
         else {
           stored.incomes.forEach(inc => {
@@ -1392,7 +1486,6 @@
           });
         }
 
-        // 4. Kategorien & DueDay
         if (!Array.isArray(stored.categories)) stored.categories = defaults.categories;
         else {
           stored.categories.forEach(cat => {
@@ -1407,7 +1500,6 @@
           });
         }
 
-        // 5. Liabilities
         if (!stored.liabilities) stored.liabilities = defaults.liabilities;
         else {
           if (!Array.isArray(stored.liabilities.loans)) stored.liabilities.loans = defaults.liabilities.loans;
@@ -1417,10 +1509,7 @@
           else stored.liabilities.recurringBills.forEach(b => { if (b.dueDay === undefined) b.dueDay = 1; });
         }
 
-        // 6. Sparziel
         if (!stored.savingsGoal) stored.savingsGoal = defaults.savingsGoal;
-
-        // 7. NEU: Historie migrieren
         if (!Array.isArray(stored.history)) stored.history = [];
 
         return stored;
@@ -1455,7 +1544,7 @@
     }
 
     /* ==========================================================================
-       5. Rechnerische Hilfsfunktionen & Datenquellen (Live vs. Archiv)
+       5. Rechnerische Hilfsfunktionen
        ========================================================================== */
     function getMultiplier() {
       return currentViewMode === 'year' ? 12 : 1;
@@ -1530,7 +1619,7 @@
     }
 
     /* ==========================================================================
-       6. Render-Pipeline: Globales Dashboard & Fortschrittsbalken
+       6. Render-Pipeline: Globales Dashboard & Balken
        ========================================================================== */
     function renderKPIs() {
       const mult = getMultiplier();
@@ -1564,7 +1653,6 @@
 
       const base = Math.max(mIncome, mTotalExpenses);
 
-      // Kategorien Segmente
       const cats = (isArchiveViewing && currentArchiveSnapshot?.categories) ? currentArchiveSnapshot.categories : state.categories;
       cats.forEach(cat => {
         const catSum = (cat.items || []).reduce((s, it) => s + (Number(it.value) || 0), 0);
@@ -1578,7 +1666,6 @@
         }
       });
 
-      // Kredite Segment
       const loanSum = calcMonthlyLoanCosts();
       if (loanSum > 0) {
         const pct = (loanSum / base) * 100;
@@ -1590,7 +1677,6 @@
         track.appendChild(seg);
       }
 
-      // Dauerrechnungen Segment
       const recurringSum = calcMonthlyRecurringCosts();
       if (recurringSum > 0) {
         const pct = (recurringSum / base) * 100;
@@ -1781,20 +1867,9 @@
           const delCatBtn = card.querySelector('.del-cat-btn');
           const addItemBtn = card.querySelector('.add-item-btn');
 
-          colorPicker.addEventListener('input', (e) => {
-            cat.color = e.target.value;
-            persistState();
-            renderApp();
-          });
-
+          colorPicker.addEventListener('input', (e) => { cat.color = e.target.value; persistState(); renderApp(); });
           titleInput.addEventListener('change', (e) => { cat.name = e.target.value; persistState(); });
-
-          delCatBtn.addEventListener('click', () => {
-            state.categories.splice(cIdx, 1);
-            persistState();
-            renderApp();
-          });
-
+          delCatBtn.addEventListener('click', () => { state.categories.splice(cIdx, 1); persistState(); renderApp(); });
           addItemBtn.addEventListener('click', () => {
             cat.items.push({ id: `item_${Date.now()}`, name: 'Neuer Posten', value: 0, max: 500, dueDay: 1 });
             persistState();
@@ -1977,16 +2052,9 @@
         `;
 
         if (!isArchiveViewing) {
-          card.querySelector('.loan-name').addEventListener('change', (e) => {
-            loan.name = e.target.value;
-            persistState();
-          });
-
+          card.querySelector('.loan-name').addEventListener('change', (e) => { loan.name = e.target.value; persistState(); });
           const dueDaySel = card.querySelector('.loan-due-day');
-          dueDaySel.addEventListener('change', (e) => {
-            loan.dueDay = parseInt(e.target.value, 10) || 15;
-            persistState();
-          });
+          dueDaySel.addEventListener('change', (e) => { loan.dueDay = parseInt(e.target.value, 10) || 15; persistState(); });
 
           const quickPayBtn = card.querySelector('.quick-pay-btn');
           if (quickPayBtn) {
@@ -1999,7 +2067,6 @@
 
           const updateLoanLive = () => {
             persistState();
-
             const curTotal = Number(loan.totalAmount) || 0;
             const curPaid = Number(loan.paidAmount) || 0;
             const curRate = Number(loan.monthlyRate) || 0;
@@ -2117,16 +2184,8 @@
             document.getElementById('totalRecurringHeader').textContent = `${formatEUR(calcMonthlyRecurringCosts() * mult)} / ${currentViewMode === 'year' ? 'Jahr' : 'mtl.'}`;
           });
 
-          dateInp.addEventListener('change', (e) => {
-            bill.endDate = e.target.value;
-            persistState();
-            renderRecurringList();
-          });
-
-          dueDaySel.addEventListener('change', (e) => {
-            bill.dueDay = parseInt(e.target.value, 10) || 1;
-            persistState();
-          });
+          dateInp.addEventListener('change', (e) => { bill.endDate = e.target.value; persistState(); renderRecurringList(); });
+          dueDaySel.addEventListener('change', (e) => { bill.dueDay = parseInt(e.target.value, 10) || 1; persistState(); });
 
           delBtn.addEventListener('click', () => {
             state.liabilities.recurringBills.splice(idx, 1);
@@ -2140,7 +2199,324 @@
     }
 
     /* ==========================================================================
-       9. Render: Timeline & Historie-Archiv
+       9. Render: Interaktiver SVG Graph (Tag 1-31 & Historie-Trend)
+       ========================================================================== */
+    function renderInteractiveChart() {
+      const titleEl = document.getElementById('chartTitle');
+      const btnDaily = document.getElementById('btnChartModeDaily');
+      const btnHist = document.getElementById('btnChartModeHistory');
+
+      btnDaily.classList.toggle('active', chartViewMode === 'daily');
+      btnHist.classList.toggle('active', chartViewMode === 'history');
+
+      if (chartViewMode === 'daily') {
+        titleEl.textContent = `📈 Liquiditäts-Kurve (${getPeriodLabel(viewedDate)})`;
+        renderDailyCashflowSvg();
+      } else {
+        titleEl.textContent = `📊 Monats-Vergleich & Vermögenstrend`;
+        renderHistoryTrendSvg();
+      }
+    }
+
+    function renderDailyCashflowSvg() {
+      const gridGroup = document.getElementById('svgGridGroup');
+      const dataGroup = document.getElementById('svgDataGroup');
+      const crossGroup = document.getElementById('svgCrosshairGroup');
+      const tooltip = document.getElementById('chartTooltip');
+
+      gridGroup.innerHTML = '';
+      dataGroup.innerHTML = '';
+      crossGroup.innerHTML = '';
+      tooltip.style.display = 'none';
+
+      // 31 Tage simulieren
+      const startGiro = isArchiveViewing && currentArchiveSnapshot ? currentArchiveSnapshot.startGiro : state.cashflow.startGiro;
+      let running = Number(startGiro) || 0;
+      const balances = [];
+
+      const incomes = (isArchiveViewing && currentArchiveSnapshot?.incomes) ? currentArchiveSnapshot.incomes : state.incomes;
+      const categories = (isArchiveViewing && currentArchiveSnapshot?.categories) ? currentArchiveSnapshot.categories : state.categories;
+      const loans = (isArchiveViewing && currentArchiveSnapshot?.loans) ? currentArchiveSnapshot.loans : state.liabilities.loans;
+      const recurring = (isArchiveViewing && currentArchiveSnapshot?.recurringBills) ? currentArchiveSnapshot.recurringBills : state.liabilities.recurringBills;
+
+      for (let day = 1; day <= 31; day++) {
+        let delta = 0;
+        (incomes || []).forEach(i => { if ((i.dueDay || 28) === day) delta += getEffectiveIncome(i); });
+        (categories || []).forEach(c => (c.items || []).forEach(it => { if ((it.dueDay || 1) === day) delta -= (Number(it.value) || 0); }));
+        (loans || []).forEach(l => {
+          const rem = Math.max(0, (Number(l.totalAmount) || 0) - (Number(l.paidAmount) || 0));
+          if (rem > 0 && (l.dueDay || 15) === day) delta -= (Number(l.monthlyRate) || 0);
+        });
+        (recurring || []).forEach(b => { if ((b.dueDay || 1) === day) delta -= (Number(b.monthlyCost) || 0); });
+
+        running += delta;
+        balances.push({ day, balance: running });
+      }
+
+      // Min/Max Skalierung
+      const allVals = balances.map(b => b.balance);
+      const minVal = Math.min(0, ...allVals);
+      const maxVal = Math.max(100, ...allVals) * 1.15;
+      const valRange = (maxVal - minVal) || 1;
+
+      const W = 500;
+      const H = 190;
+      const pX = (d) => 25 + ((d - 1) / 30) * (W - 40);
+      const pY = (v) => (H - 25) - ((v - minVal) / valRange) * (H - 45);
+
+      const zeroY = pY(0);
+
+      // Null-Linie & Grid
+      gridGroup.innerHTML = `
+        <line x1="20" y1="${zeroY}" x2="${W - 10}" y2="${zeroY}" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="25" y="${zeroY - 4}" fill="var(--text-muted)" font-size="9">0 €</text>
+        <text x="25" y="${pY(maxVal * 0.9)}" fill="var(--text-muted)" font-size="9">${formatEUR(maxVal * 0.9)}</text>
+      `;
+
+      // Pfad-Punkte berechnen
+      let dPath = `M ${pX(1)} ${pY(balances[0].balance)}`;
+      for (let i = 1; i < balances.length; i++) {
+        dPath += ` L ${pX(balances[i].day)} ${pY(balances[i].balance)}`;
+      }
+
+      const dArea = `${dPath} L ${pX(31)} ${H - 20} L ${pX(1)} ${H - 20} Z`;
+
+      // Fläche & Linie
+      dataGroup.innerHTML = `
+        <path d="${dArea}" fill="url(#chartGradient)"/>
+        <path d="${dPath}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      `;
+
+      // Interaktiver Tracker (Crosshair & Dot)
+      crossGroup.innerHTML = `
+        <line id="svgCrossLine" x1="0" y1="10" x2="0" y2="${H - 20}" stroke="var(--text-main)" stroke-width="1" stroke-dasharray="2,2" opacity="0"/>
+        <circle id="svgCrossDot" cx="0" cy="0" r="4.5" fill="var(--accent)" stroke="#fff" stroke-width="2" opacity="0"/>
+      `;
+
+      const svgEl = document.getElementById('interactiveChartSvg');
+      const cLine = document.getElementById('svgCrossLine');
+      const cDot = document.getElementById('svgCrossDot');
+
+      const handlePointer = (evt) => {
+        const rect = svgEl.getBoundingClientRect();
+        const clientX = evt.clientX || (evt.touches && evt.touches[0].clientX);
+        if (!clientX) return;
+
+        const relX = clientX - rect.left;
+        const normX = Math.max(0, Math.min(1, (relX - 25 * (rect.width / W)) / ((W - 40) * (rect.width / W))));
+        const targetDay = Math.round(normX * 30) + 1;
+        const pt = balances[targetDay - 1];
+
+        if (!pt) return;
+
+        const x = pX(pt.day);
+        const y = pY(pt.balance);
+
+        cLine.setAttribute('x1', x);
+        cLine.setAttribute('x2', x);
+        cLine.setAttribute('opacity', '0.6');
+
+        cDot.setAttribute('cx', x);
+        cDot.setAttribute('cy', y);
+        cDot.setAttribute('fill', pt.balance >= 0 ? 'var(--accent)' : 'var(--danger)');
+        cDot.setAttribute('opacity', '1');
+
+        tooltip.style.display = 'block';
+        tooltip.innerHTML = `Tag ${pt.day}: <span style="color:${pt.balance >= 0 ? 'var(--success)' : 'var(--danger)'}">${formatEUR(pt.balance)}</span>`;
+      };
+
+      svgEl.onpointermove = handlePointer;
+      svgEl.onpointerleave = () => {
+        cLine.setAttribute('opacity', '0');
+        cDot.setAttribute('opacity', '0');
+        tooltip.style.display = 'none';
+      };
+    }
+
+    function renderHistoryTrendSvg() {
+      const gridGroup = document.getElementById('svgGridGroup');
+      const dataGroup = document.getElementById('svgDataGroup');
+      const crossGroup = document.getElementById('svgCrosshairGroup');
+      const tooltip = document.getElementById('chartTooltip');
+
+      gridGroup.innerHTML = '';
+      dataGroup.innerHTML = '';
+      crossGroup.innerHTML = '';
+      tooltip.style.display = 'none';
+
+      const history = state.history || [];
+      if (history.length === 0) {
+        gridGroup.innerHTML = `
+          <text x="250" y="95" text-anchor="middle" fill="var(--text-muted)" font-size="12">
+            Noch keine Monate archiviert. Speichere Snapshots ab, um den Verlauf zu sehen!
+          </text>
+        `;
+        return;
+      }
+
+      // Chronologisch aufsteigend für den Zeitstrahl
+      const sorted = [...history].sort((a, b) => a.period.localeCompare(b.period));
+
+      const W = 500;
+      const H = 190;
+      const maxVal = Math.max(...sorted.map(s => Math.max(s.income, s.expenses))) * 1.15 || 1000;
+      const pY = (v) => (H - 30) - (v / maxVal) * (H - 50);
+
+      const colWidth = (W - 60) / sorted.length;
+
+      let barsHTML = '';
+      let trendLine = '';
+
+      sorted.forEach((item, idx) => {
+        const xCenter = 40 + idx * colWidth + colWidth / 2;
+        const bW = Math.min(22, colWidth * 0.35);
+
+        const yInc = pY(item.income);
+        const hInc = (H - 30) - yInc;
+
+        const yExp = pY(item.expenses);
+        const hExp = (H - 30) - yExp;
+
+        const ySurplus = pY(Math.max(0, item.surplus));
+
+        barsHTML += `
+          <!-- Einnahmen Balken (Grün) -->
+          <rect x="${xCenter - bW - 2}" y="${yInc}" width="${bW}" height="${hInc}" fill="var(--success)" opacity="0.8" rx="3"/>
+          <!-- Ausgaben Balken (Rot) -->
+          <rect x="${xCenter + 2}" y="${yExp}" width="${bW}" height="${hExp}" fill="var(--danger)" opacity="0.8" rx="3"/>
+          <!-- Monatskürzel -->
+          <text x="${xCenter}" y="${H - 12}" text-anchor="middle" fill="var(--text-muted)" font-size="10">${item.period.slice(2)}</text>
+        `;
+
+        if (idx === 0) trendLine += `M ${xCenter} ${ySurplus}`;
+        else trendLine += ` L ${xCenter} ${ySurplus}`;
+
+        barsHTML += `<circle cx="${xCenter}" cy="${ySurplus}" r="3.5" fill="var(--accent)" stroke="#fff" stroke-width="1"/>`;
+      });
+
+      dataGroup.innerHTML = `
+        ${barsHTML}
+        <path d="${trendLine}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="3,3"/>
+      `;
+
+      // Legende
+      gridGroup.innerHTML = `
+        <line x1="20" y1="${H - 30}" x2="${W - 10}" y2="${H - 30}" stroke="var(--border)" stroke-width="1"/>
+        <g transform="translate(300, 10)">
+          <rect x="0" y="0" width="8" height="8" fill="var(--success)" rx="2"/>
+          <text x="12" y="8" fill="var(--text-muted)" font-size="9">Einnahmen</text>
+          <rect x="75" y="0" width="8" height="8" fill="var(--danger)" rx="2"/>
+          <text x="87" y="8" fill="var(--text-muted)" font-size="9">Ausgaben</text>
+        </g>
+      `;
+
+      // Interaktiver Tooltip für Balken
+      const svgEl = document.getElementById('interactiveChartSvg');
+      svgEl.onpointermove = (evt) => {
+        const rect = svgEl.getBoundingClientRect();
+        const clientX = evt.clientX || (evt.touches && evt.touches[0].clientX);
+        if (!clientX) return;
+
+        const relX = clientX - rect.left;
+        const normIdx = Math.floor((relX - 20 * (rect.width / W)) / (colWidth * (rect.width / W)));
+
+        if (normIdx >= 0 && normIdx < sorted.length) {
+          const s = sorted[normIdx];
+          tooltip.style.display = 'block';
+          tooltip.innerHTML = `${s.label}: <strong>+${formatEUR(s.surplus)}</strong> (Sparquote: ${s.savingsRate.toFixed(1)}%)`;
+        }
+      };
+
+      svgEl.onpointerleave = () => { tooltip.style.display = 'none'; };
+    }
+
+    /* ==========================================================================
+       10. Snapshot-System & Historie
+       ========================================================================== */
+    function archiveCurrentMonth() {
+      const periodKey = getPeriodKey(viewedDate);
+      const label = getPeriodLabel(viewedDate);
+
+      const mIncome = calcMonthlyIncome();
+      const mExpenses = calcMonthlyTotalExpenses();
+      const mSurplus = mIncome - mExpenses;
+      const savingsRate = mIncome > 0 ? (mSurplus / mIncome) * 100 : 0;
+
+      const snapshot = {
+        period: periodKey,
+        label: label,
+        timestamp: Date.now(),
+        income: mIncome,
+        expenses: mExpenses,
+        surplus: mSurplus,
+        savingsRate: savingsRate,
+        startGiro: Number(state.cashflow.startGiro) || 0,
+        tagesgeld: Number(state.cashflow.tagesgeld) || 0,
+        categoryExpenses: calcMonthlyCategoryExpenses(),
+        loanCosts: calcMonthlyLoanCosts(),
+        recurringCosts: calcMonthlyRecurringCosts(),
+        incomes: JSON.parse(JSON.stringify(state.incomes)),
+        categories: JSON.parse(JSON.stringify(state.categories)),
+        loans: JSON.parse(JSON.stringify(state.liabilities.loans)),
+        recurringBills: JSON.parse(JSON.stringify(state.liabilities.recurringBills))
+      };
+
+      const existingIdx = state.history.findIndex(h => h.period === periodKey);
+      if (existingIdx >= 0) {
+        if (!confirm(`Es existiert bereits ein Archiv für ${label}. Überschreiben?`)) return;
+        state.history[existingIdx] = snapshot;
+      } else {
+        state.history.push(snapshot);
+      }
+
+      persistState();
+      alert(`✔️ Snapshot für ${label} wurde archiviert!`);
+      renderApp();
+    }
+
+    function loadSnapshotIntoView(snapshot) {
+      isArchiveViewing = true;
+      currentArchiveSnapshot = snapshot;
+
+      const [year, month] = snapshot.period.split('-').map(Number);
+      viewedDate = new Date(year, month - 1, 1);
+
+      updateMonthNavigatorUI();
+      renderApp();
+    }
+
+    function switchToLiveView() {
+      isArchiveViewing = false;
+      currentArchiveSnapshot = null;
+      viewedDate = new Date(SYSTEM_NOW.getFullYear(), SYSTEM_NOW.getMonth(), 1);
+      updateMonthNavigatorUI();
+      renderApp();
+    }
+
+    function updateMonthNavigatorUI() {
+      const labelEl = document.getElementById('currentMonthLabel');
+      const badgeEl = document.getElementById('monthStatusBadge');
+      const banner = document.getElementById('archiveNoticeBanner');
+
+      const isCurrentSystemMonth = viewedDate.getFullYear() === SYSTEM_NOW.getFullYear() && viewedDate.getMonth() === SYSTEM_NOW.getMonth();
+
+      labelEl.textContent = getPeriodLabel(viewedDate);
+
+      if (isArchiveViewing) {
+        badgeEl.textContent = 'ARCHIV (HISTORIE)';
+        badgeEl.className = 'archive-badge';
+        banner.classList.remove('hidden');
+        document.body.classList.add('archive-mode');
+      } else {
+        badgeEl.textContent = isCurrentSystemMonth ? 'AKTUELL (LIVE)' : 'PLANUNG (LIVE)';
+        badgeEl.className = 'live-badge';
+        banner.classList.add('hidden');
+        document.body.classList.remove('archive-mode');
+      }
+    }
+
+    /* ==========================================================================
+       11. Timeline & Schedule
        ========================================================================== */
     function renderTimelinePage() {
       const giroInp = document.getElementById('inputStartGiro');
@@ -2161,6 +2537,7 @@
           state.cashflow.startGiro = parseFloat(e.target.value) || 0;
           persistState();
           buildTimelineSchedule();
+          renderInteractiveChart();
         };
 
         tagesInp.oninput = (e) => {
@@ -2172,6 +2549,7 @@
 
       renderHistoryList();
       buildTimelineSchedule();
+      renderInteractiveChart();
     }
 
     function renderHistoryList() {
@@ -2185,13 +2563,12 @@
       if (history.length === 0) {
         container.innerHTML = `
           <div style="font-size:0.8rem; color:var(--text-muted); text-align:center; padding:12px;">
-            Noch keine Monate archiviert. Klicke oben auf <strong>„💾 Diesen Monat archivieren“</strong>, um den aktuellen Monat festzuhalten.
+            Noch keine Monate archiviert. Klicke oben auf <strong>„💾 Diesen Monat archivieren“</strong>.
           </div>
         `;
         return;
       }
 
-      // Chronologisch absteigend sortiert anzeigen
       const sorted = [...history].sort((a, b) => b.period.localeCompare(a.period));
 
       sorted.forEach(snap => {
@@ -2222,23 +2599,18 @@
           </div>
         `;
 
-        // Klick öffnet Snapshot im Monats-Navigator
         card.addEventListener('click', (e) => {
           if (e.target.closest('.del-snap-btn')) return;
           loadSnapshotIntoView(snap);
         });
 
-        // Snapshot löschen
         card.querySelector('.del-snap-btn').addEventListener('click', (e) => {
           e.stopPropagation();
-          if (confirm(`Möchtest du das Archiv für ${snap.label} wirklich löschen?`)) {
+          if (confirm(`Archiv für ${snap.label} wirklich löschen?`)) {
             state.history = state.history.filter(h => h.period !== snap.period);
             persistState();
-            if (isArchiveViewing && currentArchiveSnapshot?.period === snap.period) {
-              switchToLiveView();
-            } else {
-              renderApp();
-            }
+            if (isArchiveViewing && currentArchiveSnapshot?.period === snap.period) switchToLiveView();
+            else renderApp();
           }
         });
 
@@ -2344,109 +2716,19 @@
       if (lowestBalance < 0) {
         alertBox.className = 'timeline-alert danger';
         alertBox.innerHTML = `
-          <span>⚠️ <strong>Liquiditäts-Engpass:</strong> Am <strong>${lowestDay}.</strong> fiel/fällt das Girokonto auf <strong>${formatEUR(lowestBalance)}</strong> ins Minus!</span>
+          <span>⚠️ <strong>Liquiditäts-Engpass:</strong> Am <strong>${lowestDay}.</strong> fällt das Konto auf <strong>${formatEUR(lowestBalance)}</strong>!</span>
         `;
       } else {
         alertBox.className = 'timeline-alert success';
         alertBox.innerHTML = `
-          <span>✔️ <strong>Solide Liquidität:</strong> Girokonto blieb/bleibt im Plus (Tiefstand: <strong>${formatEUR(lowestBalance)}</strong> am ${lowestDay}.).</span>
+          <span>✔️ <strong>Solide Liquidität:</strong> Konto bleibt im Plus (Tiefstand: <strong>${formatEUR(lowestBalance)}</strong> am ${lowestDay}.).</span>
         `;
       }
       alertContainer.appendChild(alertBox);
     }
 
     /* ==========================================================================
-       10. Snapshot-System: Speichern & Laden
-       ========================================================================== */
-    function archiveCurrentMonth() {
-      const periodKey = getPeriodKey(viewedDate);
-      const label = getPeriodLabel(viewedDate);
-
-      const mIncome = calcMonthlyIncome();
-      const mExpenses = calcMonthlyTotalExpenses();
-      const mSurplus = mIncome - mExpenses;
-      const savingsRate = mIncome > 0 ? (mSurplus / mIncome) * 100 : 0;
-
-      const snapshot = {
-        period: periodKey,
-        label: label,
-        timestamp: Date.now(),
-        income: mIncome,
-        expenses: mExpenses,
-        surplus: mSurplus,
-        savingsRate: savingsRate,
-        startGiro: Number(state.cashflow.startGiro) || 0,
-        tagesgeld: Number(state.cashflow.tagesgeld) || 0,
-        categoryExpenses: calcMonthlyCategoryExpenses(),
-        loanCosts: calcMonthlyLoanCosts(),
-        recurringCosts: calcMonthlyRecurringCosts(),
-        // Tiefe Kopie des Zustands für die Detailansicht
-        incomes: JSON.parse(JSON.stringify(state.incomes)),
-        categories: JSON.parse(JSON.stringify(state.categories)),
-        loans: JSON.parse(JSON.stringify(state.liabilities.loans)),
-        recurringBills: JSON.parse(JSON.stringify(state.liabilities.recurringBills))
-      };
-
-      // Bestehenden Snapshot dieses Monats überschreiben oder neuen anfügen
-      const existingIdx = state.history.findIndex(h => h.period === periodKey);
-      if (existingIdx >= 0) {
-        if (!confirm(`Es existiert bereits ein Archiv für ${label}. Möchtest du es mit den aktuellen Werten überschreiben?`)) {
-          return;
-        }
-        state.history[existingIdx] = snapshot;
-      } else {
-        state.history.push(snapshot);
-      }
-
-      persistState();
-      alert(`✔️ Snapshot für ${label} wurde erfolgreich archiviert!`);
-      renderApp();
-    }
-
-    function loadSnapshotIntoView(snapshot) {
-      isArchiveViewing = true;
-      currentArchiveSnapshot = snapshot;
-
-      // viewedDate anpassen
-      const [year, month] = snapshot.period.split('-').map(Number);
-      viewedDate = new Date(year, month - 1, 1);
-
-      updateMonthNavigatorUI();
-      renderApp();
-    }
-
-    function switchToLiveView() {
-      isArchiveViewing = false;
-      currentArchiveSnapshot = null;
-      viewedDate = new Date(SYSTEM_NOW.getFullYear(), SYSTEM_NOW.getMonth(), 1);
-      updateMonthNavigatorUI();
-      renderApp();
-    }
-
-    function updateMonthNavigatorUI() {
-      const labelEl = document.getElementById('currentMonthLabel');
-      const badgeEl = document.getElementById('monthStatusBadge');
-      const banner = document.getElementById('archiveNoticeBanner');
-
-      const isCurrentSystemMonth = viewedDate.getFullYear() === SYSTEM_NOW.getFullYear() && viewedDate.getMonth() === SYSTEM_NOW.getMonth();
-
-      labelEl.textContent = getPeriodLabel(viewedDate);
-
-      if (isArchiveViewing) {
-        badgeEl.textContent = 'ARCHIV (HISTORIE)';
-        badgeEl.className = 'archive-badge';
-        banner.classList.remove('hidden');
-        document.body.classList.add('archive-mode');
-      } else {
-        badgeEl.textContent = isCurrentSystemMonth ? 'AKTUELL (LIVE)' : 'PLANUNG (LIVE)';
-        badgeEl.className = 'live-badge';
-        banner.classList.add('hidden');
-        document.body.classList.remove('archive-mode');
-      }
-    }
-
-    /* ==========================================================================
-       11. Sparziel-Berechnung
+       12. Sparziel-Berechnung
        ========================================================================== */
     function renderSavingsGoal(monthlySurplus) {
       const g = state.savingsGoal;
@@ -2514,7 +2796,7 @@
     }
 
     /* ==========================================================================
-       12. Systemuhr & View Lifecycle
+       13. Systemuhr & App Lifecycle
        ========================================================================== */
     function updateClock() {
       const now = new Date();
@@ -2546,7 +2828,7 @@
     }
 
     /* ==========================================================================
-       13. Event-Listener & Navigation
+       14. Event-Listener & Navigation
        ========================================================================== */
     const tabBudget = document.getElementById('tabBudget');
     const tabFinance = document.getElementById('tabFinance');
@@ -2573,14 +2855,24 @@
     tabFinance.addEventListener('click', () => switchTab('finance'));
     tabTimeline.addEventListener('click', () => switchTab('timeline'));
 
-    // Monats-Navigator Blättern (◀ / ▶ / Heute)
+    // Chart-Mode Switcher (31 Tage vs Monats-Trend)
+    document.getElementById('btnChartModeDaily').addEventListener('click', () => {
+      chartViewMode = 'daily';
+      renderInteractiveChart();
+    });
+
+    document.getElementById('btnChartModeHistory').addEventListener('click', () => {
+      chartViewMode = 'history';
+      renderInteractiveChart();
+    });
+
+    // Monats-Navigator Blättern
     document.getElementById('btnPrevMonth').addEventListener('click', () => {
       viewedDate.setMonth(viewedDate.getMonth() - 1);
       const targetPeriod = getPeriodKey(viewedDate);
       const snap = (state.history || []).find(h => h.period === targetPeriod);
-      if (snap) {
-        loadSnapshotIntoView(snap);
-      } else {
+      if (snap) loadSnapshotIntoView(snap);
+      else {
         isArchiveViewing = false;
         currentArchiveSnapshot = null;
         renderApp();
@@ -2591,9 +2883,8 @@
       viewedDate.setMonth(viewedDate.getMonth() + 1);
       const targetPeriod = getPeriodKey(viewedDate);
       const snap = (state.history || []).find(h => h.period === targetPeriod);
-      if (snap) {
-        loadSnapshotIntoView(snap);
-      } else {
+      if (snap) loadSnapshotIntoView(snap);
+      else {
         isArchiveViewing = false;
         currentArchiveSnapshot = null;
         renderApp();
@@ -2602,8 +2893,6 @@
 
     document.getElementById('btnTodayMonth').addEventListener('click', switchToLiveView);
     document.getElementById('btnExitArchive').addEventListener('click', switchToLiveView);
-
-    // Monat archivieren Button
     document.getElementById('btnArchiveMonth').addEventListener('click', archiveCurrentMonth);
 
     const btnMonth = document.getElementById('btnMonth');
@@ -2684,7 +2973,7 @@
     });
 
     /* ==========================================================================
-       14. Settings & Design-Modal Steuerung
+       15. Settings & Design-Modal Steuerung
        ========================================================================== */
     const modal = document.getElementById('settingsModal');
     const btnOpenSettings = document.getElementById('btnOpenSettings');
@@ -2747,6 +3036,7 @@
           updatePresetChipHighlight(themeKey);
           applyTheme(state.settings.theme);
           persistState();
+          renderInteractiveChart();
         }
       });
     });
@@ -2757,6 +3047,7 @@
       updatePresetChipHighlight('custom');
       applyTheme(state.settings.theme);
       persistState();
+      renderInteractiveChart();
     });
 
     themeColorBg.addEventListener('input', (e) => {
