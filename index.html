@@ -17,6 +17,7 @@
       --border: #334155;
       --success: #10b981;
       --danger: #ef4444;
+      --warning: #f59e0b;
       --radius: 12px;
     }
 
@@ -47,15 +48,20 @@
       min-width: 0;
     }
 
-    /* Systemuhr Badges */
-    .clock-row {
+    /* Systemuhr & Header-Bar */
+    .header-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 0 4px;
+    }
+
+    .clock-group {
+      display: flex;
+      gap: 8px;
       font-size: 0.85rem;
       color: var(--text-muted);
       font-weight: 600;
-      padding: 0 4px;
     }
 
     .badge {
@@ -64,6 +70,19 @@
       padding: 4px 10px;
       border-radius: 20px;
       letter-spacing: 0.5px;
+    }
+
+    .settings-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     /* Modus-Umschalter: Monat / Jahr */
@@ -113,7 +132,7 @@
     }
 
     .kpi-title {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
       margin-bottom: 4px;
       text-transform: uppercase;
@@ -156,7 +175,7 @@
       transition: width 0.3s ease;
     }
 
-    /* Basis Card Layout */
+    /* Cards */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -181,7 +200,7 @@
       gap: 8px;
     }
 
-    /* Listen-Elemente: Einkommen & Ausgaben */
+    /* Listen-Elemente & Zeilen */
     .item-list {
       display: flex;
       flex-direction: column;
@@ -222,12 +241,12 @@
     .item-inputs {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .number-input-wrapper {
       position: relative;
-      width: 105px;
+      width: 110px;
     }
 
     .number-input-wrapper input {
@@ -257,7 +276,52 @@
       pointer-events: none;
     }
 
-    /* Schieberegler Styling (Cross-Browser + iOS Fixes) */
+    /* Variables Einkommen Detail-Box */
+    .variable-inputs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      margin-top: 6px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 8px;
+      border-radius: 6px;
+    }
+
+    .var-field {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .var-field label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .var-field input {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-main);
+      padding: 4px 6px;
+      font-size: 0.85rem;
+      text-align: right;
+      outline: none;
+    }
+
+    .tag-variable {
+      font-size: 0.65rem;
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    /* Schieberegler (gedämpft & dynamisch ausblendbar) */
     .range-slider {
       -webkit-appearance: none;
       width: 100%;
@@ -315,7 +379,7 @@
       font-weight: 700;
     }
 
-    /* Editor-Modus & Buttons */
+    /* Buttons & Utilities */
     .btn {
       background: var(--accent);
       color: white;
@@ -354,6 +418,10 @@
       display: flex !important;
     }
 
+    body.sliders-disabled .range-slider {
+      display: none !important;
+    }
+
     .color-picker-dot {
       width: 14px;
       height: 14px;
@@ -371,16 +439,90 @@
       gap: 8px;
       margin-top: 8px;
     }
+
+    /* Settings Modal Dialog */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 440px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .setting-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .setting-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      max-width: 250px;
+    }
+
+    .custom-select {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      outline: none;
+    }
   </style>
 </head>
 <body>
 
   <main class="app-container">
     
-    <!-- 1. Offline Hardware-Systemuhr -->
-    <header class="clock-row">
-      <span class="badge" id="dateBadge">--.--.----</span>
-      <span class="badge" id="timeBadge">--:--:--</span>
+    <!-- 1. Offline Hardware-Systemuhr & Settings Button -->
+    <header class="header-bar">
+      <div class="clock-group">
+        <span class="badge" id="dateBadge">--.--.----</span>
+        <span class="badge" id="timeBadge">--:--:--</span>
+      </div>
+      <button type="button" class="settings-btn" id="btnOpenSettings">
+        ⚙️ Optionen
+      </button>
     </header>
 
     <!-- 2. Umschalter: Monat / Jahr -->
@@ -413,14 +555,17 @@
       <div class="progress-track" id="progressBar"></div>
     </section>
 
-    <!-- 5. Einnahmen & Konten (Multi-Account) -->
+    <!-- 5. Einnahmen & Konten (Multi-Account & Variabel) -->
     <section class="card">
       <div class="card-header">
         <h2 class="card-title">💵 Einnahmen & Konten</h2>
         <span id="totalIncomeHeader" style="font-size: 0.95rem; font-weight: 700; color: var(--success);">0,00 €</span>
       </div>
       <div class="item-list" id="incomesList"></div>
-      <button type="button" class="btn btn-secondary editor-only" id="btnAddIncome">+ Einkommen / Konto hinzufügen</button>
+      <div class="editor-only" style="gap: 8px;">
+        <button type="button" class="btn btn-secondary" id="btnAddIncomeFix">+ Festes Gehalt</button>
+        <button type="button" class="btn btn-secondary" id="btnAddIncomeVar" style="border-color: var(--warning); color: var(--warning);">+ Variables Gehalt</button>
+      </div>
     </section>
 
     <!-- 6. Dynamische Ausgabenkategorien -->
@@ -460,28 +605,80 @@
       </div>
     </section>
 
-    <!-- 8. Modus-Umschaltung & Reset -->
+    <!-- 8. Footer: Editor-Modus & Reset -->
     <footer class="footer-actions">
-      <button type="button" class="btn" id="btnToggleMode">⚙️ Editor-Modus</button>
+      <button type="button" class="btn" id="btnToggleMode">✏️ Editor-Modus</button>
       <button type="button" class="btn btn-secondary editor-only" id="btnResetDemo" style="color: var(--danger); border-color: var(--danger);">Reset auf 0 €</button>
     </footer>
 
   </main>
+
+  <!-- 9. Settings-Modal (Optionen & Steuerung) -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-card">
+      <div class="modal-title">
+        <span>⚙️ App-Optionen</span>
+        <button type="button" class="btn-danger" id="btnCloseSettings" style="font-size: 1.2rem;">✕</button>
+      </div>
+
+      <!-- Option: Slider An/Aus -->
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Schieberegler anzeigen</div>
+          <div class="setting-desc">Regler ausblenden für ein ultrakompaktes Nummern-Layout.</div>
+        </div>
+        <input type="checkbox" id="setSliderEnabled" style="transform: scale(1.3); cursor: pointer;">
+      </div>
+
+      <!-- Option: Slider Dämpfung / Schrittweite -->
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Slider-Dämpfung</div>
+          <div class="setting-desc">Gröbere Stufen verhindern zu schnelles Verrutschen auf Touchscreens.</div>
+        </div>
+        <select id="setSliderStep" class="custom-select">
+          <option value="1">1 € (Fein)</option>
+          <option value="5">5 € (Sanft)</option>
+          <option value="10">10 € (Empfohlen)</option>
+          <option value="25">25 € (Gedämpft)</option>
+          <option value="50">50 € (Stark)</option>
+        </select>
+      </div>
+
+      <!-- Option: Gehaltsberechnung (Min vs. Avg) -->
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Variables Einkommen</div>
+          <div class="setting-desc">Berechnungs-Basis für schwankende Gehälter & Boni.</div>
+        </div>
+        <select id="setIncomeMode" class="custom-select">
+          <option value="min">Minimalst (Puffer)</option>
+          <option value="avg">Mittelwert (Ø Real)</option>
+        </select>
+      </div>
+
+      <button type="button" class="btn" id="btnSaveSettings" style="width: 100%; margin-top: 8px;">Fertig & Schließen</button>
+    </div>
+  </div>
 
   <script>
     /* ==========================================================================
        1. Globale Zustände & Datenstruktur (Schema)
        ========================================================================== */
     const STORAGE_KEY = 'budget_app_blank_v10';
-    let currentViewMode = 'month'; // 'month' oder 'year'
+    let currentViewMode = 'month'; // 'month' | 'year'
     let isEditorActive = false;
 
-    // Standard-Template für Initialisierung oder Reset
     function getDefaultData() {
       return {
+        settings: {
+          showSliders: true,
+          sliderStep: 10,
+          incomeCalculationMode: 'min' // 'min' | 'avg'
+        },
         incomes: [
-          { id: 'inc_1', name: 'Gehalt 1', value: 2500 },
-          { id: 'inc_2', name: 'Gehalt 2', value: 1500 }
+          { id: 'inc_1', name: 'Hauptgehalt', type: 'fixed', value: 2500 },
+          { id: 'inc_2', name: 'Zuschläge / Nebenjob', type: 'variable', minValue: 300, avgValue: 500, maxValue: 800 }
         ],
         categories: [
           {
@@ -500,22 +697,22 @@
             color: '#10b981',
             items: [
               { id: 'item_lebensmittel', name: 'Lebensmittel', value: 450, max: 1000 },
-              { id: 'item_drogerie', name: 'Drogerie & Haushaltsbedarf', value: 80, max: 300 }
+              { id: 'item_drogerie', name: 'Drogerie & Haushalt', value: 80, max: 300 }
             ]
           },
           {
             id: 'cat_mobil',
-            name: 'Mobilität & Transport',
+            name: 'Mobilität & Kfz',
             color: '#f59e0b',
             items: [
-              { id: 'item_kfz', name: 'KFZ Versicherung & Steuer', value: 85, max: 300 },
-              { id: 'item_sprit', name: 'Tanken / ÖPNV-Ticket', value: 140, max: 400 }
+              { id: 'item_kfz', name: 'Versicherung & Steuer', value: 85, max: 300 },
+              { id: 'item_sprit', name: 'Tanken / Fahrkarte', value: 140, max: 400 }
             ]
           }
         ],
         savingsGoal: {
           visible: true,
-          title: 'Notgroschen & Eigenkapital',
+          title: 'Notgroschen & Rücklagen',
           target: 15000,
           startCapital: 3000,
           targetDate: '2028-12-31',
@@ -536,18 +733,35 @@
         const stored = JSON.parse(raw);
         const defaults = getDefaultData();
 
-        // Migration: Fehlendes Einnahmen-Array aus Altdaten nachrüsten
-        if (!Array.isArray(stored.incomes)) {
-          stored.incomes = stored.totalIncome 
-            ? [{ id: 'inc_legacy', name: 'Haupteinkommen', value: stored.totalIncome }]
-            : defaults.incomes;
+        // 1. Settings migrieren
+        if (!stored.settings) {
+          stored.settings = defaults.settings;
+        } else {
+          if (stored.settings.showSliders === undefined) stored.settings.showSliders = true;
+          if (!stored.settings.sliderStep) stored.settings.sliderStep = 10;
+          if (!stored.settings.incomeCalculationMode) stored.settings.incomeCalculationMode = 'min';
         }
 
-        // Migration: Kategorien sicherstellen
+        // 2. Incomes migrieren (fix vs variabel)
+        if (!Array.isArray(stored.incomes)) {
+          stored.incomes = stored.totalIncome 
+            ? [{ id: 'inc_legacy', name: 'Haupteinkommen', type: 'fixed', value: stored.totalIncome }]
+            : defaults.incomes;
+        } else {
+          stored.incomes.forEach(inc => {
+            if (!inc.type) inc.type = 'fixed';
+            if (inc.type === 'variable') {
+              if (inc.minValue === undefined) inc.minValue = inc.value || 0;
+              if (inc.avgValue === undefined) inc.avgValue = inc.value || 0;
+              if (inc.maxValue === undefined) inc.maxValue = (inc.value || 0) * 1.5;
+            }
+          });
+        }
+
+        // 3. Kategorien & Items sicherstellen
         if (!Array.isArray(stored.categories)) {
           stored.categories = defaults.categories;
         } else {
-          // Fehlende Standard-Felder in Items nachziehen
           stored.categories.forEach(cat => {
             if (!cat.color) cat.color = '#3b82f6';
             if (Array.isArray(cat.items)) {
@@ -559,14 +773,12 @@
           });
         }
 
-        // Migration: Sparziel sicherstellen
-        if (!stored.savingsGoal) {
-          stored.savingsGoal = defaults.savingsGoal;
-        }
+        // 4. Sparziel absichern
+        if (!stored.savingsGoal) stored.savingsGoal = defaults.savingsGoal;
 
         return stored;
       } catch (e) {
-        console.error("Migration fehlgeschlagen, lade Standardwerte:", e);
+        console.error("Fehler beim Laden/Migrieren, lade Defaults:", e);
         return getDefaultData();
       }
     }
@@ -588,8 +800,18 @@
       return (val || 0).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
     }
 
+    // Berechnet ein Einkommen basierend auf Typ und aktiver Strategie
+    function getEffectiveIncome(inc) {
+      if (inc.type === 'variable') {
+        return state.settings.incomeCalculationMode === 'avg'
+          ? (Number(inc.avgValue) || 0)
+          : (Number(inc.minValue) || 0);
+      }
+      return Number(inc.value) || 0;
+    }
+
     function calcMonthlyIncome() {
-      return (state.incomes || []).reduce((sum, inc) => sum + (Number(inc.value) || 0), 0);
+      return (state.incomes || []).reduce((sum, inc) => sum + getEffectiveIncome(inc), 0);
     }
 
     function calcMonthlyExpenses() {
@@ -603,7 +825,7 @@
     }
 
     /* ==========================================================================
-       4. Render-Pipeline (Dashboard, KPIs, Balken)
+       4. Render-Pipeline (KPIs, Dashboard, Balken)
        ========================================================================== */
     function renderKPIs() {
       const mult = getMultiplier();
@@ -612,7 +834,6 @@
       const mSurplus = mIncome - mExpenses;
       const savingsRate = mIncome > 0 ? (mSurplus / mIncome) * 100 : 0;
 
-      // Dashboard Cards
       document.getElementById('kpiExpenses').textContent = formatEUR(mExpenses * mult);
       document.getElementById('kpiSurplus').textContent = formatEUR(mSurplus * mult);
       document.getElementById('kpiSavingsRate').textContent = `${savingsRate.toFixed(1)} %`;
@@ -624,13 +845,10 @@
       document.getElementById('subExpenses').textContent = labelSuffix;
       document.getElementById('subSurplus').textContent = labelSuffix;
 
-      // Gesamteinnahmen in Header
-      document.getElementById('totalIncomeHeader').textContent = formatEUR(mIncome * mult);
+      const incModeText = state.settings.incomeCalculationMode === 'min' ? ' (Min)' : ' (Ø)';
+      document.getElementById('totalIncomeHeader').textContent = `${formatEUR(mIncome * mult)}${incModeText}`;
 
-      // Fortschrittsbalken rendern
       renderProgressBar(mIncome, mExpenses);
-
-      // Sparziel neu berechnen
       renderSavingsGoal(mSurplus);
     }
 
@@ -655,7 +873,7 @@
     }
 
     /* ==========================================================================
-       5. Render: Einkommen & Konten
+       5. Render: Einkommen & Konten (Fix & Variabel)
        ========================================================================== */
     function renderIncomes() {
       const container = document.getElementById('incomesList');
@@ -666,54 +884,114 @@
         const row = document.createElement('div');
         row.className = 'item-row';
 
-        const displayedValue = (inc.value * mult).toFixed(2);
+        if (inc.type === 'variable') {
+          const effVal = (getEffectiveIncome(inc) * mult).toFixed(2);
+          const minVal = (inc.minValue * mult).toFixed(2);
+          const avgVal = (inc.avgValue * mult).toFixed(2);
+          const maxVal = (inc.maxValue * mult).toFixed(2);
 
-        row.innerHTML = `
-          <div class="item-info">
-            <input type="text" class="item-name-input" value="${inc.name}" ${!isEditorActive ? 'readonly' : ''}>
-            <div class="item-inputs">
-              <div class="number-input-wrapper">
-                <input type="number" step="any" value="${displayedValue}">
-                <span class="currency-symbol">€</span>
+          row.innerHTML = `
+            <div class="item-info">
+              <div style="display:flex; align-items:center; gap:6px; flex:1;">
+                <span class="tag-variable">VARIABEL</span>
+                <input type="text" class="item-name-input" value="${inc.name}" ${!isEditorActive ? 'readonly' : ''}>
               </div>
-              <button type="button" class="btn-danger editor-only">🗑️</button>
+              <div class="item-inputs">
+                <span style="font-weight:700; font-size:0.95rem; color:var(--warning);">${formatEUR(effVal)}</span>
+                <button type="button" class="btn-danger editor-only del-inc-btn">🗑️</button>
+              </div>
             </div>
-          </div>
-        `;
+            
+            <div class="variable-inputs-grid editor-only">
+              <div class="var-field">
+                <label>Min (Worst-Case)</label>
+                <input type="number" step="any" class="var-min" value="${minVal}">
+              </div>
+              <div class="var-field">
+                <label>Mittelwert (Ø)</label>
+                <input type="number" step="any" class="var-avg" value="${avgVal}">
+              </div>
+              <div class="var-field">
+                <label>Max (Best-Case)</label>
+                <input type="number" step="any" class="var-max" value="${maxVal}">
+              </div>
+            </div>
+          `;
 
-        const nameInput = row.querySelector('.item-name-input');
-        const numInput = row.querySelector('input[type="number"]');
-        const delBtn = row.querySelector('.btn-danger');
+          const nameInp = row.querySelector('.item-name-input');
+          const minInp = row.querySelector('.var-min');
+          const avgInp = row.querySelector('.var-avg');
+          const maxInp = row.querySelector('.var-max');
+          const delBtn = row.querySelector('.del-inc-btn');
 
-        nameInput.addEventListener('change', (e) => {
-          inc.name = e.target.value;
-          persistState();
-        });
+          nameInp.addEventListener('change', (e) => { inc.name = e.target.value; persistState(); });
 
-        numInput.addEventListener('input', (e) => {
-          const raw = parseFloat(e.target.value) || 0;
-          inc.value = currentViewMode === 'year' ? (raw / 12) : raw;
-          persistState();
-          renderKPIs();
-        });
+          const handleVarChange = (inputEl, field) => {
+            const raw = parseFloat(inputEl.value) || 0;
+            inc[field] = currentViewMode === 'year' ? (raw / 12) : raw;
+            persistState();
+            renderKPIs();
+          };
 
-        delBtn.addEventListener('click', () => {
-          state.incomes.splice(idx, 1);
-          persistState();
-          renderApp();
-        });
+          minInp.addEventListener('input', () => handleVarChange(minInp, 'minValue'));
+          avgInp.addEventListener('input', () => handleVarChange(avgInp, 'avgValue'));
+          maxInp.addEventListener('input', () => handleVarChange(maxInp, 'maxValue'));
+
+          delBtn.addEventListener('click', () => {
+            state.incomes.splice(idx, 1);
+            persistState();
+            renderApp();
+          });
+
+        } else {
+          // Fixes Einkommen
+          const displayedValue = (inc.value * mult).toFixed(2);
+
+          row.innerHTML = `
+            <div class="item-info">
+              <input type="text" class="item-name-input" value="${inc.name}" ${!isEditorActive ? 'readonly' : ''}>
+              <div class="item-inputs">
+                <div class="number-input-wrapper">
+                  <input type="number" step="any" value="${displayedValue}">
+                  <span class="currency-symbol">€</span>
+                </div>
+                <button type="button" class="btn-danger editor-only del-inc-btn">🗑️</button>
+              </div>
+            </div>
+          `;
+
+          const nameInput = row.querySelector('.item-name-input');
+          const numInput = row.querySelector('input[type="number"]');
+          const delBtn = row.querySelector('.del-inc-btn');
+
+          nameInput.addEventListener('change', (e) => { inc.name = e.target.value; persistState(); });
+
+          numInput.addEventListener('input', (e) => {
+            const raw = parseFloat(e.target.value) || 0;
+            inc.value = currentViewMode === 'year' ? (raw / 12) : raw;
+            persistState();
+            renderKPIs();
+          });
+
+          delBtn.addEventListener('click', () => {
+            state.incomes.splice(idx, 1);
+            persistState();
+            renderApp();
+          });
+        }
 
         container.appendChild(row);
       });
     }
 
     /* ==========================================================================
-       6. Render: Ausgaben-Kategorien & Schieberegler
+       6. Render: Ausgaben-Kategorien & gedämpfte Slider
        ========================================================================== */
     function renderCategories() {
       const container = document.getElementById('categoriesContainer');
       container.innerHTML = '';
       const mult = getMultiplier();
+      const stepVal = (state.settings.sliderStep || 10) * mult;
 
       state.categories.forEach((cat, cIdx) => {
         const card = document.createElement('section');
@@ -767,7 +1045,6 @@
           renderApp();
         });
 
-        // Items der Kategorie rendern
         cat.items.forEach((item, iIdx) => {
           const itemRow = document.createElement('div');
           itemRow.className = 'item-row';
@@ -786,7 +1063,7 @@
                 <button type="button" class="btn-danger editor-only del-item-btn">🗑️</button>
               </div>
             </div>
-            <input type="range" class="range-slider" min="0" max="${currentMax}" step="1" value="${displayedVal}">
+            <input type="range" class="range-slider" min="0" max="${currentMax}" step="${stepVal}" value="${displayedVal}">
           `;
 
           const nameInp = itemRow.querySelector('.item-name-input');
@@ -794,28 +1071,23 @@
           const slider = itemRow.querySelector('input[type="range"]');
           const delItemBtn = itemRow.querySelector('.del-item-btn');
 
-          // Dynamische Farbe für den Regler
           slider.style.accentColor = cat.color || 'var(--accent)';
 
-          // Bidirektionale Synchronisation (Zahleneingabe & Slider)
-          const syncValues = (newDisplayedVal) => {
-            let numeric = parseFloat(newDisplayedVal) || 0;
-            
-            // Automatische Skalenerweiterung des Schiebereglers
+          const syncValues = (newVal) => {
+            let numeric = parseFloat(newVal) || 0;
+
+            // Auto-Skalierung des Schiebereglers bei Überschreitung
             if (numeric > (item.max * mult)) {
               item.max = Math.ceil(currentViewMode === 'year' ? (numeric / 12) * 1.25 : numeric * 1.25);
               slider.max = (item.max * mult);
             }
 
-            // Sicher als Monatswert im State persistieren
             item.value = currentViewMode === 'year' ? (numeric / 12) : numeric;
             persistState();
 
-            // Ansichten synchron halten
             numInp.value = numeric;
             slider.value = numeric;
 
-            // Live-Berechnung ohne DOM-Neuaufbau
             renderKPIs();
             card.querySelector('.cat-sum-badge').textContent = formatEUR(
               cat.items.reduce((s, it) => s + (Number(it.value) || 0), 0) * mult
@@ -844,7 +1116,7 @@
     }
 
     /* ==========================================================================
-       7. Sparziel-Berechnung (Zinseszins & Monatsrate)
+       7. Sparziel-Berechnung
        ========================================================================== */
     function renderSavingsGoal(monthlySurplus) {
       const g = state.savingsGoal;
@@ -858,7 +1130,6 @@
       document.getElementById('goalTitleDisplay').textContent = `🎯 ${g.title}`;
       document.getElementById('goalTargetDisplay').textContent = formatEUR(g.target);
 
-      // Verbleibende Restmonate berechnen
       const today = new Date();
       const targetDate = new Date(g.targetDate || '2028-12-31');
       let diffMonths = (targetDate.getFullYear() - today.getFullYear()) * 12 + (targetDate.getMonth() - today.getMonth());
@@ -866,7 +1137,6 @@
 
       document.getElementById('goalRemainingMonths').textContent = `${diffMonths} Monate`;
 
-      // Zinseszins-Prognose (Monatliche Verzinsung)
       const monthlyRate = (g.interestRate || 0) / 100 / 12;
       let balanceForecast = Number(g.startCapital) || 0;
       const safeSurplus = Math.max(0, monthlySurplus);
@@ -877,7 +1147,6 @@
 
       document.getElementById('goalForecastVal').textContent = formatEUR(balanceForecast);
 
-      // Erforderliche monatliche Sparrate ermitteln
       let requiredMonthlyRate = 0;
       if (monthlyRate === 0) {
         requiredMonthlyRate = Math.max(0, (g.target - g.startCapital) / diffMonths);
@@ -915,7 +1184,7 @@
     }
 
     /* ==========================================================================
-       8. Offline Systemuhr (Sekundengenau)
+       8. Systemuhr & App Lifecycle
        ========================================================================== */
     function updateClock() {
       const now = new Date();
@@ -927,15 +1196,20 @@
       });
     }
 
-    /* ==========================================================================
-       9. Event-Listener & Initialisierung
-       ========================================================================== */
+    function applySettingsToUI() {
+      document.body.classList.toggle('sliders-disabled', !state.settings.showSliders);
+    }
+
     function renderApp() {
+      applySettingsToUI();
       renderKPIs();
       renderIncomes();
       renderCategories();
     }
 
+    /* ==========================================================================
+       9. Event-Listener & Settings-Modal
+       ========================================================================== */
     // Umschalter: Monat / Jahr
     const btnMonth = document.getElementById('btnMonth');
     const btnYear = document.getElementById('btnYear');
@@ -959,16 +1233,25 @@
     btnToggleMode.addEventListener('click', () => {
       isEditorActive = !isEditorActive;
       document.body.classList.toggle('editor-active', isEditorActive);
-      btnToggleMode.textContent = isEditorActive ? '✔️ Ansichtsmodus' : '⚙️ Editor-Modus';
+      btnToggleMode.textContent = isEditorActive ? '✔️ Ansichtsmodus' : '✏️ Editor-Modus';
       renderApp();
     });
 
-    // Einnahmen hinzufügen
-    document.getElementById('btnAddIncome').addEventListener('click', () => {
+    // Einkommen hinzufügen (Fix vs Variabel)
+    document.getElementById('btnAddIncomeFix').addEventListener('click', () => {
+      state.incomes.push({ id: `inc_${Date.now()}`, name: 'Festes Gehalt', type: 'fixed', value: 0 });
+      persistState();
+      renderApp();
+    });
+
+    document.getElementById('btnAddIncomeVar').addEventListener('click', () => {
       state.incomes.push({
         id: `inc_${Date.now()}`,
-        name: 'Neues Einkommen',
-        value: 0
+        name: 'Variables Gehalt',
+        type: 'variable',
+        minValue: 0,
+        avgValue: 0,
+        maxValue: 0
       });
       persistState();
       renderApp();
@@ -976,22 +1259,49 @@
 
     // Kategorie hinzufügen
     document.getElementById('btnAddCategory').addEventListener('click', () => {
-      state.categories.push({
-        id: `cat_${Date.now()}`,
-        name: 'Neue Kategorie',
-        color: '#3b82f6',
-        items: []
-      });
+      state.categories.push({ id: `cat_${Date.now()}`, name: 'Neue Kategorie', color: '#3b82f6', items: [] });
       persistState();
       renderApp();
     });
 
-    // Reset auf leeres 0-€-Template
+    // Settings-Modal Steuerung
+    const modal = document.getElementById('settingsModal');
+    const btnOpenSettings = document.getElementById('btnOpenSettings');
+    const btnCloseSettings = document.getElementById('btnCloseSettings');
+    const btnSaveSettings = document.getElementById('btnSaveSettings');
+
+    const setSliderEnabled = document.getElementById('setSliderEnabled');
+    const setSliderStep = document.getElementById('setSliderStep');
+    const setIncomeMode = document.getElementById('setIncomeMode');
+
+    function openSettingsModal() {
+      setSliderEnabled.checked = state.settings.showSliders;
+      setSliderStep.value = state.settings.sliderStep || 10;
+      setIncomeMode.value = state.settings.incomeCalculationMode || 'min';
+      modal.classList.add('active');
+    }
+
+    function closeSettingsModal() {
+      state.settings.showSliders = setSliderEnabled.checked;
+      state.settings.sliderStep = parseInt(setSliderStep.value, 10) || 10;
+      state.settings.incomeCalculationMode = setIncomeMode.value;
+      persistState();
+      modal.classList.remove('active');
+      renderApp();
+    }
+
+    btnOpenSettings.addEventListener('click', openSettingsModal);
+    btnCloseSettings.addEventListener('click', closeSettingsModal);
+    btnSaveSettings.addEventListener('click', closeSettingsModal);
+
+    // Reset auf 0 €
     document.getElementById('btnResetDemo').addEventListener('click', () => {
       if (confirm('Möchtest du alle Slider und Einnahmen wirklich auf 0 € zurücksetzen?')) {
         state = getDefaultData();
-        // Alle Werte auf 0 setzen
-        state.incomes.forEach(i => i.value = 0);
+        state.incomes.forEach(i => {
+          if (i.type === 'fixed') i.value = 0;
+          if (i.type === 'variable') { i.minValue = 0; i.avgValue = 0; i.maxValue = 0; }
+        });
         state.categories.forEach(c => c.items.forEach(it => it.value = 0));
         state.savingsGoal.startCapital = 0;
         persistState();
@@ -999,7 +1309,7 @@
       }
     });
 
-    // Initialer Start
+    // Start
     setInterval(updateClock, 1000);
     updateClock();
     initGoalEditorInputs();
