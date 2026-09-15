@@ -48,6 +48,7 @@
       flex-direction: column;
       gap: 16px;
       min-width: 0;
+      overflow-x: hidden;
     }
 
     /* Dashboard Master Card */
@@ -60,6 +61,8 @@
       flex-direction: column;
       gap: 12px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      width: 100%;
+      min-width: 0;
     }
 
     .dashboard-top-row {
@@ -110,39 +113,62 @@
 
     .settings-btn:hover { border-color: var(--accent); }
 
+    /* Responsiver 2-Ebenen Monatsnavigator */
     .month-navigator {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
+      gap: 8px;
       background: var(--bg-input);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 6px 10px;
+      padding: 8px 10px;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .month-nav-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 6px;
     }
 
     .nav-arrow-btn {
-      background: transparent;
-      border: none;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
       color: var(--text-main);
-      font-size: 1.1rem;
+      font-size: 1rem;
       cursor: pointer;
-      padding: 6px 12px;
-      border-radius: 6px;
+      width: 36px;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      flex-shrink: 0;
       transition: background 0.2s;
     }
 
-    .nav-arrow-btn:hover { background: rgba(255, 255, 255, 0.08); }
+    .nav-arrow-btn:hover { background: rgba(255, 255, 255, 0.12); }
 
     .month-display-group {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
+      flex: 1;
+      min-width: 0;
+      text-align: center;
+      flex-wrap: wrap;
     }
 
     .month-label {
       font-weight: 800;
       font-size: 1rem;
       letter-spacing: 0.2px;
+      white-space: nowrap;
     }
 
     .live-badge, .archive-badge, .plan-badge {
@@ -151,6 +177,7 @@
       border-radius: 6px;
       font-weight: 800;
       letter-spacing: 0.4px;
+      white-space: nowrap;
     }
 
     .live-badge {
@@ -171,10 +198,27 @@
       border: 1px solid rgba(59, 130, 246, 0.4);
     }
 
-    .nav-actions-group {
+    .month-nav-bottom {
       display: flex;
       align-items: center;
       gap: 6px;
+      width: 100%;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 6px;
+    }
+
+    .nav-action-btn {
+      flex: 1;
+      padding: 6px 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border-radius: 6px;
+      min-width: 0;
     }
 
     .main-nav {
@@ -436,12 +480,15 @@
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid var(--border);
       color: var(--text-main);
-      padding: 4px 8px;
+      padding: 5px 9px;
       border-radius: 6px;
       font-size: 0.75rem;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .btn-quick:hover { background: rgba(255, 255, 255, 0.12); }
@@ -645,19 +692,23 @@
         </button>
       </div>
 
-      <!-- Monatsnavigator -->
+      <!-- Responsiver 2-Ebenen Monatsnavigator -->
       <div class="month-navigator">
-        <button type="button" class="nav-arrow-btn" id="btnPrevMonth" title="Vorheriger Monat">◀</button>
-        <div class="month-display-group">
-          <span class="month-label" id="currentMonthLabel">September 2026</span>
-          <span id="monthStatusBadge" class="live-badge">AKTUELL (LIVE)</span>
-        </div>
-        <div class="nav-actions-group">
-          <input type="date" id="datePickerHidden" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;">
-          <button type="button" class="btn btn-secondary" id="btnSyncFromPrevMonth" style="padding: 4px 8px; font-size: 0.75rem; display: none;" title="Frisch aus Vormonat übernehmen">🔄 Vormonat</button>
-          <button type="button" class="btn btn-secondary" id="btnCalendarPicker" style="padding: 5px 8px;" title="Kalender öffnen">📅</button>
-          <button type="button" class="btn btn-secondary" id="btnTodayMonth" style="padding: 5px 10px; font-size: 0.8rem;">Heute</button>
+        <!-- Obere Ebene: Reine Navigation -->
+        <div class="month-nav-top">
+          <button type="button" class="nav-arrow-btn" id="btnPrevMonth" title="Vorheriger Monat">◀</button>
+          <div class="month-display-group">
+            <span class="month-label" id="currentMonthLabel">September 2026</span>
+            <span id="monthStatusBadge" class="live-badge">AKTUELL (LIVE)</span>
+          </div>
           <button type="button" class="nav-arrow-btn" id="btnNextMonth" title="Nächster Monat">▶</button>
+        </div>
+        <!-- Untere Ebene: Funktions-Buttons -->
+        <div class="month-nav-bottom">
+          <input type="date" id="datePickerHidden" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;">
+          <button type="button" class="btn btn-secondary nav-action-btn" id="btnCalendarPicker" title="Kalender öffnen">📅 <span id="lblCalendarText">Kalender</span></button>
+          <button type="button" class="btn btn-secondary nav-action-btn" id="btnTodayMonth">Heute</button>
+          <button type="button" class="btn btn-secondary nav-action-btn" id="btnSyncFromPrevMonth" style="display: none;" title="Frisch aus Vormonat übernehmen">🔄 <span id="lblSyncText">Vormonat</span></button>
         </div>
       </div>
 
@@ -924,7 +975,8 @@
         doneClose: "Fertig & Schließen",
         demoBanner: "👀 <strong>Demo-Modus aktiv:</strong> Vorschau-Werte. Echte Daten pausiert.",
         archiveBanner: "📖 <strong>Archiv-Ansicht:</strong> Du betrachtest einen archivierten Monat (schreibgeschützt).",
-        exitBtn: "Beenden", exitArchiveBtn: "Zurück zu Live", syncPrevBtn: "🔄 Vormonat",
+        exitBtn: "Beenden", exitArchiveBtn: "Zurück zu Live",
+        calendarBtnText: "Kalender", syncBtnText: "Vormonat",
         syncPrevTitle: "Frisch aus Vormonat übernehmen",
         syncPrevConfirm: "Möchtest du alle Budgets, Gehälter und offenen Kredite frisch aus dem Vormonat neu übernehmen?",
         addExpenseCategory: "+ Neue Ausgabenkategorie",
@@ -964,11 +1016,19 @@
         monthlyCostLabel: "Monatliche Kosten (€)", billingDayLabel: "Abbuchungstag (1–31)",
         contractEndLabel: "Vertragsende (optional)",
         badgePaidOff: "ABBEZAHLT ✔️",
+        badgeClosed: "GESCHLOSSEN 🔒",
         standLabel: "Stand:", neededMoLabel: "Mtl. nötig:", rateMoLabel: "Rate:",
         paidLabel: "Getilgt:", remainingDebtLabel: "Restschuld:",
         dueOnDayLabel: "Fällig an Tag", untilLabel: "Bis", indefiniteLabel: "Unbefristet",
-        quickPayOneRate: "⚡ +1 Rate tilgen", quickRate: "⚡ + Rate",
-        quickSurplus: "⚡ + Überschuss", quickCustom: "⚡ + Custom",
+        quickPayOneRate: "⚡ +1 Rate tilgen",
+        quickPayAll: "🎯 Alles tilgen",
+        quickCloseLoan: "🔒 Rate schließen",
+        reopenLoan: "↩️ Reaktivieren",
+        confirmPayAll: "Restschuld von {0} komplett tilgen und abschließen?",
+        confirmCloseLoan: "Möchtest du diese Rate / diesen Kredit wirklich schließen? Er wird ab dem Folgemonat nicht mehr auftauchen.",
+        loanStatusLabel: "Status des Kredits",
+        statusActive: "Aktiv (laufende Tilgung)",
+        statusClosed: "Abgeschlossen / Voll getilgt (ab Folgemonat entfernt)",
         customAmountPrompt: "Wunschbetrag (€):",
         dayLabel: "Tag", dayOfMonthLabel: "des Monats", saldoLabel: "Saldo:",
         dayRange: "Tag 1 – 31",
@@ -1003,7 +1063,8 @@
         doneClose: "Done & Close",
         demoBanner: "👀 <strong>Demo Mode active:</strong> Preview data. Your actual data is safely paused.",
         archiveBanner: "📖 <strong>Archive View:</strong> Viewing an archived month (read-only).",
-        exitBtn: "Exit", exitArchiveBtn: "Back to Live", syncPrevBtn: "🔄 Prev Month",
+        exitBtn: "Exit", exitArchiveBtn: "Back to Live",
+        calendarBtnText: "Calendar", syncBtnText: "Prev Month",
         syncPrevTitle: "Re-import fresh from previous month",
         syncPrevConfirm: "Do you want to re-import all budgets, salaries, and open liabilities fresh from the previous month?",
         addExpenseCategory: "+ New Expense Category",
@@ -1043,11 +1104,19 @@
         monthlyCostLabel: "Monthly Cost (€)", billingDayLabel: "Billing Day (1–31)",
         contractEndLabel: "Contract End Date (optional)",
         badgePaidOff: "PAID OFF ✔️",
+        badgeClosed: "CLOSED 🔒",
         standLabel: "Saved:", neededMoLabel: "Needed/mo:", rateMoLabel: "Rate:",
         paidLabel: "Paid:", remainingDebtLabel: "Remaining:",
         dueOnDayLabel: "Due on day", untilLabel: "Until", indefiniteLabel: "Indefinite",
-        quickPayOneRate: "⚡ Pay 1 Installment", quickRate: "⚡ + Rate",
-        quickSurplus: "⚡ + Surplus", quickCustom: "⚡ + Custom",
+        quickPayOneRate: "⚡ Pay 1 Installment",
+        quickPayAll: "🎯 Pay Off All",
+        quickCloseLoan: "🔒 Close Loan",
+        reopenLoan: "↩️ Reactivate",
+        confirmPayAll: "Pay off remaining balance of {0} and mark as settled?",
+        confirmCloseLoan: "Do you really want to close this loan and mark it as settled? It will no longer appear in subsequent months.",
+        loanStatusLabel: "Loan Status",
+        statusActive: "Active (ongoing repayment)",
+        statusClosed: "Settled / Closed (removed from future months)",
         customAmountPrompt: "Custom amount (€):",
         dayLabel: "Day", dayOfMonthLabel: "of month", saldoLabel: "Balance:",
         dayRange: "Day 1 – 31",
@@ -1158,6 +1227,126 @@
       return val;
     }
 
+    /* ZUVERLÄSSIGE VORWÄRTS-PROPAGIERUNG: Überträgt Bearbeitungen, Tilgungen & Schließungen sofort in alle Folgemonate */
+    function propagateLoanUpdate(updatedLoan, fromDate) {
+      const fromKey = getPeriodKey(fromDate);
+      const allKeys = Object.keys(state.months).sort();
+      const searchId = updatedLoan.id;
+      const searchName = (updatedLoan.name || '').trim().toLowerCase();
+
+      const remNow = (Number(updatedLoan.totalAmount) || 0) - (Number(updatedLoan.paidAmount) || 0);
+      const isDone = Boolean(updatedLoan.isClosed) || remNow <= 0.005;
+
+      allKeys.forEach(k => {
+        if (k > fromKey) {
+          const m = state.months[k];
+          if (!m || !m.financeCategories) return;
+          let fc = m.financeCategories.find(c => c.type === 'loans');
+          if (!fc) return;
+          if (!fc.items) fc.items = [];
+
+          if (isDone) {
+            // Wenn in fromDate bezahlt oder geschlossen -> In Folgemonaten restlos entfernen!
+            fc.items = fc.items.filter(it => it.id !== searchId && (!it.name || it.name.trim().toLowerCase() !== searchName));
+          } else {
+            // Wenn in fromDate aktiv -> In Folgemonaten aktualisieren oder wiederherstellen!
+            let target = fc.items.find(it => (it.id && searchId && it.id === searchId) || (it.name && searchName && it.name.trim().toLowerCase() === searchName));
+            if (!target) {
+              // Fehlte (z. B. nach Reaktivierung): Frisch einfügen!
+              fc.items.push({
+                id: searchId || `loan_${Date.now()}`,
+                name: updatedLoan.name,
+                totalAmount: Number(updatedLoan.totalAmount) || 0,
+                paidAmount: Number(updatedLoan.paidAmount) || 0,
+                monthlyRate: Number(updatedLoan.monthlyRate) || 0,
+                dueDay: updatedLoan.dueDay || 15,
+                isClosed: false
+              });
+            } else {
+              // Vorhanden: Stammdaten direkt übernehmen!
+              target.name = updatedLoan.name;
+              target.totalAmount = Number(updatedLoan.totalAmount) || 0;
+              target.monthlyRate = Number(updatedLoan.monthlyRate) || 0;
+              target.dueDay = updatedLoan.dueDay || 15;
+              target.isClosed = false;
+
+              // Fortschritt: Paid amount kann nicht geringer sein als in fromDate
+              if ((Number(target.paidAmount) || 0) < (Number(updatedLoan.paidAmount) || 0)) {
+                target.paidAmount = Number(updatedLoan.paidAmount) || 0;
+              }
+              if ((Number(target.paidAmount) || 0) > (Number(target.totalAmount) || 0)) {
+                target.paidAmount = target.totalAmount;
+                target.isClosed = true;
+              }
+            }
+          }
+        }
+      });
+
+      persistState();
+    }
+
+    function deleteLoanFromFutureMonths(loanId, loanName, fromDate) {
+      const fromKey = getPeriodKey(fromDate);
+      const searchName = (loanName || '').trim().toLowerCase();
+      Object.keys(state.months).forEach(pKey => {
+        if (pKey > fromKey) {
+          const m = state.months[pKey];
+          if (m && m.financeCategories) {
+            m.financeCategories.forEach(c => {
+              if (c.type === 'loans' && c.items) {
+                c.items = c.items.filter(it => it.id !== loanId && (!it.name || it.name.trim().toLowerCase() !== searchName));
+              }
+            });
+          }
+        }
+      });
+      persistState();
+    }
+
+    function pruneSettledLoansForMonth(monthData, date) {
+      if (!monthData || !monthData.financeCategories) return;
+      const currentKey = getPeriodKey(date);
+      const settledIds = new Set();
+      const settledNames = new Set();
+
+      // Sammle alle Raten, die in Vormonaten abbezahlt oder geschlossen wurden
+      Object.keys(state.months).forEach(pKey => {
+        if (pKey < currentKey) {
+          const m = state.months[pKey];
+          if (m && m.financeCategories) {
+            m.financeCategories.forEach(cat => {
+              if (cat.type === 'loans' && cat.items) {
+                cat.items.forEach(it => {
+                  const rem = (Number(it.totalAmount) || 0) - (Number(it.paidAmount) || 0);
+                  if (it.isClosed || rem <= 0.005) {
+                    if (it.id) settledIds.add(it.id);
+                    if (it.name) settledNames.add(it.name.trim().toLowerCase());
+                  }
+                });
+              }
+            });
+          }
+        }
+      });
+
+      if (settledIds.size > 0 || settledNames.size > 0) {
+        let changed = false;
+        monthData.financeCategories.forEach(cat => {
+          if (cat.type === 'loans' && cat.items) {
+            const initialLen = cat.items.length;
+            cat.items = cat.items.filter(it => {
+              if (it.id && settledIds.has(it.id)) return false;
+              if (it.name && settledNames.has(it.name.trim().toLowerCase())) return false;
+              return true;
+            });
+            if (cat.items.length !== initialLen) changed = true;
+          }
+        });
+        if (changed) persistState();
+      }
+    }
+
     function calculateEndingBalanceForMonth(targetDate) {
       const targetKey = getPeriodKey(targetDate);
       const allKeys = Object.keys(state.months).sort();
@@ -1176,7 +1365,7 @@
           let delta = 0;
           (mData.financeCategories || []).forEach(c => (c.items || []).forEach(i => {
             if (c.type === 'income' && (i.dueDay || SYSTEM_NOW.getDate()) === day) delta += getEffectiveIncome(i);
-            if (c.type === 'loans' && (i.dueDay || 15) === day) delta -= (Number(i.monthlyRate) || 0);
+            if (c.type === 'loans' && !i.isClosed && ((Number(i.totalAmount) || 0) - (Number(i.paidAmount) || 0) > 0.005) && (i.dueDay || 15) === day) delta -= (Number(i.monthlyRate) || 0);
             if (c.type === 'recurring' && (i.dueDay || 1) === day) delta -= (Number(i.monthlyCost) || 0);
             if (c.type === 'emergency' && i.includeInMonthlyBudget && (i.dueDay || 1) === day) delta -= (Number(i.monthlyContribution) || 0);
           }));
@@ -1206,7 +1395,7 @@
 
           freshCopy.financeCategories.forEach(cat => {
             if (cat.type === 'loans') {
-              cat.items = cat.items.filter(l => (Number(l.totalAmount) - Number(l.paidAmount)) > 0);
+              cat.items = cat.items.filter(l => (Number(l.totalAmount) - Number(l.paidAmount)) > 0.005 && !l.isClosed);
             }
             if (cat.type === 'recurring') {
               cat.items = cat.items.filter(b => {
@@ -1241,7 +1430,9 @@
 
     function getActiveMonthData() {
       if (isArchiveViewing && currentArchiveSnapshot) return currentArchiveSnapshot.monthData;
-      return getMonthDataForDate(viewedDate);
+      const m = getMonthDataForDate(viewedDate);
+      pruneSettledLoansForMonth(m, viewedDate);
+      return m;
     }
 
     function markMonthAsCustomized() {
@@ -1286,7 +1477,7 @@
         (cat.items || []).forEach(it => {
           if (cat.type === 'loans') {
             const rem = Math.max(0, (Number(it.totalAmount) || 0) - (Number(it.paidAmount) || 0));
-            if (rem > 0) total += (Number(it.monthlyRate) || 0);
+            if (rem > 0.005 && !it.isClosed) total += (Number(it.monthlyRate) || 0);
           } else if (cat.type === 'recurring') {
             total += (Number(it.monthlyCost) || 0);
           } else if (cat.type === 'emergency' && it.includeInMonthlyBudget) {
@@ -1347,10 +1538,11 @@
       document.getElementById('lblKpiSavings').textContent = t('savingsRate');
       document.getElementById('subSavings').textContent = t('total');
       document.getElementById('btnTodayMonth').textContent = t('today');
+      document.getElementById('lblCalendarText').textContent = t('calendarBtnText');
+      document.getElementById('lblSyncText').textContent = t('syncBtnText');
       document.getElementById('btnPrevMonth').title = state.settings.language === 'en' ? 'Previous Month' : 'Vorheriger Monat';
       document.getElementById('btnNextMonth').title = state.settings.language === 'en' ? 'Next Month' : 'Nächster Monat';
       document.getElementById('btnCalendarPicker').title = state.settings.language === 'en' ? 'Open Calendar' : 'Kalender öffnen';
-      document.getElementById('btnSyncFromPrevMonth').textContent = t('syncPrevBtn');
       document.getElementById('btnSyncFromPrevMonth').title = t('syncPrevTitle');
       document.getElementById('btnAddCategory').textContent = t('addExpenseCategory');
       document.getElementById('lblAddCategoryPreset').textContent = t('addCategoryPreset');
@@ -1604,12 +1796,13 @@
           } else if (cat.type === 'emergency') {
             cat.items.push({ id: `em_${Date.now()}`, title: isEn ? 'Emergency Fund' : 'Notgroschen', targetAmount: 5000, currentAmount: 1000, monthlyContribution: 150, includeInMonthlyBudget: true, dueDay: 1 });
           } else if (cat.type === 'loans') {
-            cat.items.push({ id: `loan_${Date.now()}`, name: isEn ? 'Loan' : 'Kredit', totalAmount: 3000, paidAmount: 0, monthlyRate: 100, dueDay: 15 });
+            cat.items.push({ id: `loan_${Date.now()}`, name: isEn ? 'Loan' : 'Kredit', totalAmount: 3000, paidAmount: 0, monthlyRate: 100, dueDay: 15, isClosed: false });
           } else {
             cat.items.push({ id: `rec_${Date.now()}`, name: isEn ? 'Contract / Subscription' : 'Vertrag / Abo', monthlyCost: 30, endDate: '', dueDay: 1 });
           }
           markMonthAsCustomized();
-          renderFinancePage(); renderKPIs();
+          renderFinancePage(); 
+          renderKPIs();
         };
 
         const list = card.querySelector('.item-list');
@@ -1716,13 +1909,20 @@
             const rate = Number(it.monthlyRate) || 0;
             const remaining = Math.max(0, total - paid);
             const pct = total > 0 ? Math.min(100, Math.round((paid / total) * 100)) : 100;
-            const isDone = remaining <= 0;
+            const isDone = remaining <= 0.005 || Boolean(it.isClosed);
+
+            let badgeHtml = '';
+            if (it.isClosed && remaining > 0.005) {
+              badgeHtml = `<span class="live-badge" style="background:rgba(148,163,184,0.2); color:#94a3b8; border-color:rgba(148,163,184,0.4);">${t('badgeClosed')}</span>`;
+            } else if (isDone) {
+              badgeHtml = `<span class="live-badge">${t('badgePaidOff')}</span>`;
+            }
 
             itemEl.innerHTML = `
               <div style="display:flex; justify-content:space-between; align-items:center;">
                 <div style="display:flex; align-items:center; gap:6px;">
                   <span style="font-weight:700;">${it.name}</span>
-                  ${isDone ? `<span class="live-badge">${t('badgePaidOff')}</span>` : ''}
+                  ${badgeHtml}
                 </div>
                 <div style="display:flex; align-items:center; gap:6px;">
                   <span style="font-weight:800; color:var(--debt-color);">${formatEUR(rate * mult)} / ${currentViewMode === 'year' ? t('year') : t('month')}</span>
@@ -1737,12 +1937,69 @@
                 <span>${t('remainingDebtLabel')} <strong>${formatEUR(remaining)}</strong></span>
               </div>
               <div class="quick-actions-row">
-                ${!isDone ? `<button type="button" class="btn-quick q-rate">${t('quickPayOneRate')}</button>` : ''}
+                ${!isDone ? `
+                  <button type="button" class="btn-quick q-rate">${t('quickPayOneRate')}</button>
+                  <button type="button" class="btn-quick q-payall" style="border-color: rgba(16,185,129,0.4); color: #34d399;">${t('quickPayAll')}</button>
+                  <button type="button" class="btn-quick q-close" style="border-color: rgba(239,68,68,0.4); color: #f87171;">${t('quickCloseLoan')}</button>
+                ` : `
+                  <button type="button" class="btn-quick q-reopen" style="border-color: rgba(59,130,246,0.4); color: #60a5fa;">${t('reopenLoan')}</button>
+                `}
               </div>
             `;
 
-            const qBtn = itemEl.querySelector('.q-rate');
-            if (qBtn) qBtn.onclick = () => { it.paidAmount = Math.min(total, paid + rate); markMonthAsCustomized(); renderFinancePage(); renderKPIs(); };
+            const qRateBtn = itemEl.querySelector('.q-rate');
+            if (qRateBtn) {
+              qRateBtn.onclick = () => {
+                it.paidAmount = Math.min(total, paid + rate);
+                if (it.totalAmount - it.paidAmount <= 0.005) {
+                  it.paidAmount = it.totalAmount;
+                  it.isClosed = true;
+                }
+                markMonthAsCustomized();
+                propagateLoanUpdate(it, viewedDate);
+                renderFinancePage();
+                renderKPIs();
+              };
+            }
+
+            const qPayAllBtn = itemEl.querySelector('.q-payall');
+            if (qPayAllBtn) {
+              qPayAllBtn.onclick = () => {
+                if (confirm(t('confirmPayAll', formatEUR(remaining)))) {
+                  it.paidAmount = total;
+                  it.isClosed = true;
+                  markMonthAsCustomized();
+                  propagateLoanUpdate(it, viewedDate);
+                  renderFinancePage();
+                  renderKPIs();
+                }
+              };
+            }
+
+            const qCloseBtn = itemEl.querySelector('.q-close');
+            if (qCloseBtn) {
+              qCloseBtn.onclick = () => {
+                if (confirm(t('confirmCloseLoan'))) {
+                  it.isClosed = true;
+                  markMonthAsCustomized();
+                  propagateLoanUpdate(it, viewedDate);
+                  renderFinancePage();
+                  renderKPIs();
+                }
+              };
+            }
+
+            const qReopenBtn = itemEl.querySelector('.q-reopen');
+            if (qReopenBtn) {
+              qReopenBtn.onclick = () => {
+                it.isClosed = false;
+                it.paidAmount = Math.max(0, total - rate);
+                markMonthAsCustomized();
+                propagateLoanUpdate(it, viewedDate);
+                renderFinancePage();
+                renderKPIs();
+              };
+            }
 
           } else {
             const cost = Number(it.monthlyCost) || 0;
@@ -1898,12 +2155,21 @@
           </div>
         `;
       } else if (cat.type === 'loans') {
+        const rem = Math.max(0, (Number(item.totalAmount) || 0) - (Number(item.paidAmount) || 0));
         fieldsHTML = `
           <div class="form-group"><label>${t('loanNameLabel')}</label><input type="text" class="form-input" id="m_name" value="${item.name}"></div>
           <div class="form-group"><label>${t('totalDebtLabel')}</label><input type="number" step="any" class="form-input" id="m_total" value="${item.totalAmount}"></div>
           <div class="form-group"><label>${t('alreadyPaidLabel')}</label><input type="number" step="any" class="form-input" id="m_paid" value="${item.paidAmount}"></div>
+          <div class="form-group"><label>${t('remainingDebtLabel')}</label><input type="number" step="any" class="form-input" id="m_rem" value="${rem}"></div>
           <div class="form-group"><label>${t('monthlyRateLabel')}</label><input type="number" step="any" class="form-input" id="m_rate" value="${item.monthlyRate}"></div>
           <div class="form-group"><label>${t('dueDayLabel')}</label><input type="number" min="1" max="31" class="form-input" id="m_day" value="${item.dueDay || 15}"></div>
+          <div class="form-group">
+            <label>${t('loanStatusLabel')}</label>
+            <select class="form-input" id="m_status">
+              <option value="active" ${!item.isClosed && (item.totalAmount - item.paidAmount > 0.005) ? 'selected' : ''}>${t('statusActive')}</option>
+              <option value="closed" ${item.isClosed || (item.totalAmount - item.paidAmount <= 0.005) ? 'selected' : ''}>${t('statusClosed')}</option>
+            </select>
+          </div>
         `;
       } else {
         fieldsHTML = `
@@ -1924,6 +2190,27 @@
         };
         document.getElementById('m_btn_set_today').onclick = () => {
           document.getElementById('m_day').value = SYSTEM_NOW.getDate();
+        };
+      } else if (cat.type === 'loans') {
+        const inpTotal = document.getElementById('m_total');
+        const inpPaid = document.getElementById('m_paid');
+        const inpRem = document.getElementById('m_rem');
+
+        // Dynamische Verknüpfung: Wenn Gesamtschuld oder Restschuld angepasst wird
+        inpTotal.oninput = () => {
+          const tot = parseFloat(inpTotal.value) || 0;
+          const pd = parseFloat(inpPaid.value) || 0;
+          inpRem.value = Math.max(0, tot - pd);
+        };
+        inpRem.oninput = () => {
+          const remVal = parseFloat(inpRem.value) || 0;
+          const pd = parseFloat(inpPaid.value) || 0;
+          inpTotal.value = pd + remVal;
+        };
+        inpPaid.oninput = () => {
+          const tot = parseFloat(inpTotal.value) || 0;
+          const pd = parseFloat(inpPaid.value) || 0;
+          inpRem.value = Math.max(0, tot - pd);
         };
       }
 
@@ -1955,6 +2242,16 @@
           item.paidAmount = parseFloat(document.getElementById('m_paid').value) || 0;
           item.monthlyRate = parseFloat(document.getElementById('m_rate').value) || 0;
           item.dueDay = parseInt(document.getElementById('m_day').value, 10) || 15;
+          const isClosedSel = document.getElementById('m_status').value === 'closed';
+          item.isClosed = isClosedSel;
+          if (isClosedSel || (item.totalAmount - item.paidAmount <= 0.005)) {
+            item.paidAmount = item.totalAmount;
+            item.isClosed = true;
+          } else {
+            item.isClosed = false;
+          }
+          // SOFORTIGE VORWÄRTS-PROPAGIERUNG AN ALLE FOLGEMONATE!
+          propagateLoanUpdate(item, viewedDate);
         } else {
           item.name = document.getElementById('m_name').value;
           item.monthlyCost = parseFloat(document.getElementById('m_cost').value) || 0;
@@ -1963,7 +2260,14 @@
         }
       };
 
-      currentModalDeleteHandler = () => { cat.items.splice(idx, 1); };
+      currentModalDeleteHandler = () => {
+        const deletedId = item.id;
+        const deletedName = item.name;
+        cat.items.splice(idx, 1);
+        if (cat.type === 'loans') {
+          deleteLoanFromFutureMonths(deletedId, deletedName, viewedDate);
+        }
+      };
       openModal();
     }
 
@@ -2036,7 +2340,7 @@
         let delta = 0;
         (mData.financeCategories || []).forEach(c => (c.items || []).forEach(i => {
           if (c.type === 'income' && (i.dueDay || SYSTEM_NOW.getDate()) === day) delta += getEffectiveIncome(i);
-          if (c.type === 'loans' && (i.dueDay || 15) === day) delta -= (Number(i.monthlyRate) || 0);
+          if (c.type === 'loans' && !i.isClosed && ((Number(i.totalAmount) || 0) - (Number(i.paidAmount) || 0) > 0.005) && (i.dueDay || 15) === day) delta -= (Number(i.monthlyRate) || 0);
           if (c.type === 'recurring' && (i.dueDay || 1) === day) delta -= (Number(i.monthlyCost) || 0);
           if (c.type === 'emergency' && i.includeInMonthlyBudget && (i.dueDay || 1) === day) delta -= (Number(i.monthlyContribution) || 0);
         }));
@@ -2122,7 +2426,7 @@
           (mData.financeCategories || []).forEach(c => {
             if (c.type === 'income') (c.items || []).forEach(it => { inc += getEffectiveIncome(it); });
             else (c.items || []).forEach(it => {
-              if (c.type === 'loans') exp += (Number(it.monthlyRate) || 0);
+              if (c.type === 'loans' && !it.isClosed && ((Number(it.totalAmount) || 0) - (Number(it.paidAmount) || 0) > 0.005)) exp += (Number(it.monthlyRate) || 0);
               if (c.type === 'recurring') exp += (Number(it.monthlyCost) || 0);
             });
           });
@@ -2175,7 +2479,7 @@
             subText: t('subSalary', day)
           });
         }
-        if (c.type === 'loans') {
+        if (c.type === 'loans' && !i.isClosed && ((Number(i.totalAmount) || 0) - (Number(i.paidAmount) || 0) > 0.005)) {
           const lDay = i.dueDay || 15;
           events[lDay]?.push({
             name: i.name,
@@ -2505,7 +2809,6 @@
           </div>
         `;
 
-        // Ansehen (Non-destruktiv)
         row.querySelector('.view-arch-btn').onclick = () => {
           isArchiveViewing = true;
           currentArchiveSnapshot = h;
@@ -2515,7 +2818,6 @@
           renderApp();
         };
 
-        // Als Vorlage in den aktuellen Planungsmonat übernehmen
         row.querySelector('.load-arch-btn').onclick = () => {
           if (confirm(t('applyArchiveConfirm', h.period))) {
             state.months[getPeriodKey(viewedDate)] = JSON.parse(JSON.stringify(h.monthData));
@@ -2525,7 +2827,6 @@
           }
         };
 
-        // Löschen
         row.querySelector('.del-arch-btn').onclick = () => {
           state.history.splice(idx, 1);
           persistState();
