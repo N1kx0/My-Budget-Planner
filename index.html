@@ -422,7 +422,7 @@
     }
 
     /* ==========================================================================
-       Finanzen-Page: Schulden, Kredite & Raten Styling (FIXIERT)
+       Finanzen-Page: Schulden, Kredite & Raten Styling (Mobil Optimiert)
        ========================================================================== */
     .loan-card {
       background: rgba(255, 255, 255, 0.02);
@@ -441,7 +441,6 @@
       background: rgba(16, 185, 129, 0.05);
     }
 
-    /* Header-Fix gegen Text-Überlappung */
     .loan-header-row {
       display: flex;
       justify-content: space-between;
@@ -519,7 +518,6 @@
       transform: scale(0.96);
     }
 
-    /* Grid-Fix: Verhindert das Rausrutschen der rechten Eingabefelder */
     .loan-editor-grid {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -1476,7 +1474,6 @@
             ` : '<span style="font-size:0.75rem; color:var(--success);">Dieser Kredit belastet nicht mehr deine Fixkosten.</span>'}
           </div>
 
-          <!-- Vollständig ausgerichtetes Grid ohne Overflow -->
           <div class="loan-editor-grid editor-only">
             <div class="loan-field">
               <label>Gesamtschuld (€)</label>
@@ -1564,9 +1561,25 @@
 
         const displayedCost = (bill.monthlyCost * mult).toFixed(2);
 
+        // Formatiertes Datum für den Ansichtsmodus
+        let formattedDate = '';
+        if (bill.endDate) {
+          const parts = bill.endDate.split('-');
+          if (parts.length === 3) {
+            formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
+          }
+        }
+
         row.innerHTML = `
           <div class="item-info">
-            <input type="text" class="item-name-input rec-name" value="${bill.name}" ${!isEditorActive ? 'readonly' : ''}>
+            <div style="display:flex; flex-direction:column; gap:2px; flex:1; min-width:0;">
+              <input type="text" class="item-name-input rec-name" value="${bill.name}" ${!isEditorActive ? 'readonly' : ''}>
+              ${formattedDate ? `
+                <span style="font-size:0.75rem; color:var(--text-muted); display:flex; align-items:center; gap:4px; margin-top:2px;">
+                  📅 Bis ${formattedDate}
+                </span>
+              ` : ''}
+            </div>
             <div class="item-inputs">
               <div class="number-input-wrapper">
                 <input type="number" step="any" class="rec-cost" value="${displayedCost}">
@@ -1575,9 +1588,10 @@
               <button type="button" class="btn-danger editor-only del-rec-btn">🗑️</button>
             </div>
           </div>
-          <div class="editor-only" style="display:flex; align-items:center; gap:8px; margin-top:4px;">
-            <label style="font-size:0.75rem; color:var(--text-muted);">Vertragsende / Kündigungsdatum: 
-              <input type="date" class="rec-date" value="${bill.endDate || ''}" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; border-radius:4px; padding:2px 6px;">
+          <div class="editor-only" style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+            <label style="font-size:0.75rem; color:var(--text-muted); display:flex; align-items:center; gap:6px;">
+              Vertragsende: 
+              <input type="date" class="rec-date" value="${bill.endDate || ''}" style="background:var(--bg-input); border:1px solid var(--border); color:#fff; border-radius:4px; padding:3px 6px;">
             </label>
           </div>
         `;
@@ -1600,6 +1614,7 @@
         dateInp.addEventListener('change', (e) => {
           bill.endDate = e.target.value;
           persistState();
+          renderRecurringList();
         });
 
         delBtn.addEventListener('click', () => {
